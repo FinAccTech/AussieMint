@@ -1,0 +1,36 @@
+<div class="listContainer">
+    <div class="headerCard">
+        <div class="headerLeft">     
+            <span class="bar"></span>
+            <p class="heading"> &nbsp; Clients</p>        
+        </div>
+
+        <div class="headerRight">
+            <button class="newBtn" (click)="AddNewClient()">
+                <i class='bx bx-plus bx-tada' ></i>Create New
+            </button>          
+        </div>
+    </div>
+
+    <div class="tableBody">
+
+        @defer (when ClientsList.length >0) {
+            <app-tableview [DataSource]="ClientsList" [FieldNames]="FieldNames" [RemoveSignal]="RemoveSignal" (actionEvent)="handleActionFromTable($event)" > </app-tableview>                        
+        }
+        @placeholder {
+            <p>Clients list Here</p>
+        }
+        @loading {
+            <p>Loading in Progress</p>
+        }
+
+        <!-- @if (GroupsList.length >0){
+            
+        }
+        @else{
+            <p>No Data</p>            
+        } -->
+        
+    </div>
+
+</div>

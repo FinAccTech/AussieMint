@@ -1,0 +1,65 @@
+<div class="listContainer">
+    <div class="headerCard">
+        <div class="headerLeft">     
+            <span class="bar"></span>
+            <p class="heading"> &nbsp; Item Groups</p>        
+        </div>
+
+        <div class="headerRight">
+            
+            <button class="newBtn" (click)="AddNewGroup()">
+                <i class='bx bx-plus bx-tada' ></i>Create New
+            </button>
+            <!-- <i class='bx bxs-download' [matMenuTriggerFor]="menu"></i> 
+
+            <mat-menu #menu="matMenu" style="padding: 1rem;">
+                <button mat-menu-item (click)="exporter.exportTable('xlsx', {fileName:'test', sheet: 'sheet_name', Props: {Author: 'Talha'}})" >
+                    <div class="menuClass">
+                        <i class="fas fa-file-excel" style="color: green;" ></i>
+                        <span> &nbsp; Excel</span>
+                    </div>                    
+                </button>             
+                <button mat-menu-item (click)="exporter.exportTable('csv', {fileName:'test', sheet: 'sheet_name', Props: {Author: 'Talha'}})" >
+                    <div class="menuClass">
+                        <i class="fas fa-file-csv" style="color: rgb(168, 15, 168);" ></i>
+                        <span> &nbsp; Csv</span>
+                    </div>                    
+                </button>             
+                <button mat-menu-item (click)="exporter.exportTable('json', {fileName:'test', sheet: 'sheet_name', Props: {Author: 'Talha'}})" >
+                    <div class="menuClass">
+                        <i class="fab fa-js" style="color: yellowgreen;"></i>
+                        <span> &nbsp; Json</span>
+                    </div>                    
+                </button>         
+                <button mat-menu-item (click)="exporter.exportTable('txt', {fileName:'test', sheet: 'sheet_name', Props: {Author: 'Talha'}})" >
+                    <div class="menuClass">
+                        <i class="fas fa-file-alt" style="color: chocolate;" ></i>
+                        <span> &nbsp; Text</span>
+                    </div>                    
+                </button>                    
+            </mat-menu> -->
+        </div>
+    </div>
+
+    <div class="tableBody">
+
+        @defer (when GroupsList.length >0) {
+            <app-tableview [DataSource]="GroupsList" [FieldNames]="FieldNames" [RemoveSignal]="RemoveSignal" (actionEvent)="handleActionFromTable($event)" >      </app-tableview>                        
+        }
+        @placeholder {
+            <p>Groups list Here</p>
+        }
+        @loading {
+            <p>Loading in Progress</p>
+        }
+
+        <!-- @if (GroupsList.length >0){
+            
+        }
+        @else{
+            <p>No Data</p>            
+        } -->
+        
+    </div>
+
+</div>

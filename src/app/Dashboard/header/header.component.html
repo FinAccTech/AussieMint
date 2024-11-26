@@ -1,0 +1,67 @@
+<div class="headerContainer">
+    <div class="titleHeader">
+        <div class="headerLeft">
+            <img src="assets/images/logo.webp"  height="30" width="150"/>
+        </div>
+        <div class="headerRight">
+            <div class="company">
+                @if (SelectedCompany) {
+                    <p style="font-size: 1.5rem;font-weight: 425;" > {{SelectedCompany.Comp_Name}} </p><i style="font-size: 1.5rem;" class='bx bx-buildings' (click)="OpenCompanies()" ></i>
+                }
+            </div>
+            
+            <div>
+                <i class='bx bx-fullscreen' (click)="IsFullScreen ? closeFullscreen() : openFullscreen() " style="font-size: 1.5rem;" ></i>
+            </div>
+            
+            <div class="profile" >
+                <p>Rajiv Arora</p>
+                <i class='bx bxs-user-circle'  [matMenuTriggerFor]="menu" style="color: var(--ColorPrimary); font-size: 2rem;"></i>
+                <mat-menu #menu="matMenu" style="padding: 1rem;">
+                    <button mat-menu-item  (click)="Logout()">
+                        <div class="menuClass">
+                            <i class='bx bx-log-out'></i> &nbsp;
+                            <span>Log Out</span>
+                        </div>                    
+                    </button>                
+                </mat-menu>
+            </div>
+            
+        </div>
+    </div>    
+    
+    <div class="menuHeader">
+        <div class="menus" #menu1>            
+            @for(menu of TreeData; track menu.Caption; let i=$index)             {
+                <div class="menuGrp" >
+                    <div class="menuItem"  (click)="Expandme(menu,i)"  >
+                        <i [style.color]=" Active[i] ? 'var(--ColorPrimary)': 'var(--ColorSecondary) '" class={{menu.Icon}} ></i>
+                        <p [style.color]=" Active[i] ? 'var(--ColorPrimary)': 'var(--ColorSecondary) '"> {{menu.Caption}} </p>
+
+                        @if (menu.SubMenu.length > 0){
+                            @if (Expanded[i]){
+                                <i class='bx bx-chevron-up' ></i>                            
+                            }
+                            @else{
+                                <i class='bx bxs-chevron-down' ></i>
+                            }
+                        }
+                    </div>                    
+
+                    @if ((menu.SubMenu.length > 0) && Expanded[i]==true ){
+                        
+                        <div class="subMenuGrp" [@openClose]="Expanded[i] ? 'open' : 'closed'">
+                            @for(smenu of menu.SubMenu; track smenu.Caption){
+                                <div class="subMenu" (click)="Expanded[i]=false" >
+                                    <p [routerLink]="[smenu.RouterLink]"> {{smenu.Caption}} </p>
+                                </div>                        
+                            }
+                        </div>             
+                    }       
+                </div>
+                
+            }            
+                
+        </div>
+    </div>
+</div>

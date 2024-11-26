@@ -1,0 +1,34 @@
+<div class="loginContainer">
+    <div class="loginBox">
+        <img src="assets/images/logo.webp" height="40" width="200" />
+        <br><br><br><br>
+        <div class="formGroupsansBorder">                    
+            <input type="text" class="formControl"  [(ngModel)]="UserName" />
+            <label for="" class="formLabel"> UserName </label>
+        </div>
+        <br><br>
+        <div class="formGroupsansBorder">                    
+            <input type="password" class="formControl" [(ngModel)]="Password"/>
+            <label for="" class="formLabel"> Password </label>
+        </div>
+
+        <br><br>
+
+        <button class="btnDefault" style="width: 100%;" (click)="CheckUser()" >Login</button>
+
+        <br><br>
+
+        @switch (CheckState) {
+            @case (1) {
+                <p style="color: green;">Validating User</p>
+            }
+            @case (2) {
+                <p style="color: green;">Logged in Sucessfully</p>
+            }
+            @case (3) {
+                <p style="color: red;" >Invalid User Credentials</p>
+            }
+        }
+        
+    </div>
+</div>

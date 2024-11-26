@@ -1,0 +1,42 @@
+<div class="formWrapper">
+
+    <div class="header">
+        <div class="headerLeft">
+            <p>Buying Contract</p>
+        </div>
+
+        <div class="headerRight">
+            
+        </div>
+    </div>
+
+    <div class="doc">
+        <app-docheader [DocHeader]="DocHeader"   />
+    </div>    
+    
+    <div class="client">
+        <app-clientcard [SelectedClient]="SelectedClient" />
+    </div>
+
+    <div class="rate">        
+        <!-- @if (SelectedClient) { -->
+            {{SelectedClient.Client_Name}}
+            dafad
+        <!-- } -->
+    </div>
+    <div class="item">D</div> 
+    <div class="footer">E</div>
+    <button (click)="ShowParty()">ShowParty</button>
+
+    {{DocHeader.PaymentModes.Details}}
+    {{SelectedClient.Client_Name}}
+    {{ DocHeader.Series.Series_Name }} 
+    <!-- {{DocHeader().Trans_Date}}
+    {{DocHeader().PaymentModes.Details}}
+    {{CheckValue()}}-->
+    <!-- @if (DocHeader.Series) {
+        {{ DocHeader.Series.Series_Name }} 
+    } -->
+    
+    
+</div>

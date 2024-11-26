@@ -1,0 +1,56 @@
+<div class="pattyContainer" style="background-color: #fff;">            
+    <div class="clientBox">                
+
+        <div class="leftBox">                
+            <app-selectionlist [Caption]="''" [MasterComponentId]="1" [DataSource]="ClientList" [SelectedItem]="SelectedClient()" (newItemEvent)="getClient($event)" ></app-selectionlist>
+            @if (SelectedClient()) {
+                <p> Code: {{SelectedClient()!.Client_Code}} </p>
+                <p> {{SelectedClient()!.Address}} </p>
+                <p> {{SelectedClient()!.Mobile}} </p>
+                <p style="font-weight: bold; color: red;" > {{SelectedClient()!.Remarks}} </p>
+                <div style="display: flex; column-gap: 1rem; ">
+                    <div *ngFor="let img of ClientImages" style="cursor: pointer;" >
+                        <img [src]="img.Image_Url" width="50" height="50" />
+                    </div>
+                </div>
+            }
+            <!-- <ng-container *ngIf="SelectedClient">
+                <p> Code: {{SelectedClient()!.Client_Code}} </p>
+                <p> {{SelectedClient()!.Address}} </p>
+                <p> {{SelectedClient()!.Mobile}} </p>
+                <p style="font-weight: bold; color: red;" > {{SelectedClient()!.Remarks}} </p>
+                <div style="display: flex; column-gap: 1rem; ">
+                    <div *ngFor="let img of ClientImages" style="cursor: pointer;" >
+                        <img [src]="img.Image_Url" width="50" height="50" />
+                    </div>
+                </div>
+            </ng-container>   -->
+        </div>
+        <div class="rightBox">
+            @if (SelectedClient()) {
+                @if (SelectedClient() && SelectedClient()!.Profile_Image) {
+                    <img  [src]="SelectedClient()!.Profile_Image" />
+                }
+                @else if (SelectedClient() && SelectedClient()!.TempImage) {
+                    <img  [src]="SelectedClient()!.TempImage" />
+                }
+                @else if (SelectedClient() || SelectedClient()!.TempImage || SelectedClient()!.Profile_Image) {
+                    <img  src="assets/images/noimage.jpg" style="object-fit: contain;"/>
+                }
+            }
+            <!-- <ng-container *ngIf="SelectedClient && SelectedClient.ProfileImage">
+                <img  [src]="SelectedClient.ProfileImage" />
+            </ng-container>                 -->
+
+            <!-- <ng-container *ngIf="SelectedClient && SelectedClient.TempImage">
+                <img  [src]="SelectedClient.TempImage" />
+            </ng-container>                 -->
+
+            <!-- <ng-container *ngIf="!SelectedClient || !SelectedClient.TempImage">
+                <ng-container *ngIf="!SelectedClient || !SelectedClient.ProfileImage ">
+                    <img  src="assets/images/noimage.jpg" style="object-fit: contain;"/>
+                </ng-container>                
+            </ng-container> -->
+        </div>
+    </div>
+</div>

@@ -1,0 +1,268 @@
+<div class="customerForm">
+    <div class="header">
+        <div class="headerLeft">
+            <i class="fa-solid fa-user"></i>
+            <p> Clients </p>
+        </div>
+
+        <div class="headerRight">
+            <p matDialogClose="" > &times; </p>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="basicInfo">
+            <div class="imgArea"> 
+                <input type="file" style="display: none;" onclick="this.value = null" (change)="selectFile($event)" #fileUpload>            
+
+                <div (click)="fileUpload.click()">                    
+                    @if (TransImages.length > 0) {
+                        <img [src]="this.TransImages[0].SrcType == 0 ? this.TransImages[0].Image_File :  this.TransImages[0].Image_Url" />
+                    }
+                    @else{ 
+                        <img src="assets/images/noimage.jpg" />
+                    }                    
+                </div>                
+                
+                
+                <div class="buttonsSection">
+                    <div class="buttons">
+                        <i class='bx bxs-webcam bx-tada' style="color: green;" (click)="OpenWebCam()" > </i>
+                        <p>WebCam</p>
+                    </div>
+
+                    <div class="buttons" (click)="fileUpload.click()">
+                        <i class='bx bxs-file-find' style="color: royalblue;"> </i>
+                        <p>Browse</p>
+                    </div>                    
+                    
+                    <div class="buttons" (click)="RemoveProfileImage()" >
+                        <i class='bx bxs-trash' style="color: red;"></i>
+                        <p>Remove</p>
+                    </div>  
+
+                    <div class="buttons" (click)="OpenImagesCreation()">
+                        <i class='bx bx-images' ></i>
+                        <p>More Images</p>
+                    </div>
+                </div>
+            </div>
+   
+            <div class="infoArea">
+                <div class="row">
+                    <div class="col30">
+                        <div class="formGroupsansBorder">
+                            <input type="hidden" [(ngModel)] = Client.ClientSno />
+                            <input type="text" class="formControlreadonly" required disabled="" [(ngModel)] = Client.Client_Code />
+                            <label for="" class="formLabelreadonly">Code </label>
+                        </div>
+                    </div>
+
+                    <div class="col70">
+                        <div class="formGroupsansBorder" [ngClass]="!ClientNameValid ? 'invalid' : ''" >
+                            <input type="text" class="formControl" required  [(ngModel)] = Client.Client_Name  maxlength="50" />
+                            <label for="" class="formLabel"> Customer Name </label>
+                            <div class="errorHint" *ngIf="!ClientNameValid" > Invalid Name </div>
+                        </div>
+                    </div>    
+                    
+                </div>
+
+                
+
+                <div class="row" style="margin-top: 15px;" >
+                    <div class="col100">
+                        <div class="formGroupsansBorder">
+                            <!-- <input type="text" class="formControl" required  [(ngModel)] = Client.RelName maxlength="50" />
+                            <label for="" class="formLabel"> Father Name </label> -->
+                            <textarea  class="formControl" placeholder="Address" rows="5" [(ngModel)] = Client.Address></textarea>
+                        </div>
+                    </div>                    
+                </div>
+
+                <div class="row" style="margin-top: 15px;" >
+                    <div class="col70">
+                        <div class="formGroupsansBorder">
+                            <input type="text" class="formControl" required  [(ngModel)] = Client.City maxlength="50"/>
+                            <label for="" class="formLabel"> Suburb </label>
+                        </div>
+                    </div>
+
+                    <div class="col30">
+                        <div class="formGroupsansBorder">
+                            <input type="text" class="formControl" required  [(ngModel)] = Client.Pincode maxlength="10" />
+                            <label for="" class="formLabel"> Post Code </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="margin-top: 15px;" >
+                    <div class="col50">
+                        <div class="formGroupsansBorder">
+                            <input type="text" class="formControl" required  [(ngModel)] = Client.State maxlength="50"/>
+                            <label for="" class="formLabel"> State </label>
+                        </div>
+                    </div>
+                    <div class="col50">
+                        <div class="formGroupsansBorder" [ngClass]="!MobNumberValid ? 'invalid' : ''">
+                            <input type="text" class="formControl" required  [(ngModel)] = Client.Mobile maxlength="10" />
+                            <label for="" class="formLabel"> Mobile </label>
+                            <div class="errorHint" *ngIf="!MobNumberValid" > Invalid Mobile </div>
+                        </div>
+                    </div>  
+                </div>
+
+                <div class="row" style="margin-top: 15px;  margin-bottom: 15px;" > 
+                            
+                    <div class="col50">                        
+                        <div class="matGroup">
+                            <div class="matSelect"> 
+                                <mat-select [(value)]="Client.Client_Cat">
+                                    <mat-option [value]="0">Customer</mat-option>
+                                    <mat-option [value]="1">Supplier</mat-option>                                    
+                                    <mat-option [value]="2">Job Worker</mat-option>                                    
+                                </mat-select>
+                            </div>
+                            <div class="matLabel">
+                                &nbsp;&nbsp; Client Type
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col50">                        
+                        <div class="matGroup">
+                            <div class="matSelect"> 
+                                <mat-select [(value)]="Client.Client_Type">
+                                    <mat-option [value]="0">Private Client</mat-option>
+                                    <mat-option [value]="1">Business</mat-option>                                    
+                                </mat-select>
+                            </div>
+                            <div class="matLabel">
+                                &nbsp;&nbsp; Client Type
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                
+                
+            </div>
+        </div>
+        <div class="detailedInfo">
+            <mat-tab-group>
+                <mat-tab label="Address Information"> 
+                    <ng-template mat-tab-label>                                        
+                        More Information                  
+                    </ng-template>
+                    <div class="row" style="margin-top: 15px;" >
+                        <div class="col50">
+                            <div class="row" style="margin-top: 15px;" >
+                                <div class="col50">
+                                    <div class="matGroup">
+                                        <div class="matSelect">                                            
+                                            <mat-select [(value)]="Client.Sex"  >
+                                                <mat-option [value]="1">Male</mat-option>
+                                                <mat-option [value]="2">Female</mat-option>                            
+                                                <mat-option [value]="3">Other</mat-option>                            
+                                            </mat-select>
+                                        </div>
+                                        <div class="matLabel">
+                                            &nbsp;&nbsp; Sex
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col50">
+                                    <div class="formGroup">
+                                        <input type="date" class="formControl" required [ngModel]="Client.Dob! | intToDate | date:'yyyy-MM-dd'" (blur)="Client.Dob = DateToInt($event)" />                    
+                                        <label for="" class="formLabel date"> Date of Birth </label>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+
+                        <div class="col50">
+                            <div class="row" style="margin-top: 15px;" >
+                                <div class="col100">
+                                    <div class="formGroup">
+                                        <input type="date" class="formControl" [ngModel]="Client.Create_Date! | intToDate | date:'yyyy-MM-dd'" (blur)="Client.Create_Date = DateToInt($event) " />                    
+                                        <label for="" class="formLabel date"> Customer Since </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 15px;">
+                        <div class="col50">
+                            <div class="row">
+                                <div class="col50">
+                                    <div class="formGroup">
+                                        <input type="date" class="formControl" [ngModel]="Client.Issue_Date! | intToDate | date:'yyyy-MM-dd'" (blur)="Client.Issue_Date = DateToInt($event) " />                    
+                                        <label for="" class="formLabel date"> Issue Date </label>
+                                    </div>
+                                </div>
+                                <div class="col50">
+                                    <div class="formGroup">
+                                        <input type="date" class="formControl" [ngModel]="Client.Expiry_Date! | intToDate | date:'yyyy-MM-dd'" (blur)="Client.Expiry_Date = DateToInt($event) " />                    
+                                        <label for="" class="formLabel date"> Expiry Date </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col50">
+                            <div class="formGroup">
+                                <input type="text" class="formControl" required  [(ngModel)] = Client.Email />
+                                <label for="" class="formLabel"> Email </label>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+
+                    <div class="row" style="margin-top: 15px;">
+                        <div class="col50">
+                            <div class="formGroup">
+                                <input type="text" class="formControl" required  [(ngModel)] = Client.Id_Number maxlength="50"/>
+                                <label for="" class="formLabel"> ID Number </label>
+                            </div>
+                        </div>
+                        <div class="col50">
+                            <div class="formGroup">
+                                <input type="text" class="formControl" required  [(ngModel)] = Client.Gst_Number maxlength="50"/>
+                                <label for="" class="formLabel"> Gst Number </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 15px;">
+                        <div class="col50">
+                            <div class="formGroup">
+                                <input type="text" class="formControl" required  [(ngModel)] = Client.Director_Name maxlength="50"/>
+                                <label for="" class="formLabel"> Director Name </label>                                
+                            </div>
+                        </div>
+                        <div class="col50">
+                            <div class="formGroup">
+                                <input type="text" class="formControl" required  [(ngModel)] = Client.Remarks maxlength="50"/>
+                                <label for="" class="formLabel"> Remarks </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </mat-tab>
+
+            </mat-tab-group>
+        </div>
+        <div class="footer">
+            <button (click)="SaveClient()" > <i class="fa-solid fa-floppy-disk"></i> &nbsp; Save</button>            
+        </div>
+    </div>
+
+
+</div>
+
