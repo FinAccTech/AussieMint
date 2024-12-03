@@ -1,0 +1,62 @@
+<div class="docfooterContainer">
+    <div class="row" >
+        <div class="col50">
+            <div class="row">
+                <div class="col50">
+                    <div class="formGroup" >
+                        <input type="text" class="formControl" required  [(ngModel)]="DocFooter()!.Remarks"  />
+                        <label for="" class="formLabel">Remarks </label>                                                            
+                    </div> 
+                </div>
+
+                <div class="col50">
+                    <div class="formGroup" >
+                        <input type="text" class="formControl" required  [(ngModel)]="DocFooter()!.Print_Remarks"  />
+                        <label for="" class="formLabel">Print Remarks </label>                                                            
+                    </div> 
+                </div>
+            </div>
+        </div>
+        @if (EnableAmountCols()) {
+            <div class="col50">
+                <div style="display: flex; float: right; column-gap: .5rem;align-items: center;" >
+                    <div class="totChiptype2">
+                        <p class="caption">Tax per</p>
+                        <p class="value"> {{DocFooter()!.TaxPer}}  </p>
+                    </div>
+                    <div class="totChiptype2">
+                        <p class="caption">Tax Amount</p>
+                        <p class="value">{{DocFooter()!.TaxAmount}} </p>
+                    </div>
+                    <div class="totChiptype2">
+                        <p class="caption">Rev Amount</p>
+                        <p class="value">{{DocFooter()!.RevAmount}} </p>
+                    </div>
+                    <div class="totChiptype2">
+                        <p class="caption">NettAmount</p>
+                        <p class="value" style="font-size: 1.7rem;" >{{DocFooter()!.NettAmount}}</p>
+                    </div>
+                </div>            
+            </div>
+        }
+    </div>
+    
+    <div class="row">
+        <div class="col70">
+            
+            
+        </div>
+
+        <div class="col30" style="margin: 0; padding: 0;">
+            <div style="float: right; display: flex; column-gap: 1rem;">
+                <button class="formBtn" (click)="ClearDocument()" >
+                    <i class='bx bx-repeat clear'></i>  <p class="clear"> Clear Form </p>
+                </button>
+                <button class="formBtn" (click)="SaveDocument()" >
+                    <i class='bx bx-save save'></i> <p class="save" > Save Contract </p>
+                </button>
+            </div>
+            
+        </div>
+    </div>
+</div>

@@ -7,11 +7,10 @@ import { TableviewComponent } from '../../Widgets/tableview/tableview.component'
 import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
 
 @Component({
-  selector: 'app-ledgergroups',
-  standalone: true,
-  imports: [TableviewComponent],
-  templateUrl: './ledgergroups.component.html',
-  styleUrl: './ledgergroups.component.scss'
+    selector: 'app-ledgergroups',
+    imports: [TableviewComponent],
+    templateUrl: './ledgergroups.component.html',
+    styleUrl: './ledgergroups.component.scss'
 })
 @AutoUnsubscribe
 export class LedgergroupsComponent {

@@ -11,32 +11,25 @@ import { MatDialog } from '@angular/material/dialog';
 import { CompaniesComponent } from '../Settings/companies/companies.component';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [RouterLink, MatMenu, MatMenuTrigger],  
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.scss',
-  animations: [
-    trigger('openClose', [
-      // ...
-      state(
-        'open',
-        style({
-          // height: '200px',
-          opacity: 1,          
-        }),
-      ),
-      state(
-        'closed',
-        style({
-          // height: '100px',
-          opacity: 0.8,          
-        }),
-      ),
-      transition('open => closed', [animate('5s')]),
-      transition('closed => open', [animate('2.5s')]),
-    ]),
-  ],
+    selector: 'app-header',
+    imports: [RouterLink, MatMenu, MatMenuTrigger],
+    templateUrl: './header.component.html',
+    styleUrl: './header.component.scss',
+    animations: [
+        trigger('openClose', [
+            // ...
+            state('open', style({
+                // height: '200px',
+                opacity: 1,
+            })),
+            state('closed', style({
+                // height: '100px',
+                opacity: 0.8,
+            })),
+            transition('open => closed', [animate('5s')]),
+            transition('closed => open', [animate('2.5s')]),
+        ]),
+    ]
 })
 
 export class HeaderComponent {

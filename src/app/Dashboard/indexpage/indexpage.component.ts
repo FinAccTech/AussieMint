@@ -4,11 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { SessionStorageService } from '../../session-storage.service';
 
 @Component({
-  selector: 'app-indexpage',
-  standalone: true,
-  imports: [],
-  templateUrl: './indexpage.component.html',
-  styleUrl: './indexpage.component.scss'
+    selector: 'app-indexpage',
+    imports: [],
+    templateUrl: './indexpage.component.html',
+    styleUrl: './indexpage.component.scss'
 })
 export class IndexpageComponent {
 

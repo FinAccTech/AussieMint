@@ -11,11 +11,10 @@ import { IntToDatePipe } from '../../../../Pipes/int-to-date.pipe';
 import { MatOption, MatSelect } from '@angular/material/select';
 
 @Component({
-  selector: 'app-company',
-  standalone: true,
-  imports: [CommonModule, FormsModule, IntToDatePipe, MatSelect, MatOption],
-  templateUrl: './company.component.html',
-  styleUrl: './company.component.scss'
+    selector: 'app-company',
+    imports: [CommonModule, FormsModule, IntToDatePipe, MatSelect, MatOption],
+    templateUrl: './company.component.html',
+    styleUrl: './company.component.scss'
 })
 
 @AutoUnsubscribe

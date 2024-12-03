@@ -1,4 +1,4 @@
-import { Component, effect, input ,  } from '@angular/core';
+import { Component, effect, Input, input, signal, Signal ,  } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
 import { ClientService, TypeClient } from '../../Services/client.service';
@@ -14,33 +14,35 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, SelectionlistComponent, ]
 })
 export class ClientcardComponent {
+
   SelectedClient = input<TypeClient>();
+ 
 
   constructor(private dialog: MatDialog, private clntService: ClientService) {
     effect(() => {
-        console.log(this.SelectedClient());
+        //console.log(this.SelectedClient());        
         
     })
   }
   ClientList!:      TypeClient[];
-  ClientImages: any [] = [];
-
-  ngOnInit(){
-    this.LoadParties();    
-    console.log(this.SelectedClient);
-    
+  
+  ngOnInit(){ 
+    this.LoadParties();            
   }
 
  
   LoadParties(){        
     this.clntService.getClients(0). subscribe(data => {      
-      this.ClientList = JSON.parse (data.apiData);         
+      this.ClientList = JSON.parse (data.apiData);               
+      this.ClientList.map(clnt=>{
+        clnt.ImagesSource = JSON.parse (clnt.Images_Json);
+      })
     });     
   }
   
   isObject(value: any): value is object { return value !== null && typeof value === 'object' && !Array.isArray(value); }
 
-  getClient($event: TypeClient){    
+  getClient($event: TypeClient){        
     this.SelectedClient()!.ClientSno = $event.ClientSno;    
     this.SelectedClient()!.Client_Code= $event.Client_Code;
     this.SelectedClient()!.Client_Name= $event.Client_Name
@@ -63,15 +65,16 @@ export class ClientcardComponent {
     this.SelectedClient()!.Remarks = $event.Remarks;    
     this.SelectedClient()!.Area = $event.Area;
     this.SelectedClient()!.Blocked = $event.Blocked;
-    this.SelectedClient()!.fileSource = $event.fileSource;
+    this.SelectedClient()!.ImagesSource = $event.ImagesSource;
     this.SelectedClient()!.ImageDetailXML = $event.ImageDetailXML;
     this.SelectedClient()!.Profile_Image = $event.Profile_Image;
+    this.SelectedClient()!.ImagesSource = $event.ImagesSource;
     this.SelectedClient()!.TempImage = $event.TempImage;
     this.SelectedClient()!.UserSno = $event.UserSno;
     this.SelectedClient()!.CompSno = $event.CompSno;
     this.SelectedClient()!.Name = $event.Name;
-    this.SelectedClient()!.Details = $event.Details;
-    console.log(this.SelectedClient());    
+    this.SelectedClient()!.Details = $event.Details;    
+    
   }
 
   getNewMaster($event: TypeClient){    

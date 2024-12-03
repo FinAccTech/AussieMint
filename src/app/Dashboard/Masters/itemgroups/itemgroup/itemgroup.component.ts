@@ -9,11 +9,10 @@ import { SessionStorageService } from '../../../../session-storage.service';
 
 
 @Component({
-  selector: 'app-itemgroup',
-  standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogClose, IntToDatePipe],
-  templateUrl: './itemgroup.component.html',
-  styleUrl: './itemgroup.component.scss'
+    selector: 'app-itemgroup',
+    imports: [CommonModule, FormsModule, MatDialogClose, IntToDatePipe],
+    templateUrl: './itemgroup.component.html',
+    styleUrl: './itemgroup.component.scss'
 })
 
 export class ItemgroupComponent {

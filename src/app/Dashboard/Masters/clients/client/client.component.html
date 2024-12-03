@@ -16,8 +16,8 @@
                 <input type="file" style="display: none;" onclick="this.value = null" (change)="selectFile($event)" #fileUpload>            
 
                 <div (click)="fileUpload.click()">                    
-                    @if (TransImages.length > 0) {
-                        <img [src]="this.TransImages[0].SrcType == 0 ? this.TransImages[0].Image_File :  this.TransImages[0].Image_Url" />
+                    @if (Client.ImagesSource && Client.ImagesSource.length > 0) {
+                        <img [src]="this.Client.ImagesSource![0].SrcType == 0 ? this.Client.ImagesSource![0].Image_File :  this.Client.ImagesSource![0].Image_Url" />
                     }
                     @else{ 
                         <img src="assets/images/noimage.jpg" />

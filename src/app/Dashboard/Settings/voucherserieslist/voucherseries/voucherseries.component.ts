@@ -10,11 +10,10 @@ import { IntToDatePipe } from '../../../../Pipes/int-to-date.pipe';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-voucherseries',
-  standalone: true,
-  imports: [CommonModule,  FormsModule, SelectionlistComponent, MatSelect, MatOption, IntToDatePipe],
-  templateUrl: './voucherseries.component.html',
-  styleUrl: './voucherseries.component.scss'
+    selector: 'app-voucherseries',
+    imports: [CommonModule, FormsModule, SelectionlistComponent, MatSelect, MatOption, IntToDatePipe],
+    templateUrl: './voucherseries.component.html',
+    styleUrl: './voucherseries.component.scss'
 })
 
 export class VoucherseriesComponent {

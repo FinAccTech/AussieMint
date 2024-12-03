@@ -56,6 +56,8 @@ Initialize(){
         Gst_Number: "",
         Director_Name: "",
         Remarks: "",
+        Images_Json: "",
+        ImagesSource: [],
         Profile_Image: "",
         Area: this.areaService.Initialize(),
         Blocked: 0,
@@ -92,7 +94,8 @@ export interface TypeClient {
     Profile_Image: string;
     Area: TypeArea;
     Blocked: number;
-    fileSource?: FileHandle[];
+    ImagesSource?: FileHandle[];
+    Images_Json: string;
     ImageDetailXML?: string;    
     TempImage?: string;
     UserSno: number;

@@ -1,0 +1,106 @@
+<div class="modalForm">
+    <div class="header">
+        <div class="headerLeft">
+            <span class="bar"></span>
+            <p> &nbsp; Add Item </p>
+        </div>
+        <div class="headerRight">
+            <p mat-dialog-close="" >&times;</p>
+        </div>
+    </div>
+
+    <div class="body"> 
+    
+        <div class="formRow">
+            <div class="formGroup" >                        
+                <input type="text" class="formControl" required [(ngModel)] = "GridItem.BarCode.BarCode_No"  />
+                <label for="" class="formLabel"> Bar Code </label>
+            </div>
+
+            <div class="formGroup" >                                        
+                <app-selectionlist [Caption]="'Item'" [DataSource]="ItemsList" [SelectedItem]="GridItem.Item"  (newItemEvent)="getItem($event)"></app-selectionlist>
+            </div>            
+        </div>
+
+        <div class="formRow">
+            <div class="formGroup" >                        
+                <input type="text" class="formControl" required [(ngModel)] = "GridItem.Item_Desc"  />
+                <label for="" class="formLabel"> Item Description </label>
+            </div>
+        </div>
+
+        <div class="formRow">            
+            <div class="formGroup" >
+                <input type="number" class="formControl" required NumberInput MaxValue="24"  [(ngModel)] = "GridItem.Karat" (blur)="CalcPurity(GridItem)" />
+                <label for="" class="formLabel">Karat </label>                                                            
+            </div> 
+        
+            <div class="formGroup" >
+                <input type="number" class="formControl" required  NumberInput MaxValue="100" [(ngModel)] = "GridItem.Purity" (blur)="CalcKarat(GridItem)" />
+                <label for="" class="formLabel">Purity </label>                                                                           
+            </div> 
+        
+            <div class="formGroup" >                        
+                <input type="number" class="formControl" required  NumberInput [(ngModel)] = "GridItem.Qty"  />
+                <label for="" class="formLabel"> Qty </label>
+            </div>            
+        </div>
+
+        <div class="formRow">            
+                <div class="formGroup" >                        
+                    <input type="number" class="formControl" required NumberInput [(ngModel)] = "GridItem.GrossWt" (change)="CalcWtandAmt()"  />
+                    <label for="" class="formLabel"> GrossWt </label>
+                </div>
+            
+            
+                <div class="formGroup" >                        
+                    <input type="number" class="formControl" required  NumberInput MaxValue={{GridItem.GrossWt}} [(ngModel)] = "GridItem.StoneWt" (change)="CalcWtandAmt()"  />
+                    <label for="" class="formLabel"> StoneWt </label>
+                </div>
+            
+                <div class="formGroup" >                        
+                    <input type="number" class="formControl" required  NumberInput MaxValue={{GridItem.GrossWt}} [(ngModel)] = "GridItem.Wastage"  (change)="CalcWtandAmt()" />
+                    <label for="" class="formLabel"> Wastage </label>
+                </div>            
+        </div>
+
+
+        <div class="formRow">
+            <div class="formGroup" >                        
+                <input type="number" class="formControl" required  readonly [(ngModel)] = "GridItem.NettWt"  />
+                <label for="" class="formLabel"> NettWt </label>
+            </div>
+
+            <div class="formGroup" >                        
+                <app-selectionlist [Caption]="'Uom'" [DataSource]="UomsList" [SelectedItem]="GridItem.Uom"  (newItemEvent)="getUom($event)"></app-selectionlist>                    
+            </div>
+        </div>
+
+        <div class="formRow">
+            <div class="formGroup" >                        
+                <input type="number" class="formControl" required  NumberInput [(ngModel)] = "GridItem.Rate" (change)="CalcWtandAmt()" />
+                <label for="" class="formLabel"> Rate </label>
+            </div>
+        
+            <div class="formGroup" >                        
+                <input type="number" class="formControl" required  readonly [(ngModel)] = "GridItem.Amount"  />
+                <label for="" class="formLabel"> Amount </label>
+            </div>            
+        </div>
+        
+
+    </div>
+
+    <div class="footer">
+        <button (click)="AddItem()" > <i class="fa-solid fa-floppy-disk"></i> &nbsp; Add Item</button>        
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+</div>

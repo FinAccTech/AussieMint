@@ -6,11 +6,10 @@ import { VoucherseriesComponent } from './voucherseries/voucherseries.component'
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 
 @Component({
-  selector: 'app-voucherserieslist',
-  standalone: true,
-  imports: [TableviewComponent],
-  templateUrl: './voucherserieslist.component.html',
-  styleUrl: './voucherserieslist.component.scss'
+    selector: 'app-voucherserieslist',
+    imports: [TableviewComponent],
+    templateUrl: './voucherserieslist.component.html',
+    styleUrl: './voucherserieslist.component.scss'
 })
 
 export class VoucherserieslistComponent {

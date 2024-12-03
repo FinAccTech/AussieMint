@@ -35,7 +35,7 @@ export class VoucherSeriesService {
 Initialize(){
     let Series: TypeVoucherSeries = {            
         SeriesSno: 0,
-        VouType: {"VouTypeSno":0, "VouType_Name":""},
+        VouType: {VouTypeSno:0, VouType_Name:"", Stock_Type:0, Cash_Type:0},
         Series_Name: "",
         Num_Method: 0, 
         Allow_Duplicate:0, 
@@ -92,4 +92,6 @@ export interface TypeVoucherSeries {
 export interface TypeVoucherTypes{
     VouTypeSno: number;
     VouType_Name: string;
+    Stock_Type: number;
+    Cash_Type: number;
 }

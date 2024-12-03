@@ -6,11 +6,10 @@ import { TableviewComponent } from "../../Widgets/tableview/tableview.component"
 import { ItemgroupComponent } from './itemgroup/itemgroup.component';
 
 @Component({
-  selector: 'app-itemgroups',
-  standalone: true,  
-  templateUrl: './itemgroups.component.html',
-  styleUrl: './itemgroups.component.scss',
-  imports: [TableviewComponent]
+    selector: 'app-itemgroups',
+    templateUrl: './itemgroups.component.html',
+    styleUrl: './itemgroups.component.scss',
+    imports: [TableviewComponent]
 })
 export class ItemgroupsComponent {
 

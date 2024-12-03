@@ -1,0 +1,46 @@
+<div class="listContainer">
+    <div class="headerCard">
+        <div class="headerLeft">     
+            <span class="bar"></span>
+            <p class="heading"> &nbsp; Pending {{VouTypeName}}</p>                    
+        </div>
+
+        <div class="headerRight" style="width: 30%;">
+            <div class="matGroup" style="width: 100%;" >
+                <div class="matSelect"> 
+                    <mat-select [(value)]="VouTypeSno" (selectionChange)="LoadPendingReport()" >
+                        <mat-option [value]="10">Pending Purchase Order</mat-option>
+                        <mat-option [value]="13">Pending Sales Order</mat-option>                                    
+                        <mat-option [value]="14">Pending Delivery Docs</mat-option>                                    
+                        <mat-option [value]="16">Pending Melting Issue</mat-option>                                    
+                        <mat-option [value]="18">Pending Refining Issue</mat-option>                                    
+                        <mat-option [value]="20">Pending Casting Issue</mat-option>                                    
+                        <mat-option [value]="22">Pending Jobwork Inwards</mat-option>                                    
+                    </mat-select>
+                </div>
+                <div class="matLabel">
+                    &nbsp;&nbsp; Document
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <div class="tableBody">
+
+        @defer (when TransList.length >0) {
+            <app-tableview  [DataSource]="TransList" 
+                            [FieldNames]="FieldNames"                             
+                            [TotalFields]="TotalFields" > </app-tableview>                        
+        }
+        @placeholder {
+            <p>Report list Here</p>
+        }
+        @loading {
+            <p>Loading in Progress</p>
+        } 
+        
+    </div>
+</div>
+
+
+

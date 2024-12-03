@@ -1,5 +1,5 @@
 <div class="tableContainer">
-    <div class="topDiv">
+    <div class="tableHeader">
         <div class="searchBox">
             <div class="generalSearchBox">
                 <input type="text" required  placeholder="Type here to Search for Loan" [(ngModel)]="searchText" />                
@@ -7,9 +7,18 @@
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </div> 
             </div>
-        </div>
+        </div> 
 
         <div class="rightControls">
+            @if (EnableDateSelection) {
+                <p>From Date</p>                
+                <input type="date" [ngModel]="FromDate | intToDate | date:'yyyy-MM-dd'" (blur)="FromDate = DateToInt($event) " />                                   
+                <p>To Date</p>
+                <input type="date" [ngModel]="ToDate | intToDate | date:'yyyy-MM-dd'" (blur)="ToDate = DateToInt($event) " />                                               
+                <button (click)="FilterRecords()" >
+                    Filter
+                </button>
+            }
             <i class='bx bxs-download' style="color: purple;" ></i>
         </div>
     </div>
@@ -25,41 +34,87 @@
             </thead>
 
             <tbody>
-                @for (row of DataList| search: searchText ; track row; let i=$index ){
-                    <tr>
-                        @for (element of FieldNames(); track $index) {
+                @if (PagedDataList && PagedDataList.length > 0 ) {
+                    @for (row of PagedDataList[CurrentPage].PageData| search: searchText ; track row; let i=$index ){
+                        @if (i < RowsPerPage+1 ) {  
 
-                            @switch (element) {
-                                @case ("#") {
-                                    <td> {{i+1}} </td>
-                                }
-                                @case ("Actions") {
-                                    <td class="actions" >                                    
-                                        <i (click)="EditRecord(row)" class='bx bx-edit edit' ></i>
-                                        <i (click)="DeleteRecord(row,i)" class='bx bx-trash-alt delete' ></i>
-                                    </td>
-                                }                                
-                                @default{
-                                    @if (element.toLocaleLowerCase().includes("image") ) {
-                                        <td>
-                                            @defer (when row[element] && row[element].length > 0 ) {
-                                                <img style="border-radius: 50%; filter: drop-shadow(8px 10px 8px #D3AC67); " [src]="row[element]"  width="70" height="70" />
-                                            }                                            
-                                            @loading {
-                                                <span>Loading Image</span>
-                                            }                                            
-                                        </td>                                        
-                                         
-                                    }
-                                    @else {
-                                        <td> {{row[element]}} </td>
-                                    }                                    
-                                }
-                            }                
-                        }                
-                    </tr>
-                }        
+                            <tr  [ngClass]="row[FieldNames()[0]] == '{#Total#}' ? 'totalRow' :''" >                            
+
+                                @for (element of FieldNames(); track $index) {
+
+                                    @switch (element) {                                    
+                                        @case ("#") {
+                                            @if (row[element] == "{#Total#}") {
+                                                <td></td>
+                                            }
+                                            @else {
+                                                <td> {{  CurrentPage*RowsPerPage + i +1  }} </td>
+                                            }
+                                        }
+                                        @case ("Actions") {
+                                            @if (row[element] == "{#Total#}") {
+                                                <td></td>}
+                                            @else{
+                                                <td class="actions" >                                    
+                                                    <i (click)="EditRecord(row)" class='bx bx-edit edit' ></i>
+                                                    <i (click)="DeleteRecord(row,i)" class='bx bx-trash-alt delete' ></i>                                                    
+                                                    <i (click)="PrintRecord(row,i)" class='fa fa-print print'></i>
+                                                </td>
+                                            }
+                                        }                                
+                                        @default{
+                                            @if (element.toLocaleLowerCase().includes("image") ) {
+                                                <td>
+                                                    @defer (when row[element] && row[element].length > 0 ) {
+                                                        <img style="border-radius: 50%; filter: drop-shadow(8px 10px 8px #D3AC67); " [src]="row[element]"  width="70" height="70" />
+                                                    }                                            
+                                                    @loading {
+                                                        <span>Loading Image</span>
+                                                    }                                            
+                                                </td>         
+                                            }
+                                            @else {            
+                                                @if (row[element] == "{#Total#}") {
+                                                    <td></td>
+                                                }   
+                                                @else {
+                                                    <td> {{row[element]}} </td>
+                                                }                                                                         
+                                            }                                    
+                                        }
+                                    }                
+                                }                
+                            </tr>
+                        }
+                    }        
+                }
             </tbody>
         </table>
+    </div>
+
+    <div class="tableFooter">
+        <div class="footerLeft">
+            <div class="matGroup" style="width: 100%;" >
+                <div class="matSelect"> 
+                    <mat-select [(value)]="RowsPerPage" (selectionChange)="DoPagination()" >
+                        <mat-option [value]="5">5</mat-option>
+                        <mat-option [value]="10">10</mat-option>                                    
+                        <mat-option [value]="25">25</mat-option>                                    
+                        <mat-option [value]="100">100</mat-option>                                    
+                    </mat-select>
+                </div>
+                <div class="matLabel">
+                    &nbsp;&nbsp; Rows 
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="footerRight">
+            <i class='bx bx-first-page bx-flip-vertical' (click)="SetCurrentPage(1)" ></i>
+            <i class='bx bxs-chevron-left bx-flip-vertical' (click)="SetCurrentPage(2)"></i>
+            <i class='bx bxs-chevron-right bx-flip-vertical' (click)="SetCurrentPage(3)"></i>
+            <i class='bx bx-last-page bx-flip-vertical' (click)="SetCurrentPage(4)"></i>
+        </div>
     </div>
 </div>

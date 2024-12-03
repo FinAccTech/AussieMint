@@ -9,11 +9,10 @@ import { IntToDatePipe } from '../../../../Pipes/int-to-date.pipe';
 import { SelectionlistComponent } from '../../../Widgets/selectionlist/selectionlist.component';
 
 @Component({
-  selector: 'app-uom',
-  standalone: true,
-  imports: [CommonModule, FormsModule, IntToDatePipe, MatDialogClose, SelectionlistComponent],
-  templateUrl: './uom.component.html',
-  styleUrl: './uom.component.scss'
+    selector: 'app-uom',
+    imports: [CommonModule, FormsModule, IntToDatePipe, MatDialogClose, SelectionlistComponent],
+    templateUrl: './uom.component.html',
+    styleUrl: './uom.component.scss'
 })
 
 export class UomComponent {

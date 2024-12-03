@@ -1,0 +1,19 @@
+<div class="titleContainer">
+    <div class="headerLeft">
+        
+        <p> {{Title}} </p>
+    </div>
+
+    <div class="headerRight">
+        <div class="taskBtn" (click)="ClearDocument()" >
+            <i class='bx bx-repeat clear' ></i> <p> Clear </p>
+        </div>
+        <div class="taskBtn" (click)="SaveDocument()" >
+            <i class='bx bxs-save save' ></i> <p> Save </p>
+        </div>
+        <div class="taskBtn" (click)="CloseDocument()" >
+            <i class="fa fa-times-circle close" aria-hidden="true"></i> <p> Close </p>
+        </div>        
+    </div>
+</div>
+ 

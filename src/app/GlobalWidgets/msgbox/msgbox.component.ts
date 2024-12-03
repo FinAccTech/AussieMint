@@ -11,11 +11,10 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'app-msgbox',
-  standalone: true,
-  imports:[CommonModule, MatDialogClose,],
-  templateUrl: './msgbox.component.html',
-  styleUrls: ['./msgbox.component.scss']
+    selector: 'app-msgbox',
+    imports: [CommonModule, MatDialogClose,],
+    templateUrl: './msgbox.component.html',
+    styleUrls: ['./msgbox.component.scss']
 })
 
 @AutoUnsubscribe

@@ -12,11 +12,10 @@ import { MatOption, MatSelect } from '@angular/material/select';
 import { IntToDatePipe } from '../../../../Pipes/int-to-date.pipe';
 
 @Component({
-  selector: 'app-ledger',
-  standalone: true,
-  imports: [CommonModule, FormsModule, SelectionlistComponent, MatSelect, MatOption, IntToDatePipe],
-  templateUrl: './ledger.component.html',
-  styleUrl: './ledger.component.scss'
+    selector: 'app-ledger',
+    imports: [CommonModule, FormsModule, SelectionlistComponent, MatSelect, MatOption, IntToDatePipe],
+    templateUrl: './ledger.component.html',
+    styleUrl: './ledger.component.scss'
 })
 
 @AutoUnsubscribe

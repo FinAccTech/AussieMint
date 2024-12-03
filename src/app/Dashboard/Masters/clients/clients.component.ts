@@ -6,11 +6,10 @@ import { ClientComponent } from './client/client.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 
 @Component({
-  selector: 'app-clients',
-  standalone: true,
-  imports: [TableviewComponent],
-  templateUrl: './clients.component.html',
-  styleUrl: './clients.component.scss'
+    selector: 'app-clients',
+    imports: [TableviewComponent],
+    templateUrl: './clients.component.html',
+    styleUrl: './clients.component.scss'
 })
 
 export class ClientsComponent {

@@ -1,0 +1,174 @@
+
+<div class="gridContainer">
+    <div class="captionHeader">
+        <p>Item Details</p>
+    </div>
+
+    <div class="gridHeader">        
+        <div class="actions" (click)="AddItem()" >                                    
+            <i class='bx bx-plus edit' ></i>          
+            <p>Add Item</p>  
+        </div>
+
+        <div class="actions" >                                    
+            <i class='bx bx-store-alt stock'></i>       
+            <p>Select from Inventory</p>  
+        </div>
+    </div>
+
+    @if (!DirectItemEntry) {
+        <div class="itemsArea" #itemDiv>
+            <table class="gridTable">
+                <thead>
+                    <th class="centerTd" style="width: 1%;">#</th>
+                    @if (EnableBarCode()) {
+                        <th class="centerTd" style="width: 3%;" >BarCode</th>
+                    }
+                    <th class="centerTd" style="width: 15%;" >Item</th>                    
+                    <th style="width: 5%;">Karat</th>
+                    <th style="width: 5%;">Purity</th>
+                    <th class="centerTd" style="width: 25%;">Description</th>
+                    <th style="width: 5%;">Qty</th>
+                    <th style="width: 5%;">GrossWt</th>
+                    <th style="width: 5%;">StoneWt</th>
+                    <th style="width: 5%;">Wastage</th>
+                    <th style="width: 5%;">NettWt</th>
+                    <th style="width: 10%;">Uom</th>
+                    @if (EnableAmountCols()) {
+                        <th style="width: 5%;">Rate</th>
+                        <th style="width: 5%;">Amount</th>
+                    }
+                    <th style="width: 2%; text-align: center;"><i class='bx bxs-edit-alt' ></i></th>
+                </thead>
+                <tbody>
+                    @for (item of GridItems(); track $index) {
+                        <tr>
+                            <td class="centerTd" >{{$index + 1}}</td>
+                            @if (EnableBarCode()) {
+                                <td class="leftTd"> {{item.BarCode.BarCode_No}} </td>
+                            }
+                            <td class="leftTd"> {{item.Item.Item_Name}} </td>
+                            <td class="rightTd" contenteditable="" > {{item.Karat}} </td>
+                            <td class="rightTd" contenteditable=""> {{item.Purity}} </td>
+                            <td class="leftTd" contenteditable=""> {{item.Item_Desc}} </td>
+                            <td class="rightTd" contenteditable=""> {{item.Qty}} </td>
+                            <td class="rightTd" contenteditable=""> {{item.GrossWt}} </td>
+                            <td class="rightTd" contenteditable=""> {{item.StoneWt}} </td>
+                            <td class="rightTd" contenteditable=""> {{item.Wastage}} </td>
+                            <td class="rightTd"> {{item.NettWt}} </td>
+                            <td class="leftTd"> {{item.Uom.Uom_Name}} </td>
+                            @if (EnableAmountCols()) {
+                                <td class="rightTd" contenteditable=""> {{item.Rate}} </td>
+                                <td class="rightTd"> {{item.Amount}} </td>
+                            }
+                            <td class="actions centerTd" >                                    
+                                <i (click)="EditItem(item,$index)" class='bx bx-edit edit' ></i>
+                                <i (click)="RemoveItem($index)" class='bx bx-trash-alt delete' ></i>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @if (DirectItemEntry) {
+        <div class="itemsArea" #itemDiv>
+            @for (item of GridItems(); track $index) {
+                <div class="gridItem">            
+                    <div class="formGroup" >                                        
+                        <app-selectionlist [Caption]="'Item'" [DataSource]="ItemsList" [SelectedItem]="item.Item"  (newItemEvent)="getItem($event)"></app-selectionlist>
+                    </div>
+
+                    <div class="formGroup" >
+                        <input type="number" class="formControlType2" required  [(ngModel)] = "item.Karat" />
+                        <label for="" class="formLabelType2">Karat </label>                                                            
+                    </div> 
+
+                    <div class="formGroup" >
+                        <input type="number" class="formControlType2" required  [(ngModel)] = "item.Purity"  />
+                        <label for="" class="formLabelType2">Purity </label>                                                                           
+                    </div> 
+
+                    <div class="formGroup" >                        
+                        <input type="text" class="formControlType2" required [(ngModel)] = "item.Item_Desc"  />
+                        <label for="" class="formLabelType2"> Item Description </label>
+                    </div>
+
+                    <div class="formGroup" >                        
+                        <input type="number" class="formControlType2" required [(ngModel)] = "item.Qty"  />
+                        <label for="" class="formLabelType2"> Qty </label>
+                    </div>
+
+                    <div class="formGroup" >                        
+                        <input type="number" class="formControlType2" required [(ngModel)] = "item.GrossWt"  />
+                        <label for="" class="formLabelType2"> GrossWt </label>
+                    </div>
+                    
+                    <div class="formGroup" >                        
+                        <input type="number" class="formControlType2" required [(ngModel)] = "item.NettWt"  />
+                        <label for="" class="formLabelType2"> NettWt </label>
+                    </div>
+
+                    <div class="formGroup" >                        
+                        <app-selectionlist [Caption]="'Uom'" [DataSource]="UomsList" [SelectedItem]="item.Uom"  (newItemEvent)="getUom($event)"></app-selectionlist>
+                        
+                    </div>
+
+                    <div class="formGroup" >                        
+                        <input type="number" class="formControlType2" required [(ngModel)] = "item.Rate"  />
+                        <label for="" class="formLabelType2"> Rate </label>
+                    </div>
+
+                    <div class="formGroup" >                        
+                        <input type="number" class="formControlType2" required [(ngModel)] = "item.Amount"  />
+                        <label for="" class="formLabelType2"> Amount </label>
+                    </div>
+
+                    <div class="actions" (click)="RemoveItem($index)" >                                    
+                        <i class='bx bx-trash delete' ></i>                              
+                    </div>
+
+                </div>
+            }
+        </div>
+    }
+
+    <div class="gridFooter">
+        <div class="footerLeft">    
+            <button class="btnOutlined" (click)="OpenImagesCreation()" ><i class='bx bx-images' ></i> Capture Images</button>
+            <div class="imgSection">
+                @for (img of ImageSource(); track $index) {                
+                    <img [src]="img.SrcType == 0  ? img.Image_File : img.Image_Url " width="60" height="60" />
+                }            
+            </div>        
+        </div>
+
+        <div class="footerRight">
+            <p style="font-size: 1.2rem; font-weight: bold;">Totals</p>
+            &nbsp;
+            <!-- @if (DocAmounts()) { -->
+                <div class="totChip">
+                    <p class="caption">Qty</p>
+                    <p class="value">{{TotQty}}</p>
+                </div>
+                <div class="totChip">
+                    <p class="caption">GrossWt</p>
+                    <p class="value">{{TotGrossWt}}</p>
+                </div>
+                <div class="totChip">
+                    <p class="caption">NettWt</p>
+                    <p class="value">{{TotNettWt}}</p>
+                </div>
+
+                @if (EnableAmountCols()) {
+                    <div class="totChip">
+                        <p class="caption">Amount</p>
+                        <p class="value"> {{DocFooter()!.TotalAmount}} </p>
+                    </div>
+                }
+            <!-- } -->
+        </div>
+
+    </div>
+</div>

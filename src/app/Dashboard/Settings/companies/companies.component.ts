@@ -12,11 +12,10 @@ import { CompanyComponent } from './company/company.component';
 import { AppSetupService } from '../../Services/appsetup.service';
 
 @Component({
-  selector: 'app-companies',
-  standalone: true,
-  imports: [CommonModule, IntToDatePipe],
-  templateUrl: './companies.component.html',
-  styleUrl: './companies.component.scss',  
+    selector: 'app-companies',
+    imports: [CommonModule, IntToDatePipe],
+    templateUrl: './companies.component.html',
+    styleUrl: './companies.component.scss'
 })
 
 @AutoUnsubscribe

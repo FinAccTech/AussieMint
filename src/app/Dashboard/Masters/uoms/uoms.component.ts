@@ -6,11 +6,10 @@ import { UomComponent } from './uom/uom.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 
 @Component({
-  selector: 'app-uoms',
-  standalone: true,
-  imports: [TableviewComponent],
-  templateUrl: './uoms.component.html',
-  styleUrl: './uoms.component.scss'
+    selector: 'app-uoms',
+    imports: [TableviewComponent],
+    templateUrl: './uoms.component.html',
+    styleUrl: './uoms.component.scss'
 })
 
 

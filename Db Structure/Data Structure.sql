@@ -52,38 +52,36 @@ CREATE TABLE Voucher_Types
 (
   VouTypeSno INT PRIMARY KEY IDENTITY(1,1),
   VouType_Name VARCHAR(20),
+  Stock_Type TINYINT,
+  Cash_Type TINYINT
 )
 GO
 
-
-
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Opening')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Receipt')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Payment')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Journal')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Contra')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Memorandum')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Credit Note')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Debit Note')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Cheque RETURN')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Purchase Order')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Buying Contract')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('RCTI')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Sales Order')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Delivery Doc')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Sales Invoice')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Melting Issue')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Melting Receipt')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Refining Issue')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Refining Receipt')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Casting Issue')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Casting Receipt')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Jobwork Inward')
-INSERT INTO Voucher_Types(VouType_Name)  VALUES ('Jobwork Delivery')
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Opening',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Receipt',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Payment',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Journal',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Contra',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Memorandum',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Credit Note',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Debit Note',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Cheque RETURN',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Purchase Order',0,2)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Buying Contract',1,2)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('RCTI',1,2)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Sales Order',0,1)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Delivery Doc',2,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Sales Invoice',2,1)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Melting Issue',2,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Melting Receipt',1,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Refining Issue',2,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Refining Receipt',1,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Casting Issue',2,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Casting Receipt',1,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Jobwork Inward',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Jobwork Delivery',0,0)
 
 GO
-
-
 
 CREATE TABLE Transaction_Setup
 (
@@ -377,6 +375,7 @@ CREATE TABLE Uom
 )
 GO
 
+
 CREATE TABLE Client
 (
 	ClientSno INT PRIMARY KEY IDENTITY(1,1),
@@ -400,6 +399,7 @@ CREATE TABLE Client
 	Director_Name VARCHAR(50),
 	Remarks VARCHAR(100),
 	AreaSno INT,
+  LedSno INT,
 	Blocked BIT,
 	UserSno INT,
 	CompSno INT
@@ -416,3 +416,73 @@ CREATE TABLE  Image_Details
   CompSno     INT
 )
 GO
+
+CREATE TABLE Transactions
+(
+  TransSno        INT PRIMARY KEY IDENTITY(1,1),
+  Trans_No        VARCHAR(20),
+  Trans_Date      INT,
+  VouTypeSno      INT,
+  SeriesSno       INT,
+  ClientSno       INT,
+
+  Due_Date        INT,
+  RefSno          INT,
+  
+  TotAmount       MONEY,
+  TaxPer          DECIMAL(4,2),
+  TaxAmount       MONEY,
+  RevAmount       MONEY,
+  NettAmount      MONEY,
+
+  Remarks         VARCHAR(100),
+  Print_Remarks   VARCHAR(100),
+
+  Locked          BIT,
+  CompSno         INT,
+  UserSno         INT,
+  VouSno          INT
+)
+
+GO
+
+CREATE TABLE Transaction_Details
+(
+  DetSno        INT PRIMARY KEY IDENTITY(1,1),
+  TransSno      INT,
+  BarCodeSno    INT,
+  ItemSno       INT,
+  Item_Desc     VARCHAR(50),
+  UomSno        INT,
+  Karat         DECIMAL(4,2),
+  Purity        DECIMAL(5,2),
+  Qty           SMALLINT,
+  GrossWt       DECIMAL(8,2),
+  StoneWt       DECIMAL(8,2),
+  Wastage       DECIMAL(8,2),
+  NettWt        DECIMAL(8,2),
+  PureWt        DECIMAL(8,2),
+  Rate          MONEY,
+  Amount        MONEY  
+)
+GO
+
+CREATE TABLE Barcoded_Items
+(
+  BarCodeSno INT PRIMARY KEY IDENTITY(1,1),
+  ItemSno INT,
+  BarCode_No VARCHAR(50)
+)
+GO
+
+CREATE TABLE PaymentMode_Details
+(
+  PmSno INT PRIMARY KEY IDENTITY(1,1),
+  TransSno INT,
+  LedSno INT,
+  Amount MONEY,
+  Remarks VARCHAR(50)
+)
+GO
+
+

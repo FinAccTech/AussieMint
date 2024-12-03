@@ -1,4 +1,7 @@
-<div class="pattyContainer" style="background-color: #fff;">            
+<div class="pattyContainer" style="background-color: #fff;">      
+    <div class="header">
+        <p>Client Details</p>
+    </div>      
     <div class="clientBox">                
 
         <div class="leftBox">                
@@ -8,10 +11,11 @@
                 <p> {{SelectedClient()!.Address}} </p>
                 <p> {{SelectedClient()!.Mobile}} </p>
                 <p style="font-weight: bold; color: red;" > {{SelectedClient()!.Remarks}} </p>
-                <div style="display: flex; column-gap: 1rem; ">
-                    <div *ngFor="let img of ClientImages" style="cursor: pointer;" >
-                        <img [src]="img.Image_Url" width="50" height="50" />
-                    </div>
+
+                <div style="display: flex;column-gap: 1rem;" >
+                    @for (img of SelectedClient()!.ImagesSource; track $index) {                    
+                        <img [src]="img.Image_Url" width="50" height="50" style="border-radius: 50%;" />                    
+                    }
                 </div>
             }
             <!-- <ng-container *ngIf="SelectedClient">

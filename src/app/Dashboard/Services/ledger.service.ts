@@ -28,6 +28,17 @@ export class LedgerService {
       return this.dataService.HttpPost(postdata, "/deleteLedger");                
   }
 
+  getPaymentModes(): Observable<TypeHttpResponse> {
+    let postdata ={ "CompSno" :  this.sessionService.GetCompany().CompSno}; 
+    return this.dataService.HttpGet(postdata, "/getPaymentModes");                
+  }
+
+  getStandardLedgers(): Observable<TypeHttpResponse> {
+    let postdata ={ "CompSno" :  this.sessionService.GetCompany().CompSno}; 
+    return this.dataService.HttpGet(postdata, "/getStandardLedgers");                
+  }
+
+
   Initialize(){
     let Ledger: TypeLedger = {
         LedSno:0,
@@ -68,3 +79,4 @@ export interface TypeLedger{
     Name?: string;
     Details?: string;
 }
+

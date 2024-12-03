@@ -1,4 +1,4 @@
-import { Injectable} from '@angular/core';
+import { Injectable, numberAttribute} from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { AutoUnsubscribe } from './auto-unsubscribe.decorator';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,7 +15,8 @@ export class GlobalsService
 {
   AppName: string = "FinAcc";
   AppLogoPath: string = "assets/images/logo.png";
-  
+  ServerImagePath: string = "https://finaccsaas.com/AussieMint/data/";
+
   constructor(private dialog: MatDialog){      
   }
   
@@ -36,7 +37,7 @@ export class GlobalsService
     VTypPurchaseOrder:    number = 10;
     VTypBuyingContract:   number = 11;
     VTypRCTI:             number = 12;
-    VTypSalesOrder:       number = 13;
+    VTypSalesOrder:       number = 13;  
     VTypDeliveryDoc:      number = 14;
     VTypSalesInvoice:     number = 15;
     VTypMeltingIssue:     number = 16;
@@ -127,7 +128,62 @@ export class GlobalsService
       UserRightDateAccess = 6;
       UserRightSearchAccess = 7;
 
-      
+    GetVouTypeName(VouTypeSno: number){      
+      switch (VouTypeSno) {
+        case 10:
+          return "Purchase Order"
+          break;
+        case 11:
+          return "Buying Contract"
+        break;
+        case 12:
+          return "RCTI"
+        break;
+        case 13:
+          return "Sales Order"
+        break;
+        case 14:
+          return "Delivery Doc"
+        break;
+        case 15:
+          return "Sales Invoice"
+        break;
+        case 16:
+          return "Melting Issue"
+        break;
+        case 17:
+          return "Melting Receipt"
+        break;
+        case 18:
+          return "Refining Issue"
+        break;
+        case 19:
+          return "Refining Receipt"
+        break;
+        case 20:
+          return "Casting Issue"
+        break;
+        case 21:
+          return "Casting Receipt"
+        break;
+        case 22:
+          return "Jobwork Inward"
+        break;
+        case 23:
+          return "Jobwork Delivery"
+        break;      
+      }
+      return "";
+    }
+  
+  getTransactionImagesServerPath(CompSno: number, VouTypeSno: number): string{    
+    return "Images/" + CompSno + "/Transactions/" + VouTypeSno;
+  }
+
+  getClientImagesServerPath(CompSno: number): string{    
+    return "Images/" + CompSno + "/Clients";
+  }
+
   DateToInt(inputDate: Date)
   {
     let month: string = (inputDate.getMonth() + 1).toString();    

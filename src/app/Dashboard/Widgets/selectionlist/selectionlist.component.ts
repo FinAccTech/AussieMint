@@ -5,11 +5,10 @@ import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-selectionlist',
-  templateUrl: './selectionlist.component.html',
-  styleUrls: ['./selectionlist.component.scss'],
-  standalone: true,
-  imports: [CommonModule]
+    selector: 'app-selectionlist',
+    templateUrl: './selectionlist.component.html',
+    styleUrls: ['./selectionlist.component.scss'],
+    imports: [CommonModule]
 })
 
 @AutoUnsubscribe 

@@ -5,11 +5,10 @@ import { AutoUnsubscribe } from '../../auto-unsubscribe.decorator';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-snackbar',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './snackbar.component.html',
-  styleUrls: ['./snackbar.component.scss']
+    selector: 'app-snackbar',
+    imports: [CommonModule],
+    templateUrl: './snackbar.component.html',
+    styleUrls: ['./snackbar.component.scss']
 })
 
 @AutoUnsubscribe

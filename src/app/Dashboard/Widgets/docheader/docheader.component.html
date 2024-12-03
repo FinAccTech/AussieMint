@@ -1,39 +1,43 @@
 <div class="docContainer">    
+    <div class="header">
+        <p>Bill Details</p>
+    </div>
     <div class="docRow">
         <div style="width: 100%;"> 
             <app-selectionlist [Caption]="'Doc Series'" [DataSource]="SeriesList" [SelectedItem]="DocHeader()!.Series"  (newItemEvent)="getSeries($event)"></app-selectionlist>
         </div>        
         <div class="formGroup">
-            <input type="text" style="text-align: center;" class="formControl" required [(ngModel)]="DocHeader()!.Trans_No"  />
+            <input type="text" style="text-align: center;" class="formControl" readonly required [(ngModel)]="DocHeader()!.Trans_No"  />
             <label for="" class="formLabel"> Doc No </label>                            
         </div>
 
         <div class="formGroup">                    
-            <input type="date" class="formControl" readonly [ngModel]="DocHeader()!.Trans_Date | intToDate | date:'yyyy-MM-dd'" (ngModelChange)="DocHeader()!.Trans_Date = DateToInt($event) " />                    
+            <input type="date" class="formControl" readonly [ngModel]="DocHeader()!.Trans_Date | intToDate | date:'yyyy-MM-dd'" (blur)="DocHeader()!.Trans_Date = DateToInt($event) " />                    
             <label for="" class="formLabel"> Doc Date </label>                             
         </div>
 
         <div class="formGroup">                    
-            <input type="date" class="formControl" readonly [ngModel]="DocHeader()!.Due_Date! | intToDate | date:'yyyy-MM-dd'" (ngModelChange)="DocHeader()!.Due_Date = DateToInt($event) " />                    
+            <input type="date" class="formControl" readonly [ngModel]="DocHeader()!.Due_Date! | intToDate | date:'yyyy-MM-dd'" (blur)="DocHeader()!.Due_Date = DateToInt($event) " />                    
             <label for="" class="formLabel"> Due Date </label>                             
         </div>                
     </div>    
 
     <div class="docRow">
-        <div style="width: 50%;">
-            <app-selectionlist  [Caption]="'Reference'"/>
+        <div style="width: 50%;">            
+            <app-selectionlist [Caption]="'Reference'" [DataSource]="DocHeader()!.RefList" [SelectedItem]="DocHeader()!.Reference"  (newItemEvent)="getReference($event)" ></app-selectionlist>
         </div>        
-        <div style="width: 50%; text-align: center;">
-            <button class="btnOutlined"> <i class='bx bx-credit-card-front'></i> Payment Modes </button>
-        </div>
+        @if (EnableAmountCols()) {
+            <div style="width: 50%; text-align: center;">
+                <button class="btnOutlined" (click)="OpenPaymentModes()" > <i class='bx bx-credit-card-front'></i> Payment Modes </button>
+            </div>
+        }
     </div>
     
     <div class="docRow">
         <div class="formGroup">
-            <input type="text" style="text-align: center;" class="formControl" [(ngModel)]="DocHeader()!.PaymentModes.Details" required/>
-            <label for="" class="formLabel"> Details </label>                            
+            <!-- <input type="text" class="formControl" [(ngModel)]="DocHeader()!.PaymentModes" required/>
+            <label for="" class="formLabel"> Details </label>                             -->
         </div>
     </div>
-
     
 </div>

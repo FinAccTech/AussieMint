@@ -47,11 +47,12 @@ $AussieMint-theme: mat.define-theme((
   margin: 0;
 }
 
-:root{    
-  //--ColorPrimary:#EAA63E;
-  --ColorPrimary:#D3AC67;
+:root{      
+  // --ColorPrimary:#D3AC67;
+  --ColorPrimary:#BF9F62;  
   --ColorSecondary:#555B6D;
   --ColorBg:  #F8F8FC;
+  --ColorHighlight: #0D3642;  
 }
 
 .formGroup{
@@ -177,17 +178,18 @@ $AussieMint-theme: mat.define-theme((
     padding: 15px 0 0 10%;    
     z-index: 1;
     overflow: hidden;
+    font-size: 1rem;
     
   }
 
   .formLabelType2{
     position: absolute;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;    
-    left: 0;
-    top: 6%;
+    left: 5%;
+    top: 0;
     color: #a1a1a1;
     background-color: #fff;    
-    font-size: 13px;  
+    font-size: .9rem;  
     white-space: nowrap;
     
   }
@@ -447,8 +449,12 @@ $AussieMint-theme: mat.define-theme((
           // }
 
           .heading{
-              font-size: 1.3rem;
-              user-select: none;                
+              // font-size: 1.3rem;
+              // user-select: none;                         
+                font-size: 1.5rem;
+                color: var(--ColorHighlight);
+                font-weight: 450;
+               
           }
       }
 
@@ -592,6 +598,8 @@ $AussieMint-theme: mat.define-theme((
       }
     }
   }
+
+  
 
   .tableBody{             
       //box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
@@ -835,6 +843,48 @@ $AussieMint-theme: mat.define-theme((
 }
 
 
+.totChip{
+  border: 1px solid var(--ColorPrimary);
+  border-top-width: 3px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  min-width: 8rem;
+  padding: .3rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+  
+  p.caption{
+      font-weight: 400;
+      font-size: .9rem;                    
+  }
+
+  p.value{
+      text-align: right;
+      font-weight: 500;
+      font-size: 1.2rem;
+  }
+}
+
+.totChiptype2{
+  border: 1px solid var(--ColorPrimary);
+  border-right-width: 6px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  min-width: 8rem;
+  padding: .3rem;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+  
+  p.caption{
+      font-weight: 400;
+      font-size: .9rem;                    
+  }
+
+  p.value{
+      text-align: right;
+      font-weight: 500;
+      font-size: 1.2rem;
+  }
+}
+
 .mat-mdc-dialog-container {
   --mdc-dialog-container-shape: 10px;  
 }
@@ -848,9 +898,17 @@ $AussieMint-theme: mat.define-theme((
   height: 100%;
 }
 
+.modal-backdrop
+{
+    opacity:0.5 !important;
+}
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
+  *{    
+    font-size: 10px;    
+  }
+
   .rightdialogMat{        
     width: 100%;
   }
@@ -858,6 +916,9 @@ $AussieMint-theme: mat.define-theme((
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
+  *{    
+    font-size: 12px;    
+  }
   .rightdialogMat{        
     width: 100%;
   }
@@ -865,6 +926,9 @@ $AussieMint-theme: mat.define-theme((
 
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
+  *{    
+    font-size: 12px;    
+  }
   .rightdialogMat{        
     width: 50vw;
   }
@@ -872,6 +936,9 @@ $AussieMint-theme: mat.define-theme((
 
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
+  *{    
+    font-size: 13px;    
+  }
   .rightdialogMat{        
     width: 50vw;
   }
@@ -879,6 +946,9 @@ $AussieMint-theme: mat.define-theme((
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
 @media only screen and (min-width: 1200px) {
+  *{    
+    font-size: 14px;    
+  }
   .rightdialogMat{        
     width: 45vw;
   }

@@ -10,11 +10,10 @@ import { SelectionlistComponent } from '../../../Widgets/selectionlist/selection
 import { IntToDatePipe } from '../../../../Pipes/int-to-date.pipe';
 
 @Component({
-  selector: 'app-ledgergroup',
-  standalone: true,
-  imports: [CommonModule, FormsModule, SelectionlistComponent, IntToDatePipe],
-  templateUrl: './ledgergroup.component.html',
-  styleUrl: './ledgergroup.component.scss'
+    selector: 'app-ledgergroup',
+    imports: [CommonModule, FormsModule, SelectionlistComponent, IntToDatePipe],
+    templateUrl: './ledgergroup.component.html',
+    styleUrl: './ledgergroup.component.scss'
 })
 
 @AutoUnsubscribe

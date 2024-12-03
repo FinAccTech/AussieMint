@@ -7,11 +7,10 @@ import { IGroupService } from '../../Services/igroup.service';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 
 @Component({
-  selector: 'app-items',
-  standalone: true,
-  imports: [TableviewComponent],
-  templateUrl: './items.component.html',
-  styleUrl: './items.component.scss'
+    selector: 'app-items',
+    imports: [TableviewComponent],
+    templateUrl: './items.component.html',
+    styleUrl: './items.component.scss'
 })
 
 export class ItemsComponent {

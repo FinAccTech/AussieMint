@@ -11,8 +11,10 @@ import { ClientsComponent } from './Dashboard/Masters/clients/clients.component'
 import { VoucherserieslistComponent } from './Dashboard/Settings/voucherserieslist/voucherserieslist.component';
 import { LedgergroupsComponent } from './Dashboard/Masters/ledgergroups/ledgergroups.component';
 import { LedgersComponent } from './Dashboard/Masters/ledgers/ledgers.component';
-import { BuyingcontractsComponent } from './Dashboard/Purchase/buyingcontracts/buyingcontracts.component';
-import { BuyingcontractComponent } from './Dashboard/Purchase/buyingcontracts/buyingcontract/buyingcontract.component';
+import { TransactionsComponent } from './Dashboard/transactions/transactions.component';
+import { TransactionComponent } from './Dashboard/transactions/transaction/transaction.component';
+import { PendingdocsComponent } from './Dashboard/Reports/pendingdocs/pendingdocs.component';
+import { StockreportComponent } from './Dashboard/Reports/stockreport/stockreport.component';
 
 export const routes: Routes = [
     { path:'', component: LoginComponent}, 
@@ -24,8 +26,11 @@ export const routes: Routes = [
             { path:'uoms', component: UomsComponent},
             { path:'clients', component: ClientsComponent},
 
-            { path:'buyingcontracts', component: BuyingcontractsComponent},
-            { path:'buyingcontract', component: BuyingcontractComponent},
+            { path:'transactions/:voutypesno', component: TransactionsComponent},
+            { path:'transaction', component: TransactionComponent},
+
+            { path:'pendingdocuments', component: PendingdocsComponent},
+            { path:'stockreport', component: StockreportComponent},
 
             { path:'ledgergroups', component: LedgergroupsComponent},
             { path:'ledgers', component: LedgersComponent},

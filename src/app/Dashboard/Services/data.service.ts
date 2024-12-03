@@ -1,7 +1,16 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable, } from '@angular/core';
-import { catchError, map, retry, } from 'rxjs';
+import { catchError, delay, map, Observable, retry, } from 'rxjs';
 import { AutoUnsubscribe } from '../../auto-unsubscribe.decorator';
+import { TypeHttpResponse } from '../../Types/TypeHttpResponse';
+
+@Injectable()
+export class DelayInterceptor implements HttpInterceptor {
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log(request);
+    return next.handle(request).pipe(delay(5000));
+  }
+}
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +22,7 @@ export class DataService {
   baseApiURL:string = "https://finaccsaas.com/AussieMint/data/RestApi.php/app";
 
   constructor( private http: HttpClient) { 
-  
+    
   }
     
   HandleError(error: HttpErrorResponse):any{    

@@ -7,14 +7,13 @@ import { GlobalsService } from '../../../../global.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { IntToDatePipe } from '../../../../Pipes/int-to-date.pipe';
-import { SelectionlistComponent } from '../../../Widgets/selectionlist/selectionlist.component';
+import { SelectionlistComponent } from '../../../Widgets/selectionlist/selectionlist.component'; 
 
 @Component({
-  selector: 'app-item',
-  standalone: true,
-  imports: [CommonModule, FormsModule,IntToDatePipe, SelectionlistComponent, MatDialogClose],
-  templateUrl: './item.component.html',
-  styleUrl: './item.component.scss'
+    selector: 'app-item',
+    imports: [CommonModule, FormsModule, IntToDatePipe, SelectionlistComponent, MatDialogClose],
+    templateUrl: './item.component.html',
+    styleUrl: './item.component.scss'
 })
 
 

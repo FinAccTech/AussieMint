@@ -15,20 +15,16 @@ import { IntToDatePipe } from '../../../../Pipes/int-to-date.pipe';
 import { SessionStorageService } from '../../../../session-storage.service';
 
 @Component({
-  selector: 'app-client',
-  standalone: true,
-  imports: [CommonModule, FormsModule, MatSelect, MatOption, MatTab, MatTabGroup, IntToDatePipe, MatDialogClose],
-  templateUrl: './client.component.html',
-  styleUrl: './client.component.scss'
+    selector: 'app-client',
+    imports: [CommonModule, FormsModule, MatSelect, MatOption, MatTab, MatTabGroup, IntToDatePipe, MatDialogClose],
+    templateUrl: './client.component.html',
+    styleUrl: './client.component.scss'
 })
 
 export class ClientComponent {
-  
-  
+    
   Client!:         TypeClient;    
       
-  TransImages: FileHandle[] = [];
-
   // For Validations  
   ClientNameValid: boolean = true;
   MobNumberValid: boolean = true;
@@ -54,14 +50,15 @@ export class ClientComponent {
         this.CodeAutoGen = true;
         this.Client.Client_Code="AUTO";
       }
-      else{
-        this.clientService.getClientImages(this.Client.ClientSno).subscribe(data =>{        
-          this.TransImages = JSON.parse (data.apiData);  
-          this.Client.fileSource =  JSON.parse (data.apiData);              
-        })
+      else{                
+        if(this.Client.Images_Json){        
+          this.Client.ImagesSource =  JSON.parse(this.Client.Images_Json);        
+        }
+        else{
+          this.Client.ImagesSource = [];
+        }
       }
     }    
-
   }
 
   SaveClient(){            
@@ -73,13 +70,13 @@ export class ClientComponent {
     StrImageXml = "<ROOT>"
     StrImageXml += "<Images>"
     
-    for (var i=0; i < this.TransImages.length; i++)
+    for (var i=0; i < this.Client.ImagesSource!.length; i++)
     {
-      if (this.TransImages[i].DelStatus == 0)
+      if (this.Client.ImagesSource![i].DelStatus == 0)
       {
         StrImageXml += "<Image_Details ";
-        StrImageXml += " Image_Name='" + this.TransImages[i].Image_Name + "' ";                 
-        StrImageXml += " Image_Url='" + this.TransImages[i].Image_Name + "' ";             
+        StrImageXml += " Image_Name='" + this.Client.ImagesSource![i].Image_Name + "' ";                 
+        StrImageXml += " Image_Url='" + this.globals.getClientImagesServerPath(this.sessionService.GetCompany().CompSno) + "' ";             
         StrImageXml += " >";
         StrImageXml += "</Image_Details>";
       }      
@@ -89,7 +86,7 @@ export class ClientComponent {
     StrImageXml += "</ROOT>"
 
     this.Client.ImageDetailXML = StrImageXml;
-    this.Client.fileSource = this.TransImages;
+    this.Client.ImagesSource = this.Client.ImagesSource;
     
     // if (pty.Client.TempImage){
     //   pty.Client.TempImage = this.TransImages[0].Image_File;
@@ -128,12 +125,13 @@ export class ClientComponent {
   }
   
   OpenImagesCreation(){
-    var img = this.TransImages; 
+    var img = this.Client.ImagesSource; 
 
     const dialogRef = this.dialog.open(ImagesComponent, 
       { 
-        width:"50vw",
+        width:"70vw",
         height:"60vh",        
+        maxWidth: 'none',        
         data: {img}, 
       });
       
@@ -141,7 +139,7 @@ export class ClientComponent {
 
       dialogRef.afterClosed().subscribe(result => {
         if (result){
-          this.TransImages = result;
+          this.Client.ImagesSource = result;
         }         
       }); 
   }
@@ -164,7 +162,7 @@ export class ClientComponent {
             SrcType:0,
             DelStatus:0
           };          
-          this.TransImages[0] = (fileHandle);    
+          this.Client.ImagesSource![0] = (fileHandle);    
         }
       
     }    
@@ -172,10 +170,10 @@ export class ClientComponent {
   }
 
   RemoveProfileImage(){  
-    this.TransImages[0].Image_File = null!;
-    this.TransImages[0].Image_Url = "";
-    this.TransImages[0].SrcType = 2;
-    this.TransImages.splice(0,1);    
+    this.Client.ImagesSource![0].Image_File = null!;
+    this.Client.ImagesSource![0].Image_Url = "";
+    this.Client.ImagesSource![0].SrcType = 2;
+    this.Client.ImagesSource!.splice(0,1);    
   }
   
   OpenWebCam(){        
@@ -191,7 +189,7 @@ export class ClientComponent {
         
         if (result) 
         { 
-            this.TransImages = result;
+            this.Client.ImagesSource = result;
         }        
       });      
   } 

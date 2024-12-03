@@ -7,11 +7,10 @@ import { LedgerComponent } from './ledger/ledger.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 
 @Component({
-  selector: 'app-ledgers',
-  standalone: true,
-  imports: [TableviewComponent],
-  templateUrl: './ledgers.component.html',
-  styleUrl: './ledgers.component.scss'
+    selector: 'app-ledgers',
+    imports: [TableviewComponent],
+    templateUrl: './ledgers.component.html',
+    styleUrl: './ledgers.component.scss'
 })
 
 @AutoUnsubscribe

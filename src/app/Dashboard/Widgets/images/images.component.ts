@@ -6,6 +6,7 @@ import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
 import { FileHandle } from '../../../Types/file-handle';
 import { WebcamComponent } from '../webcam/webcam.component';
 import { CommonModule } from '@angular/common';
+import { GlobalsService } from '../../../global.service';
 
 export interface ImageFile {
   ImageName: string,
@@ -14,17 +15,16 @@ export interface ImageFile {
 
 @AutoUnsubscribe
 @Component({
-  selector: 'app-images',
-  templateUrl: './images.component.html',
-  styleUrls: ['./images.component.scss'],
-  standalone: true,
-  imports:[CommonModule, MatDialogClose]
+    selector: 'app-images',
+    standalone: true,    
+    templateUrl: './images.component.html',
+    styleUrls: ['./images.component.scss'],
+    imports: [CommonModule, MatDialogClose]
 })
-
 
 export class ImagesComponent implements OnInit {
 
-  TransImages: FileHandle[] = []; 
+  ImageSource: FileHandle[] = []; 
   imageObject: any [] = [] ;
 
   uploadProgress:number = 0;
@@ -37,30 +37,37 @@ export class ImagesComponent implements OnInit {
     private sanitizer: DomSanitizer,    
     public dialogRef: MatDialogRef<ImagesComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,        
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private globals: GlobalsService
   ) {}
 
      
   selectFiles($event: any)
   {     
+    let largefileSelected: boolean = false;
     if ($event.target.files)
     {
       for (var i=0; i < $event.target.files.length; i++)
       {        
         const file = $event?.target.files[i];
-        var reader = new FileReader();
-        reader.readAsDataURL($event.target.files[i]);
-        reader.onload = (event: any) => {
-          const fileHandle: FileHandle ={ 
-            Image_Name: file.name,
-            Image_File: event.target.result, 
-            Image_Url: this.sanitizer.bypassSecurityTrustUrl(
-              window.URL.createObjectURL(file),              
-            ),
-            SrcType:0,
-            DelStatus:0,            
-          };          
-          this.TransImages.push (fileHandle);          
+        if (file.size < 1000000) {                  
+          var reader = new FileReader();
+          reader.readAsDataURL($event.target.files[i]);
+          reader.onload = (event: any) => {
+            const fileHandle: FileHandle ={ 
+              Image_Name: file.name.substring(0,10),
+              Image_File: event.target.result, 
+              Image_Url: this.sanitizer.bypassSecurityTrustUrl(
+                window.URL.createObjectURL(file),              
+              ),
+              SrcType:0,
+              DelStatus:0,            
+            };          
+            this.ImageSource.push (fileHandle);          
+          }
+        }
+        else{
+          this.globals.SnackBar("error", "Files greater than 1MB are not allowed. Larger files are ignored",2000) ;
         }
       }     
     }        
@@ -69,44 +76,45 @@ export class ImagesComponent implements OnInit {
   
   ClearallImages()
   {
-    this.TransImages = [];    
+    this.ImageSource = [];    
   }
 
   RemoveImage(i: number){      
-    if (this.TransImages[i].SrcType == 1)
+    if (this.ImageSource[i].SrcType == 1)
     {
-      this.TransImages[i].DelStatus = 1;
+      this.ImageSource[i].DelStatus = 1;
     }
     else
     {
-      this.TransImages.splice(i,1);    
+      this.ImageSource.splice(i,1);    
     }    
   }
 
   LoadImage(i: number){    
-    if (this.TransImages[i].SrcType == 0)
+    if (this.ImageSource[i].SrcType == 0)
     {
-      this.SelectedImage = this.TransImages[i].Image_File;
+      this.SelectedImage = this.ImageSource[i].Image_File;
     }
     else
     {
-      this.SelectedImage = this.TransImages[i].Image_Url;
+      this.SelectedImage = this.ImageSource[i].Image_Url;
     }
    
   }
 
-  ngOnInit(): void {
-  //  this.ClearallImages();    
-    this.TransImages = this.data.img;            
-    this.TransImages.forEach((image) => {
-      let tImg = [];
-      let newData = {} as any;
+  ngOnInit(): void {  
+    this.ImageSource = this.data.img;          
+    if (this.ImageSource){
+      this.ImageSource.forEach((image) => {
+        let tImg = [];
+        let newData = {} as any;
 
-      newData.image = image.Image_Name;
-      newData.thumbImage = image.Image_Name;
-      newData.title = image.Image_Name;      
-    });
-  }
+        newData.image = image.Image_Name;
+        newData.thumbImage = image.Image_Name;
+        newData.title = image.Image_Name;      
+      });
+    }
+  } 
 
   OpenWebCam(){        
     const dialogRef = this.dialog.open(WebcamComponent, 
@@ -122,16 +130,16 @@ export class ImagesComponent implements OnInit {
         if (result) 
         { 
           result.forEach((img: FileHandle)=>{
-            this.TransImages.push(img);
+            this.ImageSource.push(img);
           })
-          //this.TransImages.push(result[0])
+          //this.ImageSource.push(result[0])
         }        
         
       });      
   } 
 
   CloseDialog(): void {
-    this.dialogRef.close(this.TransImages);
+    this.dialogRef.close(this.ImageSource);
 
     // this.http.post('http://184.168.125.210/CheersApp/data/upload.php', this.myForm.value)
     // .subscribe(res => {
