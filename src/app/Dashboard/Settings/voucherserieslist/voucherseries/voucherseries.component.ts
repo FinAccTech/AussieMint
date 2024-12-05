@@ -8,12 +8,25 @@ import { SelectionlistComponent } from '../../../Widgets/selectionlist/selection
 import { MatOption, MatSelect } from '@angular/material/select';
 import { IntToDatePipe } from '../../../../Pipes/int-to-date.pipe';
 import { CommonModule } from '@angular/common';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
     selector: 'app-voucherseries',
     imports: [CommonModule, FormsModule, SelectionlistComponent, MatSelect, MatOption, IntToDatePipe],
     templateUrl: './voucherseries.component.html',
-    styleUrl: './voucherseries.component.scss'
+    styleUrl: './voucherseries.component.scss',
+    animations: [
+      trigger('myAnimation', [
+        state('void', style({ opacity: 0 })),
+        state('*', style({ opacity: .9 })),
+        transition('void => *', [
+          animate('1000ms ease-in')
+        ]),
+        transition('* => void', [
+          animate('1000ms ease-out')
+        ])
+      ])
+    ]
 })
 
 export class VoucherseriesComponent {
@@ -21,7 +34,8 @@ export class VoucherseriesComponent {
   Series!:          TypeVoucherSeries;
   VtypeList!:    TypeVoucherTypes[]; 
   SeriesNameValid: boolean = true;
-
+  state = 'void';
+  
   constructor(
     public dialogRef: MatDialogRef<VoucherseriesComponent>,
     private dialog: MatDialog,
@@ -34,7 +48,10 @@ export class VoucherseriesComponent {
     this.Series = data;           
   }
 
-  ngOnInit(): void {        
+  ngOnInit(): void {    
+    setTimeout(() => { 
+      this.state = '*';
+    }, 0);      
     this.serService.getVoucherTypes(0).subscribe(data => {      
       this.VtypeList = JSON.parse (data.apiData);   
     });    

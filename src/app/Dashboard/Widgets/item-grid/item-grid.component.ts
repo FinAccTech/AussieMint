@@ -10,6 +10,7 @@ import { SelectionlistComponent } from '../selectionlist/selectionlist.component
 import { ImagesComponent } from '../images/images.component';
 import { FileHandle } from '../../../Types/file-handle';
 import { TypeDocFooter } from '../../../Types/TypeDocFooter';
+import { StockselectionComponent } from '../stockselection/stockselection.component';
 
 @Component({
   selector: 'app-item-grid',
@@ -55,14 +56,14 @@ export class ItemGridComponent {
 
   AddItem(){
     if (this.DirectItemEntry){
-      this.GridItems()!.push({DetSno:0, BarCode:{BarCodeSno:0, BarCode_No:""}, Item: this.itmService.Initialize(), Karat:0, Purity:0, Item_Desc:"", Qty:0, GrossWt:0, StoneWt:0, Wastage:0, NettWt:0, Uom: this.umService.Initialize(), Rate:0, Amount:0});
+      this.GridItems()!.push({DetSno:0, BarCode:{BarCodeSno:0, BarCode_No:"", Name:"", Details:"" }, Item: this.itmService.Initialize(), Karat:0, Purity:0, Item_Desc:"", Qty:0, GrossWt:0, StoneWt:0, Wastage:0, NettWt:0, Uom: this.umService.Initialize(), Rate:0, Amount:0});
       this.SetTotals();     
     }
     else{
-      let item: TypeGridItem = {DetSno:0, BarCode:{BarCodeSno:0, BarCode_No:"BarCode"}, Item: this.itmService.Initialize(), Karat:24, Purity:91.6, Item_Desc:"No Dewscription", Qty:3, GrossWt:3.900, StoneWt:.400, Wastage:.100, NettWt:3.400, Uom: this.umService.Initialize(), Rate:6000, Amount:30000};
+      let item: TypeGridItem = {DetSno:0, BarCode:{BarCodeSno:0, BarCode_No:"", Name:"", Details:""}, Item: this.itmService.Initialize(), Karat:24, Purity:91.6, Item_Desc:"No Dewscription", Qty:3, GrossWt:3.900, StoneWt:.400, Wastage:.100, NettWt:3.400, Uom: this.umService.Initialize(), Rate:6000, Amount:30000};
       const dialogRef = this.dialog.open(AdditemComponent, 
         {
-          data: item,        
+          data: { "EnableBarCode": this.EnableBarCode(), "GenerateBarCode": this.GenerateBarCode(), "EnableAmountCols": this.EnableAmountCols(), "Item": item},        
           panelClass: "dialogMat"
         });      
         dialogRef.disableClose = true; 
@@ -76,6 +77,24 @@ export class ItemGridComponent {
     }
     this.myDivRef.nativeElement.scrollTop = this.myDivRef.nativeElement.scrollHeight+1000;    
   }
+
+  SelectfromInventory(){
+    const dialogRef = this.dialog.open(StockselectionComponent, 
+      {
+        width:"80vw",        
+        maxWidth: 'none',      
+        data: {},                
+      });      
+      dialogRef.disableClose = true; 
+      dialogRef.afterClosed().subscribe(result => {                  
+        if (result) 
+        { 
+          this.GridItems()!.push(result);    
+          this.SetTotals();           
+        }        
+      });  
+  }
+  
 
   EditItem( item: TypeGridItem, index: number){
     const dialogRef = this.dialog.open(AdditemComponent, 
@@ -113,11 +132,14 @@ export class ItemGridComponent {
     this.DocFooter()!.TotalAmount =  0;
 
     this.GridItems()!.forEach(item => {
-        this.TotQty +=  item.Qty;
-        this.TotGrossWt +=  item.GrossWt;
-        this.TotNettWt +=  item.NettWt;
+        this.TotQty +=  +item.Qty;
+        this.TotGrossWt +=  +item.GrossWt;
+        this.TotNettWt +=  +item.NettWt;
         this.DocFooter()!.TotalAmount +=  item.Amount;
     });
+
+    this.TotGrossWt = +this.TotGrossWt.toFixed(3);
+    this.TotNettWt = +this.TotNettWt.toFixed(3);
     
     this.DocFooter()!.TaxAmount = +((this.DocFooter()!.TaxPer / 100) * this.DocFooter()!.TotalAmount).toFixed(2);
     this.DocFooter()!.RevAmount = +(this.DocFooter()!.TaxAmount).toFixed(2);

@@ -5,23 +5,39 @@ import { ItemService, TypeItem } from '../../Services/item.service';
 import { ItemComponent } from './item/item.component';
 import { IGroupService } from '../../Services/igroup.service';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
     selector: 'app-items',
     imports: [TableviewComponent],
     templateUrl: './items.component.html',
-    styleUrl: './items.component.scss'
+    styleUrl: './items.component.scss',
+    animations: [
+      trigger('myAnimation', [
+        state('void', style({ opacity: 0 })),
+        state('*', style({ opacity: .9 })),
+        transition('void => *', [
+          animate('1000ms ease-in')
+        ]),
+        transition('* => void', [
+          animate('1000ms ease-out')
+        ])
+      ])
+    ]
 })
 
 export class ItemsComponent {
 
   constructor(private itemService: ItemService, private grpService: IGroupService, private dialog: MatDialog, private globals: GlobalsService) {}
-  
+  state = 'void';
   ItemsList: TypeItem[] = [];
   FieldNames: string[] = ["#", "Item_Code", "Item_Name", "Grp_Name", "Active_Status", "Actions"]
   RemoveSignal: number = 0;
 
   ngOnInit(){
+    setTimeout(() => { 
+      this.state = '*';
+    }, 0);  
     this.itemService.getItems(0,0).subscribe(data =>{
       if (data.queryStatus == 1){
         this.ItemsList = JSON.parse(data.apiData);          

@@ -49,14 +49,14 @@ Initialize(){
 
 export interface TypeItem {
     ItemSno: number;
-    Item_Code: string;
+    Item_Code?: string;
     Item_Name: string;
-    IGroup: TypeItemGroup;
-    Remarks: string;
-    Active_Status: number;
-    Create_Date: number;
-    UserSno: number;
-    CompSno: number;   
+    IGroup?: TypeItemGroup;
+    Remarks?: string;
+    Active_Status?: number;
+    Create_Date?: number;
+    UserSno?: number;
+    CompSno?: number;   
     Name: string;
     Details: string;
 }

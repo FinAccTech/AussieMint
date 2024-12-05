@@ -4,23 +4,39 @@ import { MatDialog } from '@angular/material/dialog';
 import { GlobalsService } from '../../../global.service';
 import { ClientComponent } from './client/client.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
     selector: 'app-clients',
     imports: [TableviewComponent],
     templateUrl: './clients.component.html',
-    styleUrl: './clients.component.scss'
+    styleUrl: './clients.component.scss',
+    animations: [
+      trigger('myAnimation', [
+        state('void', style({ opacity: 0 })),
+        state('*', style({ opacity: .9 })),
+        transition('void => *', [
+          animate('1000ms ease-in')
+        ]),
+        transition('* => void', [
+          animate('1000ms ease-out')
+        ])
+      ])
+    ]
 })
 
 export class ClientsComponent {
 
   constructor(private clientService: ClientService, private dialog: MatDialog, private globals: GlobalsService) {}
-  
+  state = 'void';
   ClientsList: TypeClient[] = [];
   FieldNames: string[] = ["#", "Client_Code", "Client_Name", "City", 'Profile_Image', "Mobile","State", "Area_Name", "Actions"]
   RemoveSignal: number = 0;
 
   ngOnInit(){
+    setTimeout(() => { 
+      this.state = '*';
+    }, 0);  
     this.clientService.getClients(0).subscribe(data =>{
       if (data.queryStatus == 1){
         this.ClientsList = JSON.parse(data.apiData);    

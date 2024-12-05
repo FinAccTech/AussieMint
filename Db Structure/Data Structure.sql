@@ -80,6 +80,9 @@ INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Casting I
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Casting Receipt',1,0)
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Jobwork Inward',0,0)
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Jobwork Delivery',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Advance Doc Purchase',0,2)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Advance Doc Sales',0,1)
+
 
 GO
 
@@ -469,19 +472,21 @@ GO
 
 CREATE TABLE Barcoded_Items
 (
-  BarCodeSno INT PRIMARY KEY IDENTITY(1,1),
-  ItemSno INT,
-  BarCode_No VARCHAR(50)
+  BarCodeSno  INT PRIMARY KEY IDENTITY(1,1),
+  TransSno    INT,
+  DetSno      INT,
+  ItemSno     INT,
+  BarCode_No  VARCHAR(50)
 )
 GO
 
 CREATE TABLE PaymentMode_Details
 (
-  PmSno INT PRIMARY KEY IDENTITY(1,1),
-  TransSno INT,
-  LedSno INT,
-  Amount MONEY,
-  Remarks VARCHAR(50)
+  PmSno     INT PRIMARY KEY IDENTITY(1,1),
+  TransSno  INT,
+  LedSno    INT,
+  Amount    MONEY,
+  Remarks   VARCHAR(50)
 )
 GO
 

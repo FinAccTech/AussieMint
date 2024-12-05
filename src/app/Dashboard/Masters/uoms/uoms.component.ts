@@ -4,24 +4,40 @@ import { MatDialog } from '@angular/material/dialog';
 import { GlobalsService } from '../../../global.service';
 import { UomComponent } from './uom/uom.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
     selector: 'app-uoms',
     imports: [TableviewComponent],
     templateUrl: './uoms.component.html',
-    styleUrl: './uoms.component.scss'
+    styleUrl: './uoms.component.scss',
+    animations: [
+      trigger('myAnimation', [
+        state('void', style({ opacity: 0 })),
+        state('*', style({ opacity: .9 })),
+        transition('void => *', [
+          animate('1000ms ease-in')
+        ]),
+        transition('* => void', [
+          animate('1000ms ease-out')
+        ])
+      ])
+    ]
 })
 
 
 export class UomsComponent {
 
   constructor(private uomService: UomService, private dialog: MatDialog, private globals: GlobalsService) {}
-  
+  state = 'void';
   UomsList: TypeUom[] = [];
   FieldNames: string[] = ["#", "Uom_Code", "Uom_Name", "BaseUom_Name","Base_Qty", "Active_Status", "Actions"]
   RemoveSignal: number = 0;
 
   ngOnInit(){
+    setTimeout(() => { 
+      this.state = '*';
+    }, 0);  
     this.uomService.getUoms(0).subscribe(data =>{
       if (data.queryStatus == 1){
         if (data.apiData){ this.UomsList = JSON.parse(data.apiData); }

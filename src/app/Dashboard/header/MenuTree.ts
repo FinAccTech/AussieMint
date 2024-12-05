@@ -15,6 +15,7 @@ export const menuTree =[
         RouterLink: "",
         SubMenu: 
         [
+            {   Caption: "Advance Doc - Purchase", Iconn: "", RouterLink:"transactions/24" },
             {   Caption: "Purchase Order", Iconn: "", RouterLink:"transactions/10" },
             {   Caption: "Buying Contract", Iconn: "", RouterLink:"transactions/11" },
             {   Caption: "RCTI", Iconn: "", RouterLink:"transactions/12"   },            
@@ -27,6 +28,7 @@ export const menuTree =[
         RouterLink: "",
         SubMenu: 
         [
+            {   Caption: "Advance Doc - Sales", Iconn: "", RouterLink:"transactions/25" },
             {   Caption: "Sales Order", Iconn: "", RouterLink:"transactions/13" },
             {   Caption: "Delivery Doc", Iconn: "", RouterLink:"transactions/14" },
             {   Caption: "Sales Invoice", Iconn: "", RouterLink:"transactions/15" },            
@@ -58,7 +60,7 @@ export const menuTree =[
         [
             {   Caption: "Ledger Groups", Iconn: "", RouterLink:"ledgergroups"   },
             {   Caption: "Ledgers", Iconn: "", RouterLink:"ledgers" },
-            {   Caption: "Voucher", Iconn: "", RouterLink:"customerhistory" },
+            {   Caption: "Voucher", Iconn: "", RouterLink:"vouchers" },
         ]
     },
 

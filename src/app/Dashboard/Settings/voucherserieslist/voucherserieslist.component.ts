@@ -4,23 +4,40 @@ import { MatDialog } from '@angular/material/dialog';
 import { GlobalsService } from '../../../global.service';
 import { VoucherseriesComponent } from './voucherseries/voucherseries.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
     selector: 'app-voucherserieslist',
     imports: [TableviewComponent],
-    templateUrl: './voucherserieslist.component.html',
-    styleUrl: './voucherserieslist.component.scss'
+    templateUrl: './voucherserieslist.component.html', 
+    styleUrl: './voucherserieslist.component.scss',
+    animations: [
+      trigger('myAnimation', [
+        state('void', style({ opacity: 0 })),
+        state('*', style({ opacity: .9 })),
+        transition('void => *', [
+          animate('1000ms ease-in')
+        ]),
+        transition('* => void', [
+          animate('1000ms ease-out')
+        ])
+      ])
+    ]
 })
 
 export class VoucherserieslistComponent {
 
   constructor(private vouSeriesService: VoucherSeriesService, private dialog: MatDialog, private globals: GlobalsService) {}
-  
+  state = 'void';
+
   SeriesList: TypeVoucherSeries[] = [];
   FieldNames: string[] = ["#", "Series_Name", "VouType_Name", "Prefix", "Current_No", "IsStd", "Active_Status", "Actions"]
   RemoveSignal: number = 0;
 
   ngOnInit(){
+    setTimeout(() => { 
+      this.state = '*';
+    }, 0);  
     this.vouSeriesService.getVoucherSeries(0,0).subscribe(data =>{
       if (data.queryStatus == 1){
         this.SeriesList = JSON.parse(data.apiData);                  

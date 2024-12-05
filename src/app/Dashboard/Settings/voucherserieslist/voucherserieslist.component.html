@@ -1,36 +1,38 @@
-<div class="listContainer">
-    <div class="headerCard">
-        <div class="headerLeft">     
-            <span class="bar"></span>
-            <p class="heading"> &nbsp; Voucher Series List</p>        
+<div [@myAnimation]="state">
+    <div class="listContainer">
+        <div class="headerCard">
+            <div class="headerLeft">     
+                <span class="bar"></span>
+                <p class="heading"> &nbsp; Voucher Series List</p>        
+            </div>
+
+            <div class="headerRight">
+                <button class="newBtn" (click)="AddNewSeries()">
+                    <i class='bx bx-plus bx-tada' ></i>Create New
+                </button>          
+            </div>
         </div>
 
-        <div class="headerRight">
-            <button class="newBtn" (click)="AddNewSeries()">
-                <i class='bx bx-plus bx-tada' ></i>Create New
-            </button>          
-        </div>
-    </div>
+        <div class="tableBody">
 
-    <div class="tableBody">
+            @defer (when SeriesList.length >0) {
+                <app-tableview [DataSource]="SeriesList" [FieldNames]="FieldNames" [RemoveSignal]="RemoveSignal" (actionEvent)="handleActionFromTable($event)" >      </app-tableview>                        
+            }
+            @placeholder {
+                <p>Series list Here</p>
+            }
+            @loading {
+                <p>Loading in Progress</p>
+            }
 
-        @defer (when SeriesList.length >0) {
-            <app-tableview [DataSource]="SeriesList" [FieldNames]="FieldNames" [RemoveSignal]="RemoveSignal" (actionEvent)="handleActionFromTable($event)" >      </app-tableview>                        
-        }
-        @placeholder {
-            <p>Series list Here</p>
-        }
-        @loading {
-            <p>Loading in Progress</p>
-        }
-
-        <!-- @if (GroupsList.length >0){
+            <!-- @if (GroupsList.length >0){
+                
+            }
+            @else{
+                <p>No Data</p>            
+            } -->
             
-        }
-        @else{
-            <p>No Data</p>            
-        } -->
-        
-    </div>
+        </div>
 
+    </div>
 </div>

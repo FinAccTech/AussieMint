@@ -1,0 +1,53 @@
+<div class="modalForm">
+    <div class="header">
+        <div class="headerLeft">
+            <span class="bar"></span>
+            <p> &nbsp; Select Item from Inventory </p>
+        </div>
+        <div class="headerRight">
+            <p mat-dialog-close="" >&times;</p>
+        </div>
+    </div> 
+
+    <div class="body"> 
+        <app-tableview  [DataSource]="BarCodedList" 
+                        [FieldNames]="FieldNames"                         
+                        [TotalFields]="TotalFields"         
+                        [RowsPerPage]= "10"      
+                        (actionEvent)="handleActionFromTable($event)"          
+                        > </app-tableview>       
+        <!-- <table>
+            <thead>
+                <th>Voucher Type</th>
+                <th>Trans No</th>
+                <th>Trans Date</th>
+                <th>Item Name</th>
+                <th>BarCode No</th>
+                <th>NettWt</th>
+                <th>Issued Wt</th>
+                <th>Balance Wt</th>                
+            </thead>
+            <tbody>
+                @for (item of BarCodedList; track $index) {
+                    <tr>
+                        <td> {{ item.VouType_Name }}</td>
+                        <td> {{ item.Trans_No }} </td>
+                        <td> {{ item.Trans_Date }} </td>
+                        <td> {{ item.Item_Name }} </td>
+                        <td> {{ item.BarCode_No }}  </td>
+                        <td> {{ item.NettWt }} </td>
+                        <td> {{ item.Issued_Wt }} </td>
+                        <td> {{ item.Balance_Wt }} </td>
+                    </tr>
+                }
+            </tbody>
+        </table> -->
+
+    </div>
+
+    <div class="footer">
+        <!-- <button  > <i class="fa-solid fa-floppy-disk"></i> &nbsp; Add Item</button>         -->
+    </div>
+
+
+</div>

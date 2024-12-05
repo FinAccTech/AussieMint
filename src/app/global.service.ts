@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MsgboxComponent } from './GlobalWidgets/msgbox/msgbox.component';
 import { SnackbarComponent } from './GlobalWidgets/snackbar/snackbar.component';
 import { TypeUserRights } from './Types/TypeUser';
+import { TypeVoucherLedger } from './Dashboard/Services/voucher.service';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,8 @@ export class GlobalsService
     VTypCastingReceipt:   number = 21;
     VTypJobworkInward:    number = 22;
     VTypJobworkDelivery:  number = 23;
+    VTypAdvancePurchase:  number = 24;
+    VTypAdvanceSales:     number = 25;
 
     //Dialog Types    
     DialogTypeProgress  = 0; 
@@ -172,6 +175,13 @@ export class GlobalsService
         case 23:
           return "Jobwork Delivery"
         break;      
+        case 24:
+          return "Advance Doc - Purchase"
+        break;      
+        case 25:
+          return "Advance Doc - Sales"
+        break;      
+
       }
       return "";
     }
@@ -333,6 +343,25 @@ GetMonthName(Month: number, ReturnAlias: boolean):string{
       break;  
   }
   return MonthName;
+}
+
+GetVoucherXml(vou: TypeVoucherLedger[]):string{
+  let StrXml = '';
+  StrXml = '<ROOT>';
+  StrXml += '<Voucher>';
+        
+  vou.forEach(led=>{
+    StrXml += '<Voucher_Details ';
+      StrXml += 'LedSno="' + led.Ledger.LedSno + '" ' ;
+      StrXml += 'Debit="' + led.Debit + '" ' ;
+      StrXml += 'Credit="'+  led.Credit +'" ' ;
+      StrXml += '>';
+    StrXml += '</Voucher_Details> ';
+  })    
+
+    StrXml += '</Voucher>';
+    StrXml += '</ROOT>';			
+    return StrXml
 }
 
 }

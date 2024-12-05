@@ -1,45 +1,46 @@
-@if (!EntryMode) {
-    <!-- <div [@myAnimation]="state"> -->
-        <div class="listContainer">
-            <div class="headerCard">
-                <div class="headerLeft">     
-                    <span class="bar"></span>
-                    <p class="heading"> &nbsp; {{VouTypeName}}</p>                    
+
+    @if (!EntryMode) {
+        <!-- <div [@myAnimation]="state">         -->
+            <div class="listContainer">
+                <div class="headerCard">
+                    <div class="headerLeft">     
+                        <span class="bar"></span>
+                        <p class="heading"> &nbsp; {{VouTypeName}}</p>                    
+                    </div>
+
+                    <div class="headerRight">
+                        <button class="newBtn" (click)="AddNewTransaction()">
+                            <i class='bx bx-plus bx-tada' ></i>Create New
+                        </button>          
+                    </div>
+                </div> 
+
+                <div class="tableBody">
+
+                    @defer (when TransList.length >0) {
+                        <app-tableview  [DataSource]="TransList" 
+                                        [FieldNames]="FieldNames" 
+                                        [RemoveSignal]="RemoveSignal" 
+                                        [TotalFields]="TotalFields" 
+                                        [FromDate] = "FromDate"
+                                        [ToDate] = "ToDate"
+                                        [EnableDateSelection] = "true"
+                                        (actionEvent)="handleActionFromTable($event)"  > </app-tableview>                        
+                    }
+                    @placeholder {
+                        <p>Clients list Here</p>
+                    }
+                    @loading {
+                        <p>Loading in Progress</p>
+                    } 
+                    
                 </div>
+            </div>    
+        <!-- </div> -->
+    }
 
-                <div class="headerRight">
-                    <button class="newBtn" (click)="AddNewTransaction()">
-                        <i class='bx bx-plus bx-tada' ></i>Create New
-                    </button>          
-                </div>
-            </div> 
-
-            <div class="tableBody">
-
-                @defer (when TransList.length >0) {
-                    <app-tableview  [DataSource]="TransList" 
-                                    [FieldNames]="FieldNames" 
-                                    [RemoveSignal]="RemoveSignal" 
-                                    [TotalFields]="TotalFields" 
-                                    [FromDate] = "FromDate"
-                                    [ToDate] = "ToDate"
-                                    [EnableDateSelection] = "true"
-                                    (actionEvent)="handleActionFromTable($event)"  > </app-tableview>                        
-                }
-                @placeholder {
-                    <p>Clients list Here</p>
-                }
-                @loading {
-                    <p>Loading in Progress</p>
-                } 
-                
-            </div>
+    @if (EntryMode) {
+        <div>
+            <app-transaction (actionEvent)="handleEventFromChild($event)" [ChildTransaction]="ChildTransaction"  />
         </div>
-    <!-- </div> -->
-}
-
-@if (EntryMode) {
-    <div>
-        <app-transaction (actionEvent)="handleEventFromChild($event)" [ChildTransaction]="ChildTransaction"  />
-    </div>
-}
+    }

@@ -27,10 +27,10 @@ import { ReportService } from '../../Services/reports.service';
       state('void', style({ opacity: 0 })),
       state('*', style({ opacity: 1 })),
       transition('void => *', [
-        animate('300ms ease-in')
+        animate('1000ms ease-in')
       ]),
       transition('* => void', [
-        animate('300ms ease-out')
+        animate('1000ms ease-out')
       ])
     ])
   ]
@@ -50,8 +50,8 @@ export class TransactionComponent {
 
   
   EnableAmountCols: boolean = false;
-  EnableBarCode: boolean = false;
-
+  EnableBarCode: boolean    = false;
+  GenerateBarCode: boolean  = false;
   NeedMoreInfo:     boolean = true;
 
   @Input() ChildTransaction!:TypeTransaction;
@@ -289,6 +289,22 @@ export class TransactionComponent {
      return StrXml;		
    }
 
+   ValidateInputs(): boolean{        
+    console.log(this.ChildTransaction.Client);
+    
+    if (!this.ChildTransaction.Client.ClientSno || this.ChildTransaction.Client.ClientSno == 0){
+      this.globals.SnackBar("error", "Invalid Client details",1000);
+      return false;
+    }
+
+    if (this.ChildTransaction.GridItems.length == 0){
+      this.globals.SnackBar("error", "Invalid Item details",1000);
+      return false;
+    }
+
+    return true;
+   }
+
    SetChildProperties(){
     switch (this.ChildTransaction.Series.VouType.VouTypeSno) {
       case this.globals.VTypPurchaseOrder:
@@ -297,14 +313,16 @@ export class TransactionComponent {
         break;    
       case this.globals.VTypBuyingContract:
         this.EnableAmountCols= true;
-        this.EnableBarCode = true;
+        this.EnableBarCode = false;
+        this.GenerateBarCode  = true;
         this.repService.getPendingDocuments(this.globals.VTypPurchaseOrder).subscribe(data => {
           this.DocHeader.RefList = JSON.parse (data.apiData);
         })
       break;
       case this.globals.VTypRCTI:
         this.EnableAmountCols= true;
-        this.EnableBarCode = true;
+        this.EnableBarCode = false;
+        this.GenerateBarCode  = true;
         this.repService.getPendingDocuments(this.globals.VTypPurchaseOrder).subscribe(data => {
           this.DocHeader.RefList = JSON.parse (data.apiData);
         })
@@ -334,6 +352,7 @@ export class TransactionComponent {
       case this.globals.VTypMeltingReceipt:
         this.EnableAmountCols= false;
         this.EnableBarCode = true;
+        this.GenerateBarCode  = true;
         this.repService.getPendingDocuments(this.globals.VTypMeltingIssue).subscribe(data => {
           this.DocHeader.RefList = JSON.parse (data.apiData);
         })
@@ -345,6 +364,7 @@ export class TransactionComponent {
       case this.globals.VTypRefiningReceipt:
         this.EnableAmountCols= false;
         this.EnableBarCode = true;
+        this.GenerateBarCode  = true;
         this.repService.getPendingDocuments(this.globals.VTypRefiningIssue).subscribe(data => {
           this.DocHeader.RefList = JSON.parse (data.apiData);
         })
@@ -356,6 +376,7 @@ export class TransactionComponent {
       case this.globals.VTypCastingReceipt:
         this.EnableAmountCols= false;
         this.EnableBarCode = true;
+        this.GenerateBarCode  = true;
         this.repService.getPendingDocuments(this.globals.VTypCastingIssue).subscribe(data => {
           this.DocHeader.RefList = JSON.parse (data.apiData);
         })
@@ -374,19 +395,5 @@ export class TransactionComponent {
     }
    }
 
-   ValidateInputs(): boolean{        
-    console.log(this.ChildTransaction.Client);
-    
-    if (!this.ChildTransaction.Client.ClientSno || this.ChildTransaction.Client.ClientSno == 0){
-      this.globals.SnackBar("error", "Invalid Client details",1000);
-      return false;
-    }
-
-    if (this.ChildTransaction.GridItems.length == 0){
-      this.globals.SnackBar("error", "Invalid Item details",1000);
-      return false;
-    }
-
-    return true;
-   }
+  
 }

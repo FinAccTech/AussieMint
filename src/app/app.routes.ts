@@ -9,12 +9,13 @@ import { ItemsComponent } from './Dashboard/Masters/items/items.component';
 import { UomsComponent } from './Dashboard/Masters/uoms/uoms.component';
 import { ClientsComponent } from './Dashboard/Masters/clients/clients.component';
 import { VoucherserieslistComponent } from './Dashboard/Settings/voucherserieslist/voucherserieslist.component';
-import { LedgergroupsComponent } from './Dashboard/Masters/ledgergroups/ledgergroups.component';
-import { LedgersComponent } from './Dashboard/Masters/ledgers/ledgers.component';
 import { TransactionsComponent } from './Dashboard/transactions/transactions.component';
 import { TransactionComponent } from './Dashboard/transactions/transaction/transaction.component';
 import { PendingdocsComponent } from './Dashboard/Reports/pendingdocs/pendingdocs.component';
 import { StockreportComponent } from './Dashboard/Reports/stockreport/stockreport.component';
+import { LedgergroupsComponent } from './Dashboard/Accounts/ledgergroups/ledgergroups.component';
+import { LedgersComponent } from './Dashboard/Accounts/ledgers/ledgers.component';
+
 
 export const routes: Routes = [
     { path:'', component: LoginComponent}, 

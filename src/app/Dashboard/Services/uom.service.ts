@@ -49,7 +49,7 @@ Initialize(){
 
 export interface TypeUom {
     UomSno: number;
-    Uom_Code: string;
+    Uom_Code?: string;
     Uom_Name: string;
     BaseUom?: TypeUom;
     Base_Qty?: number;    

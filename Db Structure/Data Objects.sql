@@ -2344,6 +2344,8 @@ BEGIN
 				DELETE FROM PaymentMode_Details WHERE TransSno = @TransSno 
 				IF @@ERROR <> 0 GOTO CloseNow
 
+        DELETE FROM Barcoded_Items WHERE TransSno = @TransSno
+        IF @@ERROR <> 0 GOTO CloseNow
 			END
 		ELSE
 			BEGIN
@@ -2437,11 +2439,28 @@ BEGIN
               /*Taking from Temporary Details Table and inserting into details table here*/
               WHILE @@ROWCOUNT <> 0 
                   BEGIN
+                    DECLARE @DetSno INT
                       INSERT INTO Transaction_Details(TransSno,BarCodeSno, ItemSno, Item_Desc, UomSno, Karat, Purity, Qty, GrossWt, StoneWt, Wastage, NettWt, PureWt, Rate, Amount) 
                       VALUES (@TransSno,@BarCodeSno, @ItemSno, @Item_Desc, @UomSno, @Karat, @Purity, @Qty, @GrossWt, @StoneWt, @Wastage, @NettWt, @PureWt, @Rate, @Amount)
                       IF @@Error <> 0 GOTO CloseNow
-             
-                    DELETE FROM @DetTable WHERE Sno = @Sno
+                      SET @DetSno = @@IDENTITY
+
+                      --GENERATING AND INSERTING BARCODES FOR THE ITEMS WITH QTY
+                      DECLARE @Stock_Type BIT
+                      SELECT @Stock_Type = Stock_Type FROM Voucher_Types WHERE VouTypeSno=@VouTypeSno
+
+                      IF @Stock_Type = 1
+                        BEGIN
+                          DECLARE @TmpQty INT = 1
+                          WHILE @TmpQty <= @Qty
+                            BEGIN                        
+                              INSERT INTO Barcoded_Items(TransSno, DetSno, ItemSno, BarCode_No)
+                              VALUES (@TransSno, @DetSno, @ItemSno,@Trans_No+'/'+CAST(@TmpQty AS varchar))
+                              SET @TmpQty = @TmpQty + 1
+                            END
+                        END
+
+                      DELETE FROM @DetTable WHERE Sno = @Sno
 
                     SELECT  TOP 1   @Sno=Sno,@BarCodeSno=BarCodeSno, @ItemSno=ItemSno, @Item_Desc=Item_Desc, @UomSno=UomSno, @Karat=Karat, @Purity=Purity, @Qty=Qty, @GrossWt=GrossWt, @StoneWt=StoneWt, @Wastage=Wastage,
                                     @NettWt=NettWt, @PureWt=PureWt, @Rate=Rate, @Amount=Amount
@@ -2685,24 +2704,28 @@ GO
 
 CREATE VIEW VW_STOCK_REGISTER
 WITH ENCRYPTION AS
-	SELECT		Trans.TransSno, Trans.Trans_No, Trans.Trans_Date, Trans.CompSno, 
+	SELECT		Trans.TransSno, VTyp.VouType_Name, Trans.Trans_No, Trans.Trans_Date, Trans.CompSno, 
 				    Clnt.Client_Name, Det.Karat, Det.Purity,
-				    Det.ItemSno, It.Item_Name, It.GrpSno, Grp.Grp_Name, Det.UomSno, Um.Uom_Name, ISNULL(Bar.BarCode_No,'') as BarCode_No,
+				    Det.ItemSno, It.Item_Name, It.GrpSno, Grp.Grp_Name,
+            UomSno    = (CASE WHEN Um.Base_Qty=0 THEN Det.UomSno ELSE Um.BaseUomSno END),
+            Uom_Name  = (CASE WHEN Um.Base_Qty=0 THEN Um.Uom_Name ELSE Bum.Uom_Name END),
+            ISNULL(Bar.BarCode_No,'') as BarCode_No,
 				    InQty		    = CASE WHEN VTyp.Stock_Type = 1 THEN Det.Qty		  ELSE 0 END,
 				    OutQty		  = CASE WHEN VTyp.Stock_Type = 2 THEN Det.Qty		  ELSE 0 END,
-				    InGrossWt	  = CASE WHEN VTyp.Stock_Type = 1 THEN Det.GrossWt	ELSE 0 END,
-				    OutGrossWt	= CASE WHEN VTyp.Stock_Type = 2 THEN Det.GrossWt	ELSE 0 END,
-				    InStoneWt	  = CASE WHEN VTyp.Stock_Type = 1 THEN Det.StoneWt	ELSE 0 END,
-				    OutStoneWt	= CASE WHEN VTyp.Stock_Type = 2 THEN Det.StoneWt	ELSE 0 END,
-				    InWastage	  = CASE WHEN VTyp.Stock_Type = 1 THEN Det.Wastage	ELSE 0 END,
-				    OutWastage	= CASE WHEN VTyp.Stock_Type = 2 THEN Det.Wastage	ELSE 0 END,
-				    InNettWt	  = CASE WHEN VTyp.Stock_Type = 1 THEN Det.NettWt		ELSE 0 END,
-				    OutNettWt	  = CASE WHEN VTyp.Stock_Type = 2 THEN Det.NettWt		ELSE 0 END			
+				    InGrossWt	  = CASE WHEN VTyp.Stock_Type = 1 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.GrossWt ELSE Det.GrossWt*Um.Base_Qty END)	ELSE 0 END,
+				    OutGrossWt	= CASE WHEN VTyp.Stock_Type = 2 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.GrossWt ELSE Det.GrossWt*Um.Base_Qty END)	ELSE 0 END,
+				    InStoneWt	  = CASE WHEN VTyp.Stock_Type = 1 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.StoneWt ELSE Det.StoneWt*Um.Base_Qty END)	ELSE 0 END,
+				    OutStoneWt	= CASE WHEN VTyp.Stock_Type = 2 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.StoneWt ELSE Det.StoneWt*Um.Base_Qty END)	ELSE 0 END,
+				    InWastage	  = CASE WHEN VTyp.Stock_Type = 1 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.Wastage ELSE Det.Wastage*Um.Base_Qty END)	ELSE 0 END,
+				    OutWastage	= CASE WHEN VTyp.Stock_Type = 2 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.Wastage ELSE Det.Wastage*Um.Base_Qty END)	ELSE 0 END,
+				    InNettWt	  = CASE WHEN VTyp.Stock_Type = 1 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.NettWt ELSE Det.NettWt*Um.Base_Qty END)		ELSE 0 END,
+				    OutNettWt	  = CASE WHEN VTyp.Stock_Type = 2 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.NettWt ELSE Det.NettWt*Um.Base_Qty END)		ELSE 0 END			
 
 	FROM		Transaction_Details Det
 				  INNER JOIN Items It ON It.ItemSno=Det.ItemSno
 				  INNER JOIN Item_Groups Grp ON Grp.GrpSno = It.GrpSno
 				  INNER JOIN Uom Um ON Um.UomSno = Det.UomSno
+          LEFT OUTER JOIN Uom Bum ON Bum.UomSno = Um.BaseUomSno
 				  LEFT OUTER JOIN Barcoded_Items Bar ON Bar.BarCodeSno = Det.BarCodeSno
 				  INNER JOIN Transactions Trans ON Trans.TransSno = Det.TransSno
 				  INNER JOIN Voucher_Types VTyp ON VTyp.VouTypeSno = Trans.VouTypeSno AND (VTyp.Stock_Type <> 0)
@@ -2720,11 +2743,66 @@ RETURNS Table
 RETURN
   
   SELECT	  ItemSno, Item_Name, Karat, Purity, UomSno, Uom_Name,
-			      Qty		  = SUM(InQty)		- SUM(OutQty),
+			      Qty		  = SUM(InQty)		  - SUM(OutQty),
 			      GrossWt = SUM(InGrossWt)	- SUM(OutGrossWt),
-			      StonWt	= SUM(InStoneWt)	- SUM(OutStoneWt),
+			      StoneWt	= SUM(InStoneWt)	- SUM(OutStoneWt),
 			      Wastage = SUM(InWastage)	- SUM(OutWastage),
 			      NettWt	= SUM(InNettWt)		- SUM(OutNettWT)
   FROM		  VW_STOCK_REGISTER  
   WHERE		  (GrpSno = @GrpSno) AND (CompSno=@CompSno) 
   GROUP BY	ItemSno, Item_Name, Karat, Purity, UomSno, Uom_Name
+
+GO
+
+
+
+IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='VW_BARCODE_REGISTER') BEGIN DROP VIEW VW_BARCODE_REGISTER END
+GO
+
+CREATE VIEW VW_BARCODE_REGISTER
+WITH ENCRYPTION AS
+
+  SELECT    Trans.TransSno, VTyp.VouType_Name, Trans.Trans_No, Trans.Trans_Date, Det.DetSno, Det.ItemSno, It.Item_Name, Bar.BarCodeSno, Bar.BarCode_No, Det.Karat, Det.Purity,
+            Det.UomSno, Um.Uom_Name,
+            GrossWt       = CAST(Det.GrossWt / Det.Qty AS DECIMAL(8,3)),
+            StoneWt       = CAST(Det.StoneWt / Det.Qty AS DECIMAL(8,3)),
+            Wastage       = CAST(Det.Wastage / Det.Qty AS DECIMAL(8,3)),
+			      NettWt        = CAST(Det.NettWt / Det.Qty AS DECIMAL(8,3)),
+
+            Det.Rate, Amount = CAST(Det.Amount / Det.Qty AS DECIMAL(10,2)),
+
+            Issued_Wt     = (SELECT ISNULL(SUM(NettWt),0) FROM Transaction_Details WHERE BarCodeSno=Bar.BarCodeSno),
+            Balance_Wt    = Det.NettWt - (SELECT ISNULL(SUM(NettWt),0) FROM Transaction_Details WHERE BarCodeSno=Bar.BarCodeSno),
+            Stock_Status  = CASE WHEN (SELECT ISNULL(SUM(NettWt),0) FROM Transaction_Details WHERE BarCodeSno=Bar.BarCodeSno) <= Det.NettWt THEN 0 ELSE 1 END,
+            Trans.CompSno
+  FROM      Barcoded_Items Bar
+            INNER JOIN Items It ON It.ItemSno = Bar.ItemSno
+            INNER JOIN Transaction_Details Det ON Det.DetSno = Bar.DetSno
+            INNER JOIN Uom Um ON Um.UomSno = Det.UomSno
+			      INNER JOIN Transactions Trans ON Trans.TransSno = Det.TransSno
+            INNER JOIN Voucher_Types VTyp ON VTyp.VouTypeSno = Trans.VouTypeSno
+
+GO
+
+
+
+IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Udf_getBarCodeStock') BEGIN DROP FUNCTION Udf_getBarCodeStock END
+GO
+
+CREATE FUNCTION Udf_getBarCodeStock(@CompSno INT)
+RETURNS Table
+  WITH ENCRYPTION AS
+RETURN
+
+  SELECT    Bar.*, Bar.BarCode_No as Name, Item_Name as Details
+  FROM      VW_BARCODE_REGISTER Bar
+  WHERE     (CompSno=@CompSno) AND Stock_Status=0
+
+GO
+
+
+select * from Voucher_Types
+
+
+select * from Ledgers
+select * from Client

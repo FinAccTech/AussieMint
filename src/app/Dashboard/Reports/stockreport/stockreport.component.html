@@ -1,35 +1,36 @@
-<div class="listContainer">
-    <div class="headerCard">
-        <div class="headerLeft">     
-            <span class="bar"></span>
-            <p class="heading"> &nbsp; Stock Report</p>                    
+<div [@myAnimation]="state">
+    <div class="listContainer">
+        <div class="headerCard">
+            <div class="headerLeft">     
+                <span class="bar"></span>
+                <p class="heading"> &nbsp; Stock Report</p>                    
+            </div>
+
+            <div class="headerRight" style="width: 30%;">
+                <div class="row">
+                    <div class="col100">
+                        <app-selectionlist [Caption]="'Item Group'" [DataSource]="GroupsList" [SelectedItem]="SelectedGroup"  (newItemEvent)="getGroup($event)"></app-selectionlist>
+                    </div>                
+                </div>            
+            </div>
+        </div> 
+
+        <div class="tableBody">
+
+            @defer (when StockList.length >0) {
+                <app-tableview  [DataSource]="StockList" 
+                                [FieldNames]="FieldNames"                             
+                                [TotalFields]="TotalFields" > </app-tableview>                        
+            }
+            @placeholder {
+                <p>Report list Here</p>
+            }
+            @loading {
+                <p>Loading in Progress</p>
+            } 
+            
         </div>
-
-        <div class="headerRight" style="width: 30%;">
-            <div class="row">
-                <div class="col100">
-                    <app-selectionlist [Caption]="'Item Group'" [DataSource]="GroupsList" [SelectedItem]="SelectedGroup"  (newItemEvent)="getGroup($event)"></app-selectionlist>
-                </div>                
-            </div>            
-        </div>
-    </div> 
-
-    <div class="tableBody">
-
-        @defer (when StockList.length >0) {
-            <app-tableview  [DataSource]="StockList" 
-                            [FieldNames]="FieldNames"                             
-                            [TotalFields]="TotalFields" > </app-tableview>                        
-        }
-        @placeholder {
-            <p>Report list Here</p>
-        }
-        @loading {
-            <p>Loading in Progress</p>
-        } 
-        
     </div>
 </div>
-
 
 

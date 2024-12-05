@@ -5,23 +5,40 @@ import { GlobalsService } from '../../../global.service';
 import { LedgergroupComponent } from './ledgergroup/ledgergroup.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
     selector: 'app-ledgergroups',
     imports: [TableviewComponent],
     templateUrl: './ledgergroups.component.html',
-    styleUrl: './ledgergroups.component.scss'
+    styleUrl: './ledgergroups.component.scss',
+    animations: [
+      trigger('myAnimation', [
+        state('void', style({ opacity: 0 })),
+        state('*', style({ opacity: .9 })),
+        transition('void => *', [
+          animate('1000ms ease-in')
+        ]),
+        transition('* => void', [
+          animate('1000ms ease-out')
+        ])
+      ])
+    ]
 })
 @AutoUnsubscribe
 export class LedgergroupsComponent {
 
   constructor(private lgrpService: LedgerGroupService, private dialog: MatDialog, private globals: GlobalsService) {}
-  
+  state = 'void';
+
   LedgerGroupsList: TypeLedgerGroup[] = [];
   FieldNames: string[] = ["#", "Grp_Code", "Grp_Name", "GrpUnder_Name", "Active_Status", "Actions"]
   RemoveSignal: number = 0;
 
   ngOnInit(){
+    setTimeout(() => { 
+      this.state = '*';
+    }, 0);  
     this.lgrpService.getLedgerGroups(0).subscribe(data =>{
       if (data.queryStatus == 1){
         this.LedgerGroupsList = JSON.parse(data.apiData);          

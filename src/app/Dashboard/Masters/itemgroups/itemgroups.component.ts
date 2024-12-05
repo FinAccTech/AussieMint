@@ -4,22 +4,40 @@ import { MatDialog } from '@angular/material/dialog';
 import { GlobalsService } from '../../../global.service';
 import { TableviewComponent } from "../../Widgets/tableview/tableview.component";
 import { ItemgroupComponent } from './itemgroup/itemgroup.component';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
     selector: 'app-itemgroups',
     templateUrl: './itemgroups.component.html',
     styleUrl: './itemgroups.component.scss',
-    imports: [TableviewComponent]
+    imports: [TableviewComponent],
+    animations: [
+      trigger('myAnimation', [
+        state('void', style({ opacity: 0 })),
+        state('*', style({ opacity: .9 })),
+        transition('void => *', [
+          animate('1000ms ease-in')
+        ]),
+        transition('* => void', [
+          animate('1000ms ease-out')
+        ])
+      ])
+    ]
 })
 export class ItemgroupsComponent {
 
   constructor(private grpService: IGroupService, private dialog: MatDialog, private globals: GlobalsService) {}
-  
+  state = 'void';
+
   GroupsList: TypeItemGroup[] = [];
   FieldNames: string[] = ["#", "Grp_Code", "Grp_Name", "Market_Rate", "Active_Status", "Actions"]
   RemoveSignal: number = 0;
 
   ngOnInit(){
+    setTimeout(() => { 
+      this.state = '*';
+    }, 0);  
+
     this.grpService.getIGrps(0).subscribe(data =>{
       if (data.queryStatus == 1){
         this.GroupsList = JSON.parse(data.apiData);          

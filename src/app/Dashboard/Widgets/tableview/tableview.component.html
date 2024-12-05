@@ -38,7 +38,7 @@
                     @for (row of PagedDataList[CurrentPage].PageData| search: searchText ; track row; let i=$index ){
                         @if (i < RowsPerPage+1 ) {  
 
-                            <tr  [ngClass]="row[FieldNames()[0]] == '{#Total#}' ? 'totalRow' :''" >                            
+                            <tr  [ngClass]="row[FieldNames()[0]] == '{#Total#}' ? 'totalRow' :''" (click)="SelectRecord(row)"  >                            
 
                                 @for (element of FieldNames(); track $index) {
 

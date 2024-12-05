@@ -3,11 +3,11 @@
         <div class="headerCard">
             <div class="headerLeft">     
                 <span class="bar"></span>
-                <p class="heading"> &nbsp; Items</p>        
+                <p class="heading"> &nbsp; Ledger Groups</p>        
             </div>
 
             <div class="headerRight">
-                <button class="newBtn" (click)="AddNewItem()">
+                <button class="newBtn" (click)="AddNewLedgerGroup()">
                     <i class='bx bx-plus bx-tada' ></i>Create New
                 </button>          
             </div>
@@ -15,8 +15,8 @@
 
         <div class="tableBody">
 
-            @defer (when ItemsList.length >0) {
-                <app-tableview [DataSource]="ItemsList" [FieldNames]="FieldNames" [RemoveSignal]="RemoveSignal" (actionEvent)="handleActionFromTable($event)" >      </app-tableview>                        
+            @defer (when LedgerGroupsList.length >0) {
+                <app-tableview [DataSource]="LedgerGroupsList" [FieldNames]="FieldNames" [RemoveSignal]="RemoveSignal" (actionEvent)="handleActionFromTable($event)" >      </app-tableview>                        
             }
             @placeholder {
                 <p>Items list Here</p>

@@ -1,16 +1,30 @@
 .gridContainer{
     width: 100%;
-    height: 100%;    
+    
+    margin-top: 2.5rem;
     display: flex;
     flex-direction: column;
     position: relative;
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    //box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
     background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid var(--ColorPrimary);
+    border-top-width: 5px;
+    position: relative;
     
+
     .captionHeader{
+        position: absolute;
+        top: -1.7rem;
+        left: -1px;
+        padding: .1rem 6rem .1rem 5rem;        
+        border-top-left-radius: 5px;        
         background-color: var(--ColorPrimary);
-        color: #fff;
-        padding: .6rem;
+        color:#fff;         
+        clip-path: polygon(80% 0, 100% 100%, 0 100%, 0 0);
+        p{
+            font-size: 1.1rem;               
+        }
     }
     .gridHeader{
         display: flex;        
@@ -136,7 +150,8 @@
     th{
         padding: .6rem;
         text-align: left;       
-        background-color: #FBFBFD;
+        background-color: rgb(250, 244, 231);
+        color: var(--ColorPrimary);
         font-weight: 500;        
         border-bottom: 2px solid var(--ColorPrimary);
         border-top: 1px solid var(--ColorPrimary);

@@ -5,12 +5,25 @@ import { MatDialog } from '@angular/material/dialog';
 import { GlobalsService } from '../../../global.service';
 import { LedgerComponent } from './ledger/ledger.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
     selector: 'app-ledgers',
     imports: [TableviewComponent],
     templateUrl: './ledgers.component.html',
-    styleUrl: './ledgers.component.scss'
+    styleUrl: './ledgers.component.scss',
+    animations: [
+      trigger('myAnimation', [
+        state('void', style({ opacity: 0 })),
+        state('*', style({ opacity: .9 })),
+        transition('void => *', [
+          animate('1000ms ease-in')
+        ]),
+        transition('* => void', [
+          animate('1000ms ease-out')
+        ])
+      ])
+    ]
 })
 
 @AutoUnsubscribe
@@ -22,8 +35,11 @@ export class LedgersComponent {
   LedgersList: TypeLedger[] = [];
   FieldNames: string[] = ["#", "Led_Code", "Led_Name", "Grp_Name", "IsStd", "Actions"]
   RemoveSignal: number = 0;
-
+  state = 'void';
   ngOnInit(){
+    setTimeout(() => { 
+      this.state = '*';
+    }, 0);  
     this.ledService.getLedgers(0,0,1).subscribe(data =>{
       if (data.queryStatus == 1){
         this.LedgersList = JSON.parse(data.apiData);          

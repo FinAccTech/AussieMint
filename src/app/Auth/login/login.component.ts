@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { TypeUser } from '../../Types/TypeUser';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../Dashboard/Services/user.service';
 import { Router } from '@angular/router';

@@ -19,6 +19,29 @@ export interface TypeGridItem{
 }
 
 export interface TypeBarCode{
-    BarCodeSno: number;
-    BarCode_No: string;
+    BarCodeSno      : number;
+    BarCode_No      : string;
+    TransSno?       : number;
+    VouType_Name?   : string;
+    Trans_No?       : string;
+    Trans_Date?     : number;
+    DetSno?         : number;
+    ItemSno?        : number;
+    Item_Name?      : string;
+    UomSno?         : number;
+    Uom_Name?       : string;
+    Karat?          : number;
+    Purity?         : number;
+    GrossWt?        : number;
+    StonWt?         : number;
+    Wastage?        : number;
+    NettWt?         : number;
+    Rate?           : number;
+    Amount?         : number;
+    Issued_Wt?      : number;
+    Balance_Wt?     : number;
+    Stock_Status?   : number;
+    CompSno?        : number;
+    Name            : string;
+    Details         : string;
 }

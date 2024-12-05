@@ -10,12 +10,7 @@
             <app-docheader [DocHeader]="DocHeader" [DocFooter]="DocFooter" [EnableAmountCols]="EnableAmountCols" (actionEvent)="handleActionFromChild($event)"   />
         </div>    
         
-        @if (NeedMoreInfo) {
-            <div class="moreinfo">
-                
-            </div>
-        }
- 
+         
         <div class="client">
             <app-clientcard [SelectedClient]="SelectedClient" />
         </div>
@@ -25,7 +20,9 @@
                             [DocFooter]="DocFooter" 
                             [ImageSource]="ImageSource" 
                             [EnableBarCode]="EnableBarCode" 
-                            [EnableAmountCols]="EnableAmountCols" />
+                            [EnableAmountCols]="EnableAmountCols"
+                            [GenerateBarCode]="GenerateBarCode"
+                            />
         </div> 
 
         <div class="footer">

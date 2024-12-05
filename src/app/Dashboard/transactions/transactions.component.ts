@@ -4,12 +4,25 @@ import { GlobalsService } from '../../global.service';
 import { TransactionComponent } from "./transaction/transaction.component";
 import { TransactionService, TypeTransaction } from '../Services/transaction.service';
 import { TableviewComponent } from '../Widgets/tableview/tableview.component';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-transactions',
   imports: [TransactionComponent, TableviewComponent],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss',   
+  animations: [
+    trigger('myAnimation', [
+      state('void', style({ opacity: 0 })),
+      state('*', style({ opacity: 1 })),
+      transition('void => *', [
+        animate('1000ms ease-in')
+      ]),
+      transition('* => void', [
+        animate('1000ms ease-out')
+      ])
+    ])
+  ]
 })
 
 export class TransactionsComponent {
@@ -36,6 +49,10 @@ export class TransactionsComponent {
 
 
   ngOnInit(){    
+    setTimeout(() => { 
+      this.state = '*';
+    }, 0);  
+    
     this.route.params.subscribe(             
       (params: Params) => 
       { 

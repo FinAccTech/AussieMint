@@ -21,7 +21,12 @@ export class ReportService {
     getStockReport(GrpSno: number): Observable<TypeHttpResponse> {
       let postdata ={ "GrpSno": GrpSno, "CompSno" : this.sessionService.GetCompany().CompSno  }; 
       return this.dataService.HttpGet(postdata, "/getStockReport");                
-  } 
+    } 
+
+    getBarCodeStock(): Observable<TypeHttpResponse> {
+      let postdata ={ "CompSno" : this.sessionService.GetCompany().CompSno  }; 
+      return this.dataService.HttpGet(postdata, "/getBarCodeStock");                
+    } 
     
 }
 

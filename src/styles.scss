@@ -903,6 +903,10 @@ $AussieMint-theme: mat.define-theme((
     opacity:0.5 !important;
 }
 
+.disabledDiv{
+  pointer-events: none;
+}
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   *{    

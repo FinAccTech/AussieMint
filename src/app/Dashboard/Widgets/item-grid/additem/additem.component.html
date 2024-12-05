@@ -7,19 +7,22 @@
         <div class="headerRight">
             <p mat-dialog-close="" >&times;</p>
         </div>
-    </div>
+    </div> 
 
     <div class="body"> 
     
         <div class="formRow">
-            <div class="formGroup" >                        
-                <input type="text" class="formControl" required [(ngModel)] = "GridItem.BarCode.BarCode_No"  />
-                <label for="" class="formLabel"> Bar Code </label>
-            </div>
+            @if (EnableBarCode) {
+                <div class="formGroup" style="width: 50%;" [ngClass]="!BarCodeValid ? 'invalidSel' : ''">                                        
+                    <app-selectionlist [Caption]="'BarCode'" [DataSource]="BarCodeList" [SelectedItem]="GridItem.BarCode"  (newItemEvent)="getBarCode($event)"></app-selectionlist>
+                </div>
+            }
 
-            <div class="formGroup" >                                        
-                <app-selectionlist [Caption]="'Item'" [DataSource]="ItemsList" [SelectedItem]="GridItem.Item"  (newItemEvent)="getItem($event)"></app-selectionlist>
-            </div>            
+            <div [ngClass]="!ItemNameValid ? 'invalidSel' : ''" style="width: 50%;" >
+                <div class="formGroup" [ngClass]="EnableBarCode ? 'disabledDiv' :'' " >                                        
+                    <app-selectionlist [Caption]="'Item'" [DataSource]="ItemsList" [SelectedItem]="GridItem.Item"  (newItemEvent)="getItem($event)"></app-selectionlist>
+                </div>            
+            </div>
         </div>
 
         <div class="formRow">
@@ -66,28 +69,29 @@
 
 
         <div class="formRow">
-            <div class="formGroup" >                        
+            <div class="formGroup" [ngClass]="!NettWtValid ? 'invalidSel' : ''" >                        
                 <input type="number" class="formControl" required  readonly [(ngModel)] = "GridItem.NettWt"  />
                 <label for="" class="formLabel"> NettWt </label>
             </div>
 
-            <div class="formGroup" >                        
+            <div class="formGroup" [ngClass]="!UomValid ? 'invalidSel' : ''">                        
                 <app-selectionlist [Caption]="'Uom'" [DataSource]="UomsList" [SelectedItem]="GridItem.Uom"  (newItemEvent)="getUom($event)"></app-selectionlist>                    
             </div>
         </div>
 
-        <div class="formRow">
-            <div class="formGroup" >                        
-                <input type="number" class="formControl" required  NumberInput [(ngModel)] = "GridItem.Rate" (change)="CalcWtandAmt()" />
-                <label for="" class="formLabel"> Rate </label>
+        @if (EnableAmountCols) {
+            <div class="formRow">
+                <div class="formGroup" >                        
+                    <input type="number" class="formControl" required  NumberInput [(ngModel)] = "GridItem.Rate" (change)="CalcWtandAmt()" />
+                    <label for="" class="formLabel"> Rate </label>
+                </div>
+            
+                <div class="formGroup" [ngClass]="!AmountValid ? 'invalidSel' : ''">                        
+                    <input type="number" class="formControl" required  readonly [(ngModel)] = "GridItem.Amount"  />
+                    <label for="" class="formLabel"> Amount </label>
+                </div>            
             </div>
-        
-            <div class="formGroup" >                        
-                <input type="number" class="formControl" required  readonly [(ngModel)] = "GridItem.Amount"  />
-                <label for="" class="formLabel"> Amount </label>
-            </div>            
-        </div>
-        
+        }
 
     </div>
 

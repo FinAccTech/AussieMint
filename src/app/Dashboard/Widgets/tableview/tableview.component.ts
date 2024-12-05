@@ -33,7 +33,8 @@ export class TableviewComponent {
   @Input() EnableDateSelection: boolean = false;
   @Input() FromDate: number = 0;
   @Input() ToDate: number = 0;
-  
+  @Input() RowsPerPage: number = 5;
+
   TotalFields = input<string[]>();
   Totals: number[] = [];
   TotalsArray: TypeTotal[] = [];
@@ -45,7 +46,7 @@ export class TableviewComponent {
   PagedDataList: PagedData[] = [];
 
 // For pagination and Selection
-  RowsPerPage: number = 5;
+  
   TotalPages: number = 0;
   CurrentPage: number = 0;
 
@@ -66,8 +67,7 @@ export class TableviewComponent {
   searchText: string = "";
 
   ngOnInit(){
-       console.log(this.TotalFields());
-       
+              
   }
 
  EditRecord(row: any){
@@ -84,6 +84,10 @@ export class TableviewComponent {
 
  FilterRecords(){
   this.actionEvent.emit({"Action":"Filter","FromDate":this.FromDate,"ToDate":this.ToDate });
+ }
+
+ SelectRecord(row: any){
+  this.actionEvent.emit( {"Action":"Select", "Data": row, });
  }
 
  DoPagination(){  
@@ -138,7 +142,7 @@ export class TableviewComponent {
       }      
     });
     
-    //Forming a Row with the totals array as string and converting that into Json object and pushing it to DataList array
+  //Forming a Row with the totals array as string and converting that into Json object and pushing it to DataList array
     let strarr = "{";
     this.TotalsArray.forEach(tot=>{
       strarr += '"'+tot.name+'":"'+tot.value + '", ';
