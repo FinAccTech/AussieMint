@@ -28,6 +28,10 @@ export class ReportService {
       return this.dataService.HttpGet(postdata, "/getBarCodeStock");                
     } 
     
+    getAssayRecords(): Observable<TypeHttpResponse> {
+      let postdata ={ "CompSno" : this.sessionService.GetCompany().CompSno  }; 
+      return this.dataService.HttpGet(postdata, "/getAssayRecords");                
+    } 
 }
 
 

@@ -5,6 +5,9 @@ import { TransactionComponent } from "./transaction/transaction.component";
 import { TransactionService, TypeTransaction } from '../Services/transaction.service';
 import { TableviewComponent } from '../Widgets/tableview/tableview.component';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { MatDialog } from '@angular/material/dialog';
+import { AdvancedocComponent } from './advancedoc/advancedoc.component';
+import { TypeFieldInfo } from '../../Types/TypeFieldInfo';
 
 @Component({
   selector: 'app-transactions',
@@ -26,13 +29,21 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 })
 
 export class TransactionsComponent {
-
+//"#", "Trans_No", "Trans_DateStr", "Client_Name", "TotNettWt", "NettAmount","Actions"
   TransList: TypeTransaction[]= [];
-  FieldNames: string[] = ["#", "Trans_No", "Trans_DateStr", "Client_Name", "TotNettWt", "NettAmount","Actions"]
+  FieldNames: TypeFieldInfo[] = [
+      {Field_Name:"#", Data_Type:"string" }, 
+      {Field_Name:"Trans_No", Data_Type:"string" }, 
+      {Field_Name:"Trans_Date", Data_Type:"date" }, 
+      {Field_Name:"Client_Name", Data_Type:"string" }, 
+      {Field_Name:"TotNettWt", Data_Type:"number", Decimals:3 }, 
+      {Field_Name:"NettAmount", Data_Type:"number" }, 
+      {Field_Name:"Actions", Data_Type:"object" }, 
+    ]
   TotalFields: string[] = ["TotNettWt", "NettAmount"]
   RemoveSignal: number = 0;
 
-  constructor(private route: ActivatedRoute, private router: Router, private globals: GlobalsService, private transService: TransactionService){
+  constructor(private route: ActivatedRoute, private dialog: MatDialog, private globals: GlobalsService, private transService: TransactionService){
     
   }
  
@@ -74,7 +85,7 @@ export class TransactionsComponent {
       else{
         this.globals.ShowAlert(3,data.apiData);
       }
-    })
+    }) 
   }
 
   AddNewTransaction(){    
@@ -82,7 +93,27 @@ export class TransactionsComponent {
     Trans.Series.VouType.VouTypeSno = this.VouTypeSno;    
     Trans.TaxPer = 10;    
     this.ChildTransaction = Trans;
-    this.EntryMode = true;
+    if ((Trans.Series.VouType.VouTypeSno == this.globals.VTypAdvancePurchase) || (Trans.Series.VouType.VouTypeSno == this.globals.VTypAdvanceSales)){
+      const dialogRef = this.dialog.open(AdvancedocComponent, 
+        {
+          width: '60vw',
+          maxWidth: 'none',
+          data: Trans,        
+          panelClass: "dialogMat"
+        });      
+        dialogRef.disableClose = true; 
+        dialogRef.afterClosed().subscribe(result => {        
+          
+          if (result) 
+          { 
+            // if (Sno !== 0) { return; }
+            // this.ItemsList.push(result);          
+          }        
+        }); 
+    }
+    else{
+      this.EntryMode = true;
+    }    
   }
 
   handleEventFromChild(event: string){

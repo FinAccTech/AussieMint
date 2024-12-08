@@ -13,13 +13,16 @@ import { ProgressbroadcastService } from '../../progressbroadcast.service';
 })
 
 export class DashboardComponent {
-    subscriptionName: Subscription;
+    subscriptionName!: Subscription;
     Progress: boolean = false;
 
     constructor(  private progressService: ProgressbroadcastService )
                {
-                  this.subscriptionName = this.progressService.getUpdate().subscribe
-                          (message => { //message contains the data sent from service
+                  
+              }
+    ngAfterViewInit(){
+      this.subscriptionName = this.progressService.getUpdate().subscribe
+                          (message => { //message contains the data sent from service                            
                             if (message.action === "start")    {
                                 this.Progress = true;
                             }
@@ -28,8 +31,8 @@ export class DashboardComponent {
                                 this.Progress = false;
                             }             
                           });
-              }
-  
+    }
+
     ngOnDestroy(){
       this.subscriptionName.unsubscribe();
     }

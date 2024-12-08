@@ -45,60 +45,60 @@ export class TransactionService {
 
     InitializeTransaction () { 
     let Transaction: TypeTransaction = {
-        TransSno:        0,
-        Trans_No:        "",
-        Trans_Date:      0,
-        IsOpen:          0,        
-        Series:     this.seriesService.Initialize(),
-        Client:     this.clntService.Initialize(),
+        TransSno:           0,
+        Trans_No:           "",
+        Trans_Date:         DateToInt(new Date()),
+        IsOpen:             0,        
+        Series:             this.seriesService.Initialize(),
+        Client:             this.clntService.Initialize(),
     
-        Due_Date: 0,
-        RefSno: 0,
-        
-        TotAmount: 0,
-        TaxPer: 0,
-        TaxAmount: 0,
-        RevAmount: 0,
-        NettAmount: 0,
+        Due_Date:           DateToInt(new Date()),
+        RefSno:             0,
+        BarCodeRefSno:      0,
+        TotAmount:          0,
+        TaxPer:             0,
+        TaxAmount:          0,
+        RevAmount:          0,
+        NettAmount:         0,
     
-        Remarks: "",
-        Print_Remarks: "",
+        Remarks:            "",
+        Print_Remarks:      "",
     
-        Locked: 0, 
-        UserSno: this.sessionService.GetUser().UserSno,
-        CompSno: this.sessionService.GetCompany().CompSno,
-        VouSno: 0,
+        Locked:             0, 
+        UserSno:            this.sessionService.GetUser().UserSno,
+        CompSno:            this.sessionService.GetCompany().CompSno,
+        VouSno:             0,
 
-        PaymentModes: [],
-        GridItems: [],
+        PaymentModes:       [],
+        GridItems:          [],
 
-        Series_Json: "",
-        Client_Json: "",
-        PaymentModes_Json: "",
-        Items_Json: "",
-        Images_Json: "",
+        Series_Json:        "",
+        Client_Json:        "",
+        PaymentModes_Json:  "",
+        Items_Json:         "",
+        Images_Json:        "",
 
-        ItemDetailXML: "",
-        ImageDetailXML: "",
-        PaymentModesXML: "",
-        ImageSource: [],
+        ItemDetailXML:      "",
+        ImageDetailXML:     "",
+        PaymentModesXML:    "",
+        ImageSource:        [],
 
-        Name: "",
-        Details: "",
+        Name:               "",
+        Details:            "",
       }
       return Transaction;
     }
 
 InitializeDocHeader(){
     let Doc: TypeDocHeader = {            
-        TransSno: 0,
-        Trans_No: "",
-        Series: this.seriesService.Initialize(),
-        Trans_Date: 0,
-        Due_Date: 0,
-        Reference: this.InitializeTransaction(),
-        RefList: [],
-        PaymentModes: [],
+        TransSno:       0,
+        Trans_No:       "",
+        Series:         this.seriesService.Initialize(),
+        Trans_Date:     0,
+        Due_Date:       0,
+        Reference:      this.InitializeTransaction(),
+        RefList:        [],
+        PaymentModes:   [],
     }
     return Doc
 }
@@ -109,12 +109,12 @@ InitializeDocFooter(){
 }
 
 InitializePaymentModes(){
-    let Pmode: TypePaymentModes = {            
-        PmSno: 0,
-        TransSno: 0,
-        Ledger: this.ledService.Initialize(),
-        Amount: 0,
-        Remarks: "",
+    let Pmode:      TypePaymentModes = {            
+        PmSno:      0,
+        TransSno:   0,
+        Ledger:     this.ledService.Initialize(),
+        Amount:     0,
+        Remarks:    "",
     }
     return Pmode
 }
@@ -122,64 +122,88 @@ InitializePaymentModes(){
 }
 
 export  interface TypeDocHeader{
-    TransSno: number;
-    Trans_No: string;
-    Series: TypeVoucherSeries;
-    Trans_Date: number;
-    Due_Date?: number;
-    Reference: TypeTransaction;
-    RefList: TypeTransaction[];
-    PaymentModes: TypePaymentModes[];
+    TransSno:           number;
+    Trans_No:           string;
+    Series:             TypeVoucherSeries;
+    Trans_Date:         number;
+    Due_Date?:          number;
+    Reference:          TypeTransaction;
+    RefList:            TypeTransaction[];
+    PaymentModes:       TypePaymentModes[];
 }
 
 
 export interface TypePaymentModes{
-    PmSno: number;
-    TransSno: number;
-    Ledger: TypeLedger;
-    Amount: number;
-    Remarks: string
+    PmSno:      number;
+    TransSno:   number;
+    Ledger:     TypeLedger;
+    Amount:     number;
+    Remarks:    string
 }
 
 export interface TypeTransaction{
-    TransSno:        number,
-    Trans_No:        string,
-    Trans_Date:      number,    
-    IsOpen:          number;    
-    Series:          TypeVoucherSeries,
-    Client:          TypeClient,
+    TransSno:           number,
+    Trans_No:           string,
+    Trans_Date:         number,    
+    IsOpen:             number;    
+    Series:             TypeVoucherSeries,
+    Client:             TypeClient,
     
-    Due_Date:        number,
-    RefSno:          number,
-    
-    TotAmount:    number,
-    TaxPer: number,
-    TaxAmount: number,
-    RevAmount: number,
-    NettAmount: number,
+    Due_Date:           number,
+    RefSno:             number,
+    BarCodeRefSno:      number,
+    TotAmount:          number,
+    TaxPer:             number,
+    TaxAmount:          number,
+    RevAmount:          number,
+    NettAmount:         number,
   
-    Remarks: string,
-    Print_Remarks: string,
+    Remarks:            string,
+    Print_Remarks:      string,
   
-    Locked: number,    
-    UserSno: number,
-    CompSno: number,
-    VouSno: number;
+    Locked:             number,    
+    UserSno:            number,
+    CompSno:            number,
+    VouSno:             number;
     
-    PaymentModes: TypePaymentModes[];
-    GridItems: TypeGridItem[];
-    Series_Json: string;
-    Client_Json: string;
-    PaymentModes_Json: string;
-    Items_Json: string;
-    Images_Json: string;
-
+    PaymentModes:       TypePaymentModes[];
+    GridItems:          TypeGridItem[];
+    Series_Json:        string;
+    Client_Json:        string;
+    PaymentModes_Json:  string;
+    Items_Json:         string;
+    Images_Json:        string;
     
-    ItemDetailXML: string;
-    ImageDetailXML: string;
-    PaymentModesXML: string;
-    ImageSource: FileHandle[];
+    ItemDetailXML:      string;
+    ImageDetailXML:     string;
+    PaymentModesXML:    string;
+    ImageSource:        FileHandle[];
 
-    Name: string;
-    Details: string;
+    Name:               string;
+    Details:            string;
+}
+
+export interface TypeAssayRecord{
+    RecordSno:          number;
+    BarCodeSno:         number;
+    BarCode_No:         string;
+    ItemSno:            number;
+    Item_Name:          string;
+    Trans_No:           string;
+    Trans_Date:         string;
+    Client_Name:        string;
+    Assay_Status:       number;
+    IssueTransSno:      number;
+    IssueTrans_No:      string;
+    ReceiptTransSno:    number;
+    ReceiptTrans_No:    string;
+}
+
+function DateToInt(inputDate: Date)
+{
+  let month: string = (inputDate.getMonth() + 1).toString();    
+  let day: string = inputDate.getDate().toString();    
+  if (month.length == 1) { month = "0" + month }
+  if (day.length == 1) {day = "0" + day }
+  return parseInt (inputDate.getFullYear().toString() + month + day);
 }

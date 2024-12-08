@@ -1,0 +1,93 @@
+<div class="modalForm">
+    <div class="header">
+        <div class="headerLeft">
+            <span class="bar"></span>
+            <p> &nbsp; Advance Document </p>
+        </div>
+        <div class="headerRight">
+            <p mat-dialog-close="" >&times;</p>
+        </div>
+    </div>
+
+    <div class="body"> 
+        <div class="docRow">
+            <div style="width: 100%;" [ngClass]="!SeriesNameValid ? 'invalidSel' : ''"> 
+                <app-selectionlist [Caption]="'Doc Series'" [DataSource]="SeriesList" [SelectedItem]="data.Series"  (newItemEvent)="getSeries($event)"></app-selectionlist>
+            </div>        
+            <div class="formGroup" [ngClass]="!DocNoValid ? 'invalidSel' : ''">
+                <input type="text" style="text-align: center;" class="formControl" readonly required [(ngModel)]="data.Trans_No"  />
+                <label for="" class="formLabel"> Doc No </label>                            
+            </div>
+    
+            <div class="formGroup" >                    
+                <input type="date" class="formControl"  [ngModel]="data.Trans_Date | intToDate | date:'yyyy-MM-dd'" (blur)="data.Trans_Date = DateToInt($event) " />                    
+                <label for="" class="formLabel"> Doc Date </label>                             
+            </div>
+    
+            <div class="formGroup">                    
+                <input type="date" class="formControl"  [ngModel]="data.Due_Date! | intToDate | date:'yyyy-MM-dd'" (blur)="data.Due_Date = DateToInt($event) " />                    
+                <label for="" class="formLabel"> Due Date </label>                             
+            </div>                
+        </div>    
+    
+        
+        <div class="row" style="margin-top: 1.5rem;" >
+            <div class="col50" [ngClass]="!ClientNameValid ? 'invalidSel' : ''">
+                <app-selectionlist [Caption]="'Client'" [DataSource]="ClientList" [SelectedItem]="data.Client"  (newItemEvent)="getClient($event)"></app-selectionlist>
+            </div>
+
+            <div class="col50">
+                <div class="row">
+                    <div class="col50">
+                        <div class="formGroup" [ngClass]="!NettAmountValid ? 'invalidSel' : ''">
+                            <input type="number" class="formControl" NumberInput [(ngModel)]="data.NettAmount"/>                    
+                            <label for="" class="formLabel"> Amount </label>                  
+                        </div>
+                    </div>
+    
+                    <div class="col50">
+                        <button class="btnOutlined" (click)="OpenPaymentModes()" >
+                            Payment Modes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 1.5rem;" >
+            <div class="col50">
+                @if (data.Client.ClientSno !==0) {
+                    <div class="partyDetails">
+                        <div class="general">
+                            <div class="imageArea">
+                                <img src="{{data.Client.Profile_Image}}" height="100" width="100" />
+                            </div>
+                            <div class="otherDetails">
+                                <p class="name">{{data.Client.Client_Name }}</p>
+                                <p>{{data.Client.Address }}</p>
+                                <p>{{data.Client.Mobile }}</p>
+                            </div>
+                        </div>
+                        <div class="imgList">
+                            @for (item of data.Client.ImagesSource ; track $index) {
+                                <img src="{{item.Image_Url}}" height="50" width="50" />
+                            }
+                        </div>
+                    </div>    
+                }
+            </div>
+
+            <div class="col50">
+                <div class="formGroup">
+                    <input type="text" class="formControl" readonly [ngModel]="data.Remarks"/>                    
+                    <label for="" class="formLabel"> Remarks </label>                  
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <button (click)="SaveDocuemnt()" > <i class="fa-solid fa-floppy-disk"></i> &nbsp; Save</button>        
+    </div>
+</div>

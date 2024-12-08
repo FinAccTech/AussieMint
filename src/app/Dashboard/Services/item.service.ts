@@ -34,8 +34,9 @@ Initialize(){
         Item_Code: "",
         Item_Name: "",
         IGroup: this.grpService.Initialize(),
+        Require_LabTest: 0,
         Remarks: "",
-        Active_Status: 0,
+      Active_Status: 0,
         Create_Date: 0,
         UserSno: this.sessionService.GetUser().UserSno,
         CompSno: this.sessionService.GetCompany().CompSno,
@@ -52,6 +53,7 @@ export interface TypeItem {
     Item_Code?: string;
     Item_Name: string;
     IGroup?: TypeItemGroup;
+    Require_LabTest?: number;
     Remarks?: string;
     Active_Status?: number;
     Create_Date?: number;

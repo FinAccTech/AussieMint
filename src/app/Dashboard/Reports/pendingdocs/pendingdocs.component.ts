@@ -25,7 +25,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
     ])
   ]
 })
-@AutoUnsubscribe
+@AutoUnsubscribe 
 export class PendingdocsComponent {
   VouTypeSno: number = 0;
   VouTypeName: string = "";

@@ -49,6 +49,8 @@ export const menuTree =[
             {   Caption: "Casting Receipt", Iconn: "", RouterLink:"transactions/21"   },            
             {   Caption: "Jobwork Inward", Iconn: "", RouterLink:"transactions/22"   },            
             {   Caption: "Jobwork Delivery", Iconn: "", RouterLink:"transactions/23"   },            
+            {   Caption: "Lab Testing Issue", Iconn: "", RouterLink:"transactions/26"   }, 
+            {   Caption: "Lab Testing Receipt", Iconn: "", RouterLink:"transactions/27"   }, 
         ]
     },
 

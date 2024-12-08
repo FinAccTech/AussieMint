@@ -96,21 +96,21 @@ export class ItemGridComponent {
   }
   
 
-  EditItem( item: TypeGridItem, index: number){
-    const dialogRef = this.dialog.open(AdditemComponent, 
-      {
-        data: item,        
-        panelClass: "dialogMat"
-      });      
-      dialogRef.disableClose = true; 
-      dialogRef.afterClosed().subscribe(result => {                  
-        if (result) 
-        { 
-          this.GridItems()![index] = result;
-          this.SetTotals();     
-        }        
-      });  
-  }
+EditItem( item: TypeGridItem, index: number){
+  const dialogRef = this.dialog.open(AdditemComponent, 
+    {
+      data: item,        
+      panelClass: "dialogMat"
+    });      
+    dialogRef.disableClose = true; 
+    dialogRef.afterClosed().subscribe(result => {                  
+      if (result) 
+      { 
+        this.GridItems()![index] = result;
+        this.SetTotals();     
+      }        
+    });  
+}
 
   RemoveItem(index: number){
     this.GridItems()?.splice(index,1);
@@ -135,7 +135,7 @@ export class ItemGridComponent {
         this.TotQty +=  +item.Qty;
         this.TotGrossWt +=  +item.GrossWt;
         this.TotNettWt +=  +item.NettWt;
-        this.DocFooter()!.TotalAmount +=  item.Amount;
+        this.DocFooter()!.TotalAmount +=  +item.Amount;
     });
 
     this.TotGrossWt = +this.TotGrossWt.toFixed(3);

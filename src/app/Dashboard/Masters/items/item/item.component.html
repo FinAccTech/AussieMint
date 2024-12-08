@@ -62,6 +62,20 @@
             </div>
 
             <div class="col50">
+                <label class="toggle">
+                    <input class="toggle-checkbox" type="checkbox" [checked]="Item.Require_LabTest" [(ngModel)]="Item.Require_LabTest"> <!-- (change)="SetActiveStatus($event)"  -->
+                    <div class="toggle-switch"></div>
+                    <span class="toggle-label"> {{Item.Require_LabTest == 1? 'Require Lab Test' : 'Lab Test Not Required' }}  </span>
+                </label>                
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 1.5rem;" >
+            <div class="col50">
+
+            </div>
+
+            <div class="col50">
                 <div class="formGroup">
                     <input type="date" class="formControl" readonly [ngModel]="Item.Create_Date! | intToDate | date:'yyyy-MM-dd'" (ngModelChange)="Item.Create_Date = DateToInt($event) " />                    
                     <label for="" class="formLabel date"> Create Date </label>

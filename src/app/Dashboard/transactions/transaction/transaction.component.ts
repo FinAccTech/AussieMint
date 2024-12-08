@@ -15,6 +15,7 @@ import { TypeDocFooter } from '../../../Types/TypeDocFooter';
 import { SessionStorageService } from '../../../session-storage.service';
 import { TypeVoucherTypes } from '../../Services/vouseries.service';
 import { ReportService } from '../../Services/reports.service';
+import { LedgerService, TypeLedger } from '../../Services/ledger.service';
 
 @Component({ 
   selector: 'app-transaction',
@@ -53,6 +54,7 @@ export class TransactionComponent {
   EnableBarCode: boolean    = false;
   GenerateBarCode: boolean  = false;
   NeedMoreInfo:     boolean = true;
+  PaymentModeLedgers: TypeLedger[] = [];
 
   @Input() ChildTransaction!:TypeTransaction;
   @Output() actionEvent = new EventEmitter<string>();
@@ -62,6 +64,7 @@ export class TransactionComponent {
     private clntService: ClientService,    
     private sessionService: SessionStorageService,
     private repService: ReportService,
+    private ledService: LedgerService,
   ){
     this.DocHeader      =  transService.InitializeDocHeader();  
     this.SelectedClient = clntService.Initialize();            
@@ -71,11 +74,15 @@ export class TransactionComponent {
   ngOnInit(){     
     setTimeout(() => { 
       this.state = '*';
-    }, 0);  
+    }, 0);   
 
     this.SetChildProperties();
 
     this.VouTypeName = this.globals.GetVouTypeName(this.ChildTransaction.Series.VouType.VouTypeSno);    
+    this.ledService.getPaymentModes().subscribe(data=>{
+      this.PaymentModeLedgers = JSON.parse(data.apiData);
+    });
+    
     this.LoadDocument();    
   }
 
@@ -124,6 +131,9 @@ export class TransactionComponent {
     this.ChildTransaction.Trans_Date    = this.DocHeader.Trans_Date;
     this.ChildTransaction.Due_Date      = this.DocHeader.Due_Date!;
     this.ChildTransaction.RefSno        = this.DocHeader.Reference.TransSno;
+    if (this.DocHeader.PaymentModes.length == 0){
+      this.DocHeader.PaymentModes.push ({ PmSno:0, TransSno:0, "Ledger": this.PaymentModeLedgers[0], "Amount" : this.DocFooter.NettAmount, "Remarks":"" })
+    }
     this.ChildTransaction.PaymentModes  = this.DocHeader.PaymentModes;
 
     //From Client Component Fields
@@ -142,10 +152,11 @@ export class TransactionComponent {
 
     this.ChildTransaction.ImageSource   = this.ImageSource;
     //All Xmls
-    this.ChildTransaction.ItemDetailXML   = this.GetItemXml();
-    this.ChildTransaction.ImageDetailXML  = this.GetImageXml();
-    this.ChildTransaction.PaymentModesXML = this.GetPaymentModeXml( this.ChildTransaction.PaymentModes,this.ChildTransaction.Series.VouType);
+    this.ChildTransaction.ItemDetailXML   = this.globals.GetItemXml(this.GridItems);
+    this.ChildTransaction.ImageDetailXML  = this.globals.GetImageXml(this.ImageSource, this.sessionService.GetCompany().CompSno, this.ChildTransaction.Series.VouType.VouTypeSno );
+    this.ChildTransaction.PaymentModesXML = this.globals.GetPaymentModeXml( this.ChildTransaction.PaymentModes,this.ChildTransaction.Series.VouType);
 
+    
     this.transService.saveTransaction(this.ChildTransaction).subscribe(data=>{
       if (data.queryStatus == 1){
         this.globals.SnackBar("info", "Transaction saved successfully!!",1500);
@@ -216,82 +227,8 @@ export class TransactionComponent {
     this.DocFooter.NettAmount     = this.ChildTransaction.NettAmount = Trans.NettAmount;
   }
 
-  GetItemXml(): string{
-    var StrItemXML: string = "";  
-    StrItemXML = "<ROOT>"
-    StrItemXML += "<Transaction>"  
-    for (var i=0; i < this.GridItems.length; i++)
-    {
-        StrItemXML += "<Transaction_Details ";
-        StrItemXML += " BarCodeSno='" + this.GridItems[i].BarCode.BarCodeSno + "' ";                 
-        StrItemXML += " ItemSno='" + this.GridItems[i].Item.ItemSno + "' ";                 
-        StrItemXML += " Item_Desc='" + this.GridItems[i].Item_Desc + "' ";                 
-        StrItemXML += " UomSno='" + this.GridItems[i].Uom.UomSno + "' ";                 
-        StrItemXML += " Karat='" + this.GridItems[i].Karat + "' ";                 
-        StrItemXML += " Purity='" + this.GridItems[i].Purity + "' ";                 
-        StrItemXML += " Qty='" + this.GridItems[i].Qty + "' ";             
-        StrItemXML += " GrossWt='" + this.GridItems[i].GrossWt + "' ";             
-        StrItemXML += " StoneWt='" + this.GridItems[i].StoneWt + "' ";             
-        StrItemXML += " Wastage='" + this.GridItems[i].Wastage + "' ";             
-        StrItemXML += " NettWt='" + this.GridItems[i].NettWt + "' ";             
-        StrItemXML += " PureWt='" + (this.GridItems[i].Purity / 100) * this.GridItems[i].NettWt  + "' ";             
-        StrItemXML += " Rate='" + this.GridItems[i].Rate + "' ";             
-        StrItemXML += " Amount='" + this.GridItems[i].Amount + "' ";                     
-        StrItemXML += " >";
-        StrItemXML += "</Transaction_Details>";    
-    }   
-    StrItemXML += "</Transaction>"
-    StrItemXML += "</ROOT>";
-
-    return StrItemXML;
-  }
-
-  GetImageXml(): string{
-    var StrImageXml: string = "";
-    StrImageXml = "<ROOT>"
-    StrImageXml += "<Images>"    
-    for (var i=0; i < this.ImageSource.length; i++)
-    {
-      if (this.ImageSource[i].DelStatus == 0)
-      {
-        StrImageXml += "<Image_Details ";
-        StrImageXml += " Image_Name='" + this.ImageSource[i].Image_Name + "' ";                         
-        StrImageXml += " Image_Url='" + this.globals.getTransactionImagesServerPath( this.sessionService.GetCompany().CompSno, this.ChildTransaction.Series.VouType.VouTypeSno) + "' ";           
-        StrImageXml += " >";
-        StrImageXml += "</Image_Details>";
-      }      
-    }   
-    StrImageXml += "</Images>"
-    StrImageXml += "</ROOT>";
-
-    return StrImageXml;
-  }
   
-  GetPaymentModeXml(Pmode: TypePaymentModes[], VouType: TypeVoucherTypes):string{    
-    let StrXml = "";
-     Pmode.forEach((mode: TypePaymentModes)=>{
-       StrXml += '<Voucher_Details ';
-         StrXml += 'LedSno="' + mode.Ledger.LedSno + '" ' ;	
-         switch (VouType.Cash_Type) {
-           case 2:
-               StrXml += 'Debit="0" ' ;
-               StrXml += 'Credit="' + mode.Amount + '" ' ;	    
-               break;
-           case 1:
-               StrXml += 'Debit="' + mode.Amount + '" ' ;
-               StrXml += 'Credit="0" ' ;	    
-               break;         
-         }
-         StrXml += 'PayRemarks="' + mode.Remarks + '" ' ;	    
-       StrXml += '>';
-       StrXml += '</Voucher_Details> ';
-     })    
-     return StrXml;		
-   }
-
    ValidateInputs(): boolean{        
-    console.log(this.ChildTransaction.Client);
-    
     if (!this.ChildTransaction.Client.ClientSno || this.ChildTransaction.Client.ClientSno == 0){
       this.globals.SnackBar("error", "Invalid Client details",1000);
       return false;
@@ -307,6 +244,14 @@ export class TransactionComponent {
 
    SetChildProperties(){
     switch (this.ChildTransaction.Series.VouType.VouTypeSno) {
+      case this.globals.VTypPurchaseOrder:
+        this.EnableAmountCols= true;
+        this.EnableBarCode = true;
+        this.repService.getPendingDocuments(this.globals.VTypAdvancePurchase).subscribe(data => {
+          this.DocHeader.RefList = JSON.parse (data.apiData);
+        })
+      break;
+
       case this.globals.VTypPurchaseOrder:
         this.EnableAmountCols= true;
         this.EnableBarCode = false;
@@ -327,10 +272,15 @@ export class TransactionComponent {
           this.DocHeader.RefList = JSON.parse (data.apiData);
         })
         break;
+
       case this.globals.VTypSalesOrder:
         this.EnableAmountCols= true;
         this.EnableBarCode = true;
+        this.repService.getPendingDocuments(this.globals.VTypAdvanceSales).subscribe(data => {
+          this.DocHeader.RefList = JSON.parse (data.apiData);
+        })
       break;
+
       case this.globals.VTypDeliveryDoc:
         this.EnableAmountCols= false;
         this.EnableBarCode = true;

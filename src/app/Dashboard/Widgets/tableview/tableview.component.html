@@ -27,8 +27,9 @@
         <table>
             <thead>
                 @for (element of FieldNames(); track $index) {
-                    <th [style.textAlign]=" element == 'Actions'? 'center' : 'left' " >                        
-                        {{ element.replace("_"," ") }} 
+                    <!-- <th [style.textAlign]=" element.Field_Name == 'Actions'? 'center' : 'left' " >                         -->
+                    <th [style.textAlign]="element.Data_Type == 'string' ? 'left' :  element.Data_Type == 'number' ? 'right' : element.Data_Type == 'date' ? 'left': 'center'  " >                        
+                        {{ element.Field_Name.replace("_"," ") }} 
                     </th>
                 }
             </thead>
@@ -38,13 +39,13 @@
                     @for (row of PagedDataList[CurrentPage].PageData| search: searchText ; track row; let i=$index ){
                         @if (i < RowsPerPage+1 ) {  
 
-                            <tr  [ngClass]="row[FieldNames()[0]] == '{#Total#}' ? 'totalRow' :''" (click)="SelectRecord(row)"  >                            
+                            <tr  [ngClass]="row[FieldNames()[0].Field_Name] == '{#Total#}' ? 'totalRow' :''" (click)="SelectRecord(row)"  >                            
 
                                 @for (element of FieldNames(); track $index) {
 
-                                    @switch (element) {                                    
+                                    @switch (element.Field_Name) {                                    
                                         @case ("#") {
-                                            @if (row[element] == "{#Total#}") {
+                                            @if (row[element.Field_Name] == "{#Total#}") {
                                                 <td></td>
                                             }
                                             @else {
@@ -52,7 +53,7 @@
                                             }
                                         }
                                         @case ("Actions") {
-                                            @if (row[element] == "{#Total#}") {
+                                            @if (row[element.Field_Name] == "{#Total#}") {
                                                 <td></td>}
                                             @else{
                                                 <td class="actions" >                                    
@@ -63,10 +64,41 @@
                                             }
                                         }                                
                                         @default{
-                                            @if (element.toLocaleLowerCase().includes("image") ) {
+                                            @switch (element.Data_Type) {
+                                                @case ("date") {
+                                                    <td> {{row[element.Field_Name] | intToDate | date:'yyyy-MM-dd'}} </td>
+                                                }
+                                                @case ("number") {
+                                                    @switch (element.Decimals) {                                                        
+                                                        @case (2) {
+                                                            <td style="text-align: right; padding-right: 1rem;" > {{row[element.Field_Name] | number:'1.2-2' }} </td>
+                                                        }
+                                                        @case (3) {
+                                                            <td style="text-align: right; padding-right: 1rem;" > {{row[element.Field_Name] | number:'1.3-3' }} </td>
+                                                        }
+                                                        @default {
+                                                            <td style="text-align: right; padding-right: 1rem;" > {{row[element.Field_Name] | number }} </td>
+                                                        }
+                                                    }
+                                                                                                        
+                                                }
+                                                @case ("image") {
+                                                    @if ( row[element.Field_Name] && row[element.Field_Name].length > 0 ) {
+                                                        <img style="border-radius: 50%; filter: drop-shadow(8px 10px 8px #D3AC67); " [src]="row[element.Field_Name]"  width="70" height="70" />
+                                                    }
+                                                }
+                                                @default {
+                                                    @if (row[element.Field_Name] == "{#Total#}") {
+                                                        <td></td>
+                                                    } @else {
+                                                        <td> {{row[element.Field_Name]}} </td>
+                                                    }                                                    
+                                                }
+                                            }
+                                            <!-- @if (element.Field_Name.toLocaleLowerCase().includes("image") ) {
                                                 <td>
-                                                    @defer (when row[element] && row[element].length > 0 ) {
-                                                        <img style="border-radius: 50%; filter: drop-shadow(8px 10px 8px #D3AC67); " [src]="row[element]"  width="70" height="70" />
+                                                    @defer (when row[element.Field_Name] && row[element.Field_Name].length > 0 ) {
+                                                        <img style="border-radius: 50%; filter: drop-shadow(8px 10px 8px #D3AC67); " [src]="row[element.Field_Name]"  width="70" height="70" />
                                                     }                                            
                                                     @loading {
                                                         <span>Loading Image</span>
@@ -74,13 +106,13 @@
                                                 </td>         
                                             }
                                             @else {            
-                                                @if (row[element] == "{#Total#}") {
+                                                @if (row[element.Field_Name] == "{#Total#}") {
                                                     <td></td>
                                                 }   
                                                 @else {
-                                                    <td> {{row[element]}} </td>
+                                                    <td> {{row[element.Field_Name]}} </td>
                                                 }                                                                         
-                                            }                                    
+                                            }                                     -->
                                         }
                                     }                
                                 }                

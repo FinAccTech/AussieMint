@@ -23,16 +23,25 @@
     </div>    
 
     <div class="docRow">
-        <div style="width: 50%;">            
-            <app-selectionlist [Caption]="'Reference'" [DataSource]="DocHeader()!.RefList" [SelectedItem]="DocHeader()!.Reference"  (newItemEvent)="getReference($event)" ></app-selectionlist>
-        </div>        
+        @if (DocHeader()?.Series?.VouType?.VouTypeSno !== 26) {
+            <div style="width: 50%;">            
+                <app-selectionlist [Caption]="'Reference'" [DataSource]="DocHeader()!.RefList" [SelectedItem]="DocHeader()!.Reference"  (newItemEvent)="getReference($event)" ></app-selectionlist>
+            </div>        
+        }
+        @if (DocHeader()?.Series?.VouType?.VouTypeSno == 26) {
+            <div style="width: 50%;">            
+                <app-selectionlist [Caption]="'Testing Item'" [DataSource]="AssayRecordList" [SelectedItem]="SelectedAssayItem"  (newItemEvent)="getAssayItem($event)" ></app-selectionlist>
+            </div>       
+        }
+
         @if (EnableAmountCols()) {
             <div style="width: 50%; text-align: center;">
                 <button class="btnOutlined" (click)="OpenPaymentModes()" > <i class='bx bx-credit-card-front'></i> Payment Modes </button>
             </div>
         }
     </div>
-    
+
+   
     <div class="docRow">
         <div class="formGroup">
             <!-- <input type="text" class="formControl" [(ngModel)]="DocHeader()!.PaymentModes" required/>

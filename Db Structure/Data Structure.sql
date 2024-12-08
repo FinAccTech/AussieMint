@@ -78,10 +78,12 @@ INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Refining 
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Refining Receipt',1,0)
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Casting Issue',2,0)
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Casting Receipt',1,0)
-INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Jobwork Inward',0,0)
-INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Jobwork Delivery',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Jobwork Inward',1,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Jobwork Delivery',2,0)
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Advance Doc Purchase',0,2)
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Advance Doc Sales',0,1)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Lab Testing Issue',2,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Lab Testing Receipt',1,0)
 
 
 GO
@@ -354,6 +356,7 @@ CREATE TABLE Items
 	Item_Code VARCHAR(20),
 	Item_Name VARCHAR(50),
 	GrpSno INT,
+  Require_LabTest BIT,
 	Remarks VARCHAR(100),
 	Active_Status BIT,
 	Create_Date INT,
@@ -431,7 +434,8 @@ CREATE TABLE Transactions
 
   Due_Date        INT,
   RefSno          INT,
-  
+  BarCodeRefSno   INT,
+
   TotAmount       MONEY,
   TaxPer          DECIMAL(4,2),
   TaxAmount       MONEY,
@@ -448,6 +452,8 @@ CREATE TABLE Transactions
 )
 
 GO
+
+
 
 CREATE TABLE Transaction_Details
 (
@@ -491,3 +497,8 @@ CREATE TABLE PaymentMode_Details
 GO
 
 
+CREATE TABLE Assay_Records
+(
+  RecordSno         INT PRIMARY KEY IDENTITY(1,1),
+  BarCodeSno        INT    
+)

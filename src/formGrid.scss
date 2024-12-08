@@ -1,7 +1,7 @@
 
 .formWrapper{
     display: grid;
-    grid-template-rows: .3fr 1fr 2fr .5fr;
+    grid-template-rows: .3fr .5fr 1.5fr .5fr;
     grid-template-columns: 1fr 1fr;
     grid-template-areas: 
         'header header'

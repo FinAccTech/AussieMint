@@ -1,0 +1,49 @@
+.docRow{
+    display: flex;
+    flex-direction: row;        
+    margin-bottom: .4rem;
+    column-gap: .4rem;
+    padding: 0rem .6rem 0 .6rem;
+}
+
+.partyDetails{
+    display: flex;
+    flex-direction: column;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    
+    .general{        
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: .7rem;
+        .imageArea{
+            flex: 1;
+            img{
+                border-radius: 1rem;
+                width: 100%;
+                height: 100%;
+            }
+        }
+        .otherDetails{
+            flex: 2;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            row-gap: .5rem;
+
+            p.name{
+                font-size: 1.2rem;
+                font-weight: 500;
+            }
+        }
+    }
+
+    .imgList{
+        padding: .7rem;
+        display: flex;
+        row-gap: .4rem;
+        img{
+            border-radius: 50%;
+        }
+    }   
+}

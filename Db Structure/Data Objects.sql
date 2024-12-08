@@ -529,7 +529,10 @@ RETURNS TABLE
 WITH ENCRYPTION AS
 RETURN
 	SELECT (
-  SELECT	  Ser.*, VTyp.VouTypeSno as 'VouType.VouTypeSno',  VTyp.VouType_Name as 'VouType.VouType_Name',  VTyp.VouType_Name  as 'VouType.Name', VTyp.VouType_Name  as 'VouType.Details',  Ser.Series_Name as Name, Ser.Series_Name as Details,
+  SELECT	  Ser.*, VTyp.VouTypeSno as 'VouType.VouTypeSno',  VTyp.VouType_Name as 'VouType.VouType_Name',  VTyp.VouType_Name  as 'VouType.Name', VTyp.VouType_Name  as 'VouType.Details',
+            VTyp.Stock_Type as 'VouType.Stock_Type',
+            VTyp.Cash_Type as 'VouType.Cash_Type',
+            Ser.Series_Name as Name, Ser.Series_Name as Details,
             VTyp.VouType_Name as VouType_Name
 	          FROM	  Voucher_Series Ser
                     INNER JOIN Voucher_Types VTyp ON VTyp.VouTypeSno = Ser.VouTypeSno
@@ -631,9 +634,20 @@ BEGIN
   VALUES (22,'Jobwork Inward',1,0,1,0,'JI','',4,0,0,0,0,'',1,1,1,dbo.DateToInt(GETDATE()),1,@CompSno,1)
   INSERT INTO Voucher_Series(VouTypeSno, Series_Name, Num_Method, Allow_Duplicate, Start_No,  Current_No, Prefix, Suffix, Width, Prefill, Print_Voucher, Print_On_Save, Show_Preview, Print_Style, IsDefault, IsStd, Active_Status, Create_Date, UserSno, CompSno, BranchSno)
   VALUES (23,'Jobwork Delivery',1,0,1,0,'JD','',4,0,0,0,0,'',1,1,1,dbo.DateToInt(GETDATE()),1,@CompSno,1)
+  INSERT INTO Voucher_Series(VouTypeSno, Series_Name, Num_Method, Allow_Duplicate, Start_No,  Current_No, Prefix, Suffix, Width, Prefill, Print_Voucher, Print_On_Save, Show_Preview, Print_Style, IsDefault, IsStd, Active_Status, Create_Date, UserSno, CompSno, BranchSno)
+  VALUES (24,'Advance Doc Purchase',1,0,1,0,'ADP','',4,0,0,0,0,'',1,1,1,dbo.DateToInt(GETDATE()),1,@CompSno,1)
+  INSERT INTO Voucher_Series(VouTypeSno, Series_Name, Num_Method, Allow_Duplicate, Start_No,  Current_No, Prefix, Suffix, Width, Prefill, Print_Voucher, Print_On_Save, Show_Preview, Print_Style, IsDefault, IsStd, Active_Status, Create_Date, UserSno, CompSno, BranchSno)
+  VALUES (25,'Advance Doc Sales',1,0,1,0,'ADS','',4,0,0,0,0,'',1,1,1,dbo.DateToInt(GETDATE()),1,@CompSno,1)
+  INSERT INTO Voucher_Series(VouTypeSno, Series_Name, Num_Method, Allow_Duplicate, Start_No,  Current_No, Prefix, Suffix, Width, Prefill, Print_Voucher, Print_On_Save, Show_Preview, Print_Style, IsDefault, IsStd, Active_Status, Create_Date, UserSno, CompSno, BranchSno)
+  VALUES (26,'Lab Testing Issue',1,0,1,0,'LTI','',4,0,0,0,0,'',1,1,1,dbo.DateToInt(GETDATE()),1,@CompSno,1)
+  INSERT INTO Voucher_Series(VouTypeSno, Series_Name, Num_Method, Allow_Duplicate, Start_No,  Current_No, Prefix, Suffix, Width, Prefill, Print_Voucher, Print_On_Save, Show_Preview, Print_Style, IsDefault, IsStd, Active_Status, Create_Date, UserSno, CompSno, BranchSno)
+  VALUES (27,'Lab Testing Receipt',1,0,1,0,'LTR','',4,0,0,0,0,'',1,1,1,dbo.DateToInt(GETDATE()),1,@CompSno,1)
+
 END
 GO
 
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Lab Testing Issue',2,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Lab Testing Receipt',1,0)
 
 
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Sp_InsertDefaults') BEGIN DROP PROCEDURE Sp_InsertDefaults END
@@ -928,11 +942,13 @@ GO
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Sp_Items' ) BEGIN DROP PROCEDURE Sp_Items END
 GO
 
+
 CREATE PROCEDURE Sp_Items
     @ItemSno INT,
     @Item_Code VARCHAR(20),
     @Item_Name VARCHAR(50),
     @GrpSno INT,
+    @Require_LabTest BIT,
     @Remarks VARCHAR(100),
     @Active_Status BIT,
     @Create_Date INT,
@@ -946,7 +962,7 @@ BEGIN
     BEGIN TRANSACTION
         IF EXISTS(SELECT ItemSno FROM Items WHERE ItemSno=@ItemSno)
             BEGIN
-                UPDATE Items SET Item_Code=@Item_Code,Item_Name=@Item_Name,GrpSno=@GrpSno,Remarks=@Remarks,Active_Status=@Active_Status,Create_Date=@Create_Date,UserSno=@UserSno,CompSno=@CompSno
+                UPDATE Items SET Item_Code=@Item_Code,Item_Name=@Item_Name,GrpSno=@GrpSno,Require_LabTest=@Require_LabTest,Remarks=@Remarks,Active_Status=@Active_Status,Create_Date=@Create_Date,UserSno=@UserSno,CompSno=@CompSno
                 WHERE ItemSno=@ItemSno
                 IF @@ERROR <> 0 GOTO CloseNow
             End
@@ -966,8 +982,8 @@ BEGIN
                   GoTo CloseNow
               End
 
-             INSERT INTO Items(Item_Code,Item_Name,GrpSno,Remarks,Active_Status,Create_Date,UserSno,CompSno)
-             VALUES (@Item_Code,@Item_Name,@GrpSno,@Remarks,@Active_Status,@Create_Date,@UserSno,@CompSno)
+             INSERT INTO Items(Item_Code,Item_Name,GrpSno,Require_LabTest,Remarks,Active_Status,Create_Date,UserSno,CompSno)
+             VALUES (@Item_Code,@Item_Name,@GrpSno,@Require_LabTest,@Remarks,@Active_Status,@Create_Date,@UserSno,@CompSno)
              IF @@ERROR <> 0 GOTO CloseNow
              SET @ItemSno = @@IDENTITY
 
@@ -2298,6 +2314,7 @@ CREATE PROCEDURE Sp_Transactions
     @ClientSno          INT,
     @Due_Date           INT,
     @RefSno             INT,
+    @BarCodeRefSno      INT,
     @TotAmount          MONEY,
     @TaxPer             DECIMAL(4,2),
     @TaxAmount          MONEY,
@@ -2329,7 +2346,7 @@ BEGIN
 	IF EXISTS(SELECT TransSno FROM Transactions WHERE TransSno=@TransSno)
 			BEGIN
 			  UPDATE    Transactions
-                  SET Trans_No=@Trans_No,Trans_Date=@Trans_Date,VouTypeSno=@VouTypeSno,SeriesSno=@SeriesSno,ClientSno=@ClientSno,Due_Date=@Due_Date,RefSno=@RefSno,
+                  SET Trans_No=@Trans_No,Trans_Date=@Trans_Date,VouTypeSno=@VouTypeSno,SeriesSno=@SeriesSno,ClientSno=@ClientSno,Due_Date=@Due_Date,RefSno=@RefSno,BarCodeRefSno=@BarCodeRefSno,
                   TotAmount=@TotAmount,TaxPer=@TaxPer,TaxAmount=@TaxAmount,RevAmount=@RevAmount,NettAmount=@NettAmount,Remarks=@Remarks,Print_Remarks=@Print_Remarks,
                   Locked=@Locked,CompSno=@CompSno,UserSno=@UserSno,VouSno=@VouSno
         WHERE     TransSno=@TransSno
@@ -2364,9 +2381,9 @@ BEGIN
               GOTO CloseNow
           END
 
-      	INSERT INTO Transactions  (Trans_No,Trans_Date,VouTypeSno,SeriesSno,ClientSno,Due_Date,RefSno,TotAmount,TaxPer,TaxAmount,RevAmount,NettAmount,Remarks,
+      	INSERT INTO Transactions  (Trans_No,Trans_Date,VouTypeSno,SeriesSno,ClientSno,Due_Date,RefSno,BarCodeRefSno,TotAmount,TaxPer,TaxAmount,RevAmount,NettAmount,Remarks,
                                     Print_Remarks,Locked,CompSno,UserSno,VouSno)
-        VALUES                    (@Trans_No,@Trans_Date,@VouTypeSno,@SeriesSno,@ClientSno,@Due_Date,@RefSno,@TotAmount,@TaxPer,@TaxAmount,@RevAmount,@NettAmount,@Remarks,
+        VALUES                    (@Trans_No,@Trans_Date,@VouTypeSno,@SeriesSno,@ClientSno,@Due_Date,@RefSno,@BarCodeRefSno,@TotAmount,@TaxPer,@TaxAmount,@RevAmount,@NettAmount,@Remarks,
                                     @Print_Remarks,@Locked,@CompSno,@UserSno,@VouSno)
 
 				IF @@ERROR <> 0 GOTO CloseNow								
@@ -2445,10 +2462,13 @@ BEGIN
                       IF @@Error <> 0 GOTO CloseNow
                       SET @DetSno = @@IDENTITY
 
+                      DECLARE @Require_LabTest BIT
+                      SELECT @Require_LabTest= Require_LabTest FROM Items WHERE ItemSno=@ItemSno
+
                       --GENERATING AND INSERTING BARCODES FOR THE ITEMS WITH QTY
                       DECLARE @Stock_Type BIT
                       SELECT @Stock_Type = Stock_Type FROM Voucher_Types WHERE VouTypeSno=@VouTypeSno
-
+                      DECLARE @NewBarCodeSno INT
                       IF @Stock_Type = 1
                         BEGIN
                           DECLARE @TmpQty INT = 1
@@ -2456,6 +2476,14 @@ BEGIN
                             BEGIN                        
                               INSERT INTO Barcoded_Items(TransSno, DetSno, ItemSno, BarCode_No)
                               VALUES (@TransSno, @DetSno, @ItemSno,@Trans_No+'/'+CAST(@TmpQty AS varchar))
+                              IF @@Error <> 0 GOTO CloseNow
+
+                              SET @NewBarCodeSno=@@IDENTITY
+                              IF @Require_LabTest = 1
+                              BEGIN
+                                INSERT INTO Assay_Records(BarCodeSno) VALUES (@NewBarCodeSno)
+                              END
+
                               SET @TmpQty = @TmpQty + 1
                             END
                         END
@@ -2801,8 +2829,46 @@ RETURN
 GO
 
 
-select * from Voucher_Types
 
 
-select * from Ledgers
-select * from Client
+IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='VW_ASSAY_RECORDS') BEGIN DROP VIEW VW_ASSAY_RECORDS END
+GO
+
+CREATE VIEW VW_ASSAY_RECORDS
+WITH ENCRYPTION AS
+
+SELECT    Ar.RecordSno, Ar.BarCodeSno, Bar.BarCode_No, Det.ItemSno, It.Item_Name, Trans.Trans_No, Trans.Trans_Date,
+          Clnt.Client_Name, Trans.CompSno, Bar.BarCode_No as Name, It.Item_Name + ' ' + Trans.Trans_No as Details,
+          Assay_Status      = CASE
+                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)
+                                THEN (CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)) THEN 2 ELSE 1 END) 
+                              ELSE 0 END,
+
+          IssueTransSno     = CASE
+                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)
+                                THEN (SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26) 
+                              ELSE 0 END,
+
+          IssueTrans_No     = CASE
+                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)
+                                THEN (SELECT Trans_No FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26) 
+                              ELSE '' END,
+
+          ReceiptTransSno   = CASE
+                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)
+                                THEN (CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26))
+                                THEN (SELECT TransSno FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)) ELSE 0 END) 
+                              ELSE 0 END,
+
+          ReceiptTrans_No   = CASE
+                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)
+                                THEN (CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26))
+                                THEN (SELECT Trans_No FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)) ELSE '' END) 
+                              ELSE '' END
+
+FROM      Assay_Records Ar
+          INNER JOIN Barcoded_Items Bar ON Bar.BarCodeSno = Ar.BarCodeSno
+          INNER JOIN Transaction_Details Det ON Det.DetSno  = Bar.DetSno
+          INNER JOIN Items It ON It.ItemSno = Det.ItemSno
+          INNER JOIN Transactions Trans ON Trans.TransSno = Det.TransSno
+          INNER JOIN Client Clnt ON Clnt.ClientSno = Trans.ClientSno

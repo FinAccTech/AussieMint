@@ -6,6 +6,10 @@ import { MsgboxComponent } from './GlobalWidgets/msgbox/msgbox.component';
 import { SnackbarComponent } from './GlobalWidgets/snackbar/snackbar.component';
 import { TypeUserRights } from './Types/TypeUser';
 import { TypeVoucherLedger } from './Dashboard/Services/voucher.service';
+import { TypeGridItem } from './Types/TypeGridItem';
+import { FileHandle } from './Types/file-handle';
+import { TypePaymentModes } from './Dashboard/Services/transaction.service';
+import { TypeVoucherTypes } from './Dashboard/Services/vouseries.service';
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +55,8 @@ export class GlobalsService
     VTypJobworkDelivery:  number = 23;
     VTypAdvancePurchase:  number = 24;
     VTypAdvanceSales:     number = 25;
+    VTypLabTestingIssue:  number = 26;
+    VTypLabTestingReceipt:number = 27;
 
     //Dialog Types    
     DialogTypeProgress  = 0; 
@@ -181,7 +187,12 @@ export class GlobalsService
         case 25:
           return "Advance Doc - Sales"
         break;      
-
+        case 26:
+          return "Lab Testing - Issue"
+        break;      
+        case 27:
+          return "Lab Testing - Receipt"
+        break;      
       }
       return "";
     }
@@ -363,5 +374,79 @@ GetVoucherXml(vou: TypeVoucherLedger[]):string{
     StrXml += '</ROOT>';			
     return StrXml
 }
+
+GetItemXml(GridItems: TypeGridItem[]): string{
+  var StrItemXML: string = "";  
+  StrItemXML = "<ROOT>"
+  StrItemXML += "<Transaction>"  
+  for (var i=0; i < GridItems.length; i++)
+  {
+      StrItemXML += "<Transaction_Details ";
+      StrItemXML += " BarCodeSno='" + GridItems[i].BarCode.BarCodeSno + "' ";                 
+      StrItemXML += " ItemSno='" + GridItems[i].Item.ItemSno + "' ";                 
+      StrItemXML += " Item_Desc='" + GridItems[i].Item_Desc + "' ";                 
+      StrItemXML += " UomSno='" + GridItems[i].Uom.UomSno + "' ";                 
+      StrItemXML += " Karat='" + GridItems[i].Karat + "' ";                 
+      StrItemXML += " Purity='" + GridItems[i].Purity + "' ";                 
+      StrItemXML += " Qty='" + GridItems[i].Qty + "' ";             
+      StrItemXML += " GrossWt='" + GridItems[i].GrossWt + "' ";             
+      StrItemXML += " StoneWt='" + GridItems[i].StoneWt + "' ";             
+      StrItemXML += " Wastage='" + GridItems[i].Wastage + "' ";             
+      StrItemXML += " NettWt='" + GridItems[i].NettWt + "' ";             
+      StrItemXML += " PureWt='" + (GridItems[i].Purity / 100) * GridItems[i].NettWt  + "' ";             
+      StrItemXML += " Rate='" + GridItems[i].Rate + "' ";             
+      StrItemXML += " Amount='" + GridItems[i].Amount + "' ";                     
+      StrItemXML += " >";
+      StrItemXML += "</Transaction_Details>";    
+  }   
+  StrItemXML += "</Transaction>"
+  StrItemXML += "</ROOT>";
+
+  return StrItemXML;
+}
+
+GetImageXml(ImageSource: FileHandle[],CompSno: number, VouTypeSno: number): string{
+  var StrImageXml: string = "";
+  StrImageXml = "<ROOT>"
+  StrImageXml += "<Images>"    
+  for (var i=0; i < ImageSource.length; i++)
+  {
+    if (ImageSource[i].DelStatus == 0)
+    {
+      StrImageXml += "<Image_Details ";
+      StrImageXml += " Image_Name='" + ImageSource[i].Image_Name + "' ";                         
+      StrImageXml += " Image_Url='" + this.getTransactionImagesServerPath( CompSno, VouTypeSno) + "' ";           
+      StrImageXml += " >";
+      StrImageXml += "</Image_Details>";
+    }      
+  }   
+  StrImageXml += "</Images>"
+  StrImageXml += "</ROOT>";
+
+  return StrImageXml;
+}
+
+GetPaymentModeXml(Pmode: TypePaymentModes[], VouType: TypeVoucherTypes):string{    
+  let StrXml = "";
+   Pmode.forEach((mode: TypePaymentModes)=>{
+     StrXml += '<Voucher_Details ';
+       StrXml += 'LedSno="' + mode.Ledger.LedSno + '" ' ;	
+       switch (VouType.Cash_Type) {
+         case 2:
+             StrXml += 'Debit="0" ' ;
+             StrXml += 'Credit="' + mode.Amount + '" ' ;	    
+             break;
+         case 1:
+             StrXml += 'Debit="' + mode.Amount + '" ' ;
+             StrXml += 'Credit="0" ' ;	    
+             break;         
+       }
+       StrXml += 'PayRemarks="' + mode.Remarks + '" ' ;	    
+     StrXml += '>';
+     StrXml += '</Voucher_Details> ';
+   })    
+   return StrXml;		
+ }
+
 
 }

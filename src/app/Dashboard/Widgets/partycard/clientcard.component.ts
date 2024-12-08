@@ -35,7 +35,9 @@ export class ClientcardComponent {
     this.clntService.getClients(0). subscribe(data => {      
       this.ClientList = JSON.parse (data.apiData);               
       this.ClientList.map(clnt=>{
-        clnt.ImagesSource = JSON.parse (clnt.Images_Json);
+        if (clnt.Images_Json){        
+          clnt.ImagesSource = JSON.parse (clnt.Images_Json);
+        }
       })
     });     
   }

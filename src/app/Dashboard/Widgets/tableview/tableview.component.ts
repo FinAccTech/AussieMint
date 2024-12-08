@@ -8,6 +8,7 @@ import { MatOption, MatSelect } from '@angular/material/select';
 import { TypeTransaction } from '../../Services/transaction.service';
 import { GlobalsService } from '../../../global.service';
 import { IntToDatePipe } from '../../../Pipes/int-to-date.pipe';
+import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 
 interface PagedData{
   PageNumber: number;
@@ -29,7 +30,9 @@ interface TypeTotal{
 
 export class TableviewComponent {
   DataSource  = input.required<any[]>();
-  FieldNames  = input.required<string[]>();
+  
+  FieldNames  = input.required<TypeFieldInfo[]>();
+
   @Input() EnableDateSelection: boolean = false;
   @Input() FromDate: number = 0;
   @Input() ToDate: number = 0;
@@ -133,13 +136,13 @@ export class TableviewComponent {
     a = 0;
     this.TotalsArray = [];
     this.FieldNames().forEach(element=>{      
-      if (this.TotalFields()!.includes(element) ){
-        this.TotalsArray.push({name:element, value:  this.Totals[a]})
+      if (this.TotalFields()!.includes(element.Field_Name) ){
+        this.TotalsArray.push({name:element.Field_Name, value:  this.Totals[a].toFixed(2)  })
         a++;
       }      
       else{
-        this.TotalsArray.push({name:element, value:"{#Total#}"})
-      }      
+        this.TotalsArray.push({name:element.Field_Name, value:"{#Total#}"})
+      }       
     });
     
   //Forming a Row with the totals array as string and converting that into Json object and pushing it to DataList array
