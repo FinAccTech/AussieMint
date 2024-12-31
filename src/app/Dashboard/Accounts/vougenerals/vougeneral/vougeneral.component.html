@@ -1,0 +1,96 @@
+<div class="modalForm">
+    <div class="header">
+        <div class="headerLeft">
+            <span class="bar"></span>
+            <p> &nbsp; General Voucher </p>
+        </div>
+        <div class="headerRight">
+            <p mat-dialog-close="" >&times;</p>
+        </div>
+    </div>
+
+    <div class="body"> 
+
+        <div class="row">
+            <div class="col50">
+                <div class="row">
+                    <div class="col50">
+                        <div class="matGroup">
+                            <div class="matSelect">
+                                <mat-select [(value)]="data.VouTypeSno" (selectionChange)="getVoucherType()" >
+                                    <mat-option [value]="2">    Receipt  </mat-option>
+                                    <mat-option [value]="3">    Payment  </mat-option>                        
+                                </mat-select>
+                            </div>
+                            <div class="matLabel">
+                                &nbsp;&nbsp; Voucher Type &nbsp;&nbsp; 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col50">
+                        <div style="width: 100%;" [ngClass]="!SeriesNameValid ? 'invalidSel' : ''"> 
+                            <app-selectionlist [Caption]="'Doc Series'" [DataSource]="SeriesList" [SelectedItem]="data.Series"  (newItemEvent)="getSeries($event)"></app-selectionlist>
+                        </div>      
+                    </div>
+                </div>
+            </div>
+
+            <div class="col50">
+                <div class="row">
+                    <div class="col50">
+                        <div class="formGroup" [ngClass]="!DocNoValid ? 'invalidSel' : ''">
+                            <input type="text" style="text-align: center;" class="formControl" readonly required [(ngModel)]="data.Vou_No"  />
+                            <label for="" class="formLabel"> Vou No </label>                            
+                        </div>
+                    </div>
+                    <div class="col50">
+                        <div class="formGroup" >                    
+                            <input type="date" class="formControl"  [ngModel]="data.Vou_Date | intToDate | date:'yyyy-MM-dd'" (blur)="data.Vou_Date = DateToInt($event) " />                    
+                            <label for="" class="formLabel"> Vou Date </label>                             
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row"style="margin-top: 1.5rem;">
+            <div class="col50">
+                <div class="col100">                    
+                    <app-selectionlist [Caption]="'Client'" [DataSource]="LedList" [SelectedItem]="data.Ledger"  (newItemEvent)="getLedger($event)"></app-selectionlist>                    
+                </div>
+            </div>
+
+            <div class="col50">
+                <div class="row">
+                    <div class="col50">
+                        <div class="formGroup" [ngClass]="!NettAmountValid ? 'invalidSel' : ''">
+                            <input type="number" class="formControl" NumberInput [(ngModel)]="data.Amount"/>                    
+                            <label for="" class="formLabel"> Amount </label>                  
+                        </div>
+                    </div>
+                    <div class="col50">
+                        <button class="btnOutlined" (click)="OpenPaymentModes()" >
+                            Payment Modes
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="row" style="margin-top: 1.5rem;">
+            <div class="col50">
+                <div class="formGroup">
+                    <input type="text" class="formControl" readonly [ngModel]="data.Narration"/>                    
+                    <label for="" class="formLabel"> Remarks </label>                  
+                </div>
+            </div>
+
+            <div class="col50" style="text-align: right;">
+                <button class="btnDefault" (click)="SaveVoucher()" > <i class="fa-solid fa-floppy-disk"></i> &nbsp; Save</button>        
+            </div>
+        </div>
+    </div>
+
+    
+</div>

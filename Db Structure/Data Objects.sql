@@ -642,13 +642,10 @@ BEGIN
   VALUES (26,'Lab Testing Issue',1,0,1,0,'LTI','',4,0,0,0,0,'',1,1,1,dbo.DateToInt(GETDATE()),1,@CompSno,1)
   INSERT INTO Voucher_Series(VouTypeSno, Series_Name, Num_Method, Allow_Duplicate, Start_No,  Current_No, Prefix, Suffix, Width, Prefill, Print_Voucher, Print_On_Save, Show_Preview, Print_Style, IsDefault, IsStd, Active_Status, Create_Date, UserSno, CompSno, BranchSno)
   VALUES (27,'Lab Testing Receipt',1,0,1,0,'LTR','',4,0,0,0,0,'',1,1,1,dbo.DateToInt(GETDATE()),1,@CompSno,1)
-
+  INSERT INTO Voucher_Series(VouTypeSno, Series_Name, Num_Method, Allow_Duplicate, Start_No,  Current_No, Prefix, Suffix, Width, Prefill, Print_Voucher, Print_On_Save, Show_Preview, Print_Style, IsDefault, IsStd, Active_Status, Create_Date, UserSno, CompSno, BranchSno)
+  VALUES (28,'GRN',1,0,1,0,'GRN','',4,0,0,0,0,'',1,1,1,dbo.DateToInt(GETDATE()),1,@CompSno,1)
 END
 GO
-
-INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Lab Testing Issue',2,0)
-INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Lab Testing Receipt',1,0)
-
 
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Sp_InsertDefaults') BEGIN DROP PROCEDURE Sp_InsertDefaults END
 GO
@@ -671,6 +668,9 @@ BEGIN
   INSERT INTO  Ledgers(Led_Code, Led_Name, GrpSno, OpenSno, Led_Desc, IsStd, Created_Date, CompSno, UserSno,Std_No) VALUES ('Shortage&ExcessA/c','Shortage & Excess A/c',4,0,'G001GG004GL000L',1,0,@CompSno,1,9)
   INSERT INTO  Ledgers(Led_Code, Led_Name, GrpSno, OpenSno, Led_Desc, IsStd, Created_Date, CompSno, UserSno,Std_No) VALUES ('Interest PaidA/c','Interest Paid A/c',27,0,'G001GG027GL000L',1,0,@CompSno,1,10)
   INSERT INTO  Ledgers(Led_Code, Led_Name, GrpSno, OpenSno, Led_Desc, IsStd, Created_Date, CompSno, UserSno,Std_No) VALUES ('Bank ChargesA/c','Bank Charges A/c',27,0,'G001GG027GL000L',1,0,@CompSno,1,11)
+
+  INSERT INTO  Ledgers(Led_Code, Led_Name, GrpSno, OpenSno, Led_Desc, IsStd, Created_Date, CompSno, UserSno,Std_No) VALUES ('Purchase A/c','Purchase A/c',25,0,'G001GG025GL000L',1,0,@CompSno,1,12)
+  INSERT INTO  Ledgers(Led_Code, Led_Name, GrpSno, OpenSno, Led_Desc, IsStd, Created_Date, CompSno, UserSno,Std_No) VALUES ('Sales A/c','Sales A/c',24,0,'G001GG024GL000L',1,0,@CompSno,1,13)
 
   /* INSERTIN INTO Companies_Ledger_Groups For Each Companies for Accouting Purpose */
 
@@ -1169,6 +1169,7 @@ CREATE PROCEDURE Sp_Client
     @Gst_Number VARCHAR(50),
     @Director_Name VARCHAR(50),
     @Remarks VARCHAR(100),
+    @Commision DECIMAL(5,2),
     @AreaSno INT,
     @Blocked BIT,
     @UserSno INT,
@@ -1202,7 +1203,7 @@ BEGIN
 
         IF EXISTS(SELECT ClientSno FROM Client WHERE ClientSno=@ClientSno)
             BEGIN
-                UPDATE Client SET Client_Code=@Client_Code,Client_Name=@Client_Name,Address=@Address,City=@City,Pincode=@Pincode,State=@State,Mobile=@Mobile,Client_Type=@Client_Type,Client_Cat=@Client_Cat,Sex=@Sex,Dob=@Dob,Create_Date=@Create_Date,Issue_Date=@Issue_Date,Expiry_Date=@Expiry_Date,Email=@Email,Id_Number=@Id_Number,Gst_Number=@Gst_Number,Director_Name=@Director_Name,Remarks=@Remarks,AreaSno=@AreaSno,Blocked=@Blocked,UserSno=@UserSno,CompSno=@CompSno
+                UPDATE Client SET Client_Code=@Client_Code,Client_Name=@Client_Name,Address=@Address,City=@City,Pincode=@Pincode,State=@State,Mobile=@Mobile,Client_Type=@Client_Type,Client_Cat=@Client_Cat,Sex=@Sex,Dob=@Dob,Create_Date=@Create_Date,Issue_Date=@Issue_Date,Expiry_Date=@Expiry_Date,Email=@Email,Id_Number=@Id_Number,Gst_Number=@Gst_Number,Director_Name=@Director_Name,Remarks=@Remarks,Commision=@Commision,AreaSno=@AreaSno,Blocked=@Blocked,UserSno=@UserSno,CompSno=@CompSno
                 WHERE ClientSno=@ClientSno
                 IF @@ERROR <> 0 GOTO CloseNow
                 SELECT @LedSno=LedSno FROM Client WHERE ClientSno=@ClientSno
@@ -1225,8 +1226,8 @@ BEGIN
                   GoTo CloseNow
               End
 
-             INSERT INTO Client(Client_Code,Client_Name,Address,City,Pincode,State,Mobile,Client_Type,Client_Cat,Sex,Dob,Create_Date,Issue_Date,Expiry_Date,Email,Id_Number,Gst_Number,Director_Name,Remarks,AreaSno,Blocked,UserSno,CompSno)
-             VALUES (@Client_Code,@Client_Name,@Address,@City,@Pincode,@State,@Mobile,@Client_Type,@Client_Cat,@Sex,@Dob,@Create_Date,@Issue_Date,@Expiry_Date,@Email,@Id_Number,@Gst_Number,@Director_Name,@Remarks,@AreaSno,@Blocked,@UserSno,@CompSno)
+             INSERT INTO Client(Client_Code,Client_Name,Address,City,Pincode,State,Mobile,Client_Type,Client_Cat,Sex,Dob,Create_Date,Issue_Date,Expiry_Date,Email,Id_Number,Gst_Number,Director_Name,Remarks,Commision,AreaSno,Blocked,UserSno,CompSno)
+             VALUES (@Client_Code,@Client_Name,@Address,@City,@Pincode,@State,@Mobile,@Client_Type,@Client_Cat,@Sex,@Dob,@Create_Date,@Issue_Date,@Expiry_Date,@Email,@Id_Number,@Gst_Number,@Director_Name,@Remarks,@Commision,@AreaSno,@Blocked,@UserSno,@CompSno)
              IF @@ERROR <> 0 GOTO CloseNow
              SET @ClientSno = @@IDENTITY
 
@@ -1635,7 +1636,7 @@ BEGIN
           END
       ELSE        
           BEGIN    
-              IF @VouTypeSno < 12
+            /*  IF @VouTypeSno < 10           
                 BEGIN
                     DECLARE @Num_Method TINYINT
                     SELECT @Num_Method=Num_Method FROM Voucher_Series WHERE SeriesSno=@SeriesSno
@@ -1645,17 +1646,19 @@ BEGIN
                         SET @Vou_No= [dbo].GenerateVoucherNo(@SeriesSno)           
                     END                  
                 END
-                
+              */
+              
               INSERT INTO Vouchers (VouTypeSno,SeriesSno,Vou_No,Vou_Date,Narration,TrackSno,IsAuto,GenType,UserSno,CompSno)
               VALUES (@VouTypeSno,@SeriesSno,@Vou_No,@Vou_Date,@Narration,@TrackSno,@IsAuto,@GenType,@UserSno,@CompSno)
               IF @@Error <> 0 GOTO CloseNow
               SET @VouSno=@@Identity
 
-              IF (@Num_Method <> 0)
+              /*IF (@Num_Method <> 0)
                 BEGIN
                     UPDATE Voucher_Series SET Current_No = Current_No + 1 WHERE SeriesSno=@SeriesSno
                     IF @@ERROR <> 0 GOTO CloseNow
                 END
+                */
           END
 
          DECLARE @idoc       INT
@@ -1742,6 +1745,7 @@ RETURN
             (Vou.CompSno=@CompSno)
 
 GO
+
 
 
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Sp_Voucher_Delete') BEGIN DROP PROCEDURE Sp_Voucher_Delete END
@@ -1864,9 +1868,9 @@ CREATE FUNCTION Udf_VoucherDisplay(@FromDt INT, @ToDt AS INT,
   WITH ENCRYPTION AS
 RETURN
 
-  SELECT      *
-  FROM           VW_VOUCHERDETAILS
-  WHERE        (@VouTypeSno=0  OR VouTypeSno = @VouTypeSno)
+  SELECT        *
+  FROM          VW_VOUCHERDETAILS
+  WHERE         (@VouTypeSno=0  OR VouTypeSno = @VouTypeSno)
                 AND (CompSno=@CompSno)
                 AND (@BranchSno=0   OR BranchSno = @BranchSno)
                 AND (@Vou_No = ''   OR Vou_No = @Vou_No)                        
@@ -2297,12 +2301,11 @@ AS
   FROM        @LedList
   WHERE       (@Grouped = 0 OR IsGrp =@Grouped) AND [Grp_Level] = 1 OR [Grp_Level] = CASE When @Grouped = 1 Then 1 ELSE 2 END
   ORDER BY    Affect_Gp Desc,Grp_Nature,hDesc
-  GO
 
-GO
-
+ GO
 
 
+ 
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Sp_Transactions') BEGIN DROP PROCEDURE Sp_Transactions END
 GO
 CREATE PROCEDURE Sp_Transactions
@@ -2311,6 +2314,7 @@ CREATE PROCEDURE Sp_Transactions
     @Trans_Date         INT,
     @VouTypeSno         INT,
     @SeriesSno          INT,
+    @Payment_Type       TINYINT,
     @ClientSno          INT,
     @Due_Date           INT,
     @RefSno             INT,
@@ -2320,6 +2324,8 @@ CREATE PROCEDURE Sp_Transactions
     @TaxAmount          MONEY,
     @RevAmount          MONEY,
     @NettAmount         MONEY,
+    @Fixed_Price        MONEY,
+    @Commision          DECIMAL(5,2),
     @Remarks            VARCHAR(100),
     @Print_Remarks      VARCHAR(100),
     @Locked             BIT,
@@ -2332,7 +2338,7 @@ CREATE PROCEDURE Sp_Transactions
 	  @RetSno					    INT OUTPUT,
 	  @RetTrans_No			  VARCHAR(20) OUTPUT
 
-WITH ENCRYPTION AS
+  AS
 BEGIN
 	SET NOCOUNT ON 
 	BEGIN TRANSACTION
@@ -2346,13 +2352,13 @@ BEGIN
 	IF EXISTS(SELECT TransSno FROM Transactions WHERE TransSno=@TransSno)
 			BEGIN
 			  UPDATE    Transactions
-                  SET Trans_No=@Trans_No,Trans_Date=@Trans_Date,VouTypeSno=@VouTypeSno,SeriesSno=@SeriesSno,ClientSno=@ClientSno,Due_Date=@Due_Date,RefSno=@RefSno,BarCodeRefSno=@BarCodeRefSno,
-                  TotAmount=@TotAmount,TaxPer=@TaxPer,TaxAmount=@TaxAmount,RevAmount=@RevAmount,NettAmount=@NettAmount,Remarks=@Remarks,Print_Remarks=@Print_Remarks,
+                  SET Trans_No=@Trans_No,Trans_Date=@Trans_Date,VouTypeSno=@VouTypeSno,SeriesSno=@SeriesSno,Payment_Type=@Payment_Type,ClientSno=@ClientSno,Due_Date=@Due_Date,RefSno=@RefSno,BarCodeRefSno=@BarCodeRefSno,
+                  TotAmount=@TotAmount,TaxPer=@TaxPer,TaxAmount=@TaxAmount,RevAmount=@RevAmount,NettAmount=@NettAmount,Fixed_Price=@Fixed_Price, Commision=@Commision,Remarks=@Remarks,Print_Remarks=@Print_Remarks,
                   Locked=@Locked,CompSno=@CompSno,UserSno=@UserSno,VouSno=@VouSno
         WHERE     TransSno=@TransSno
 				IF @@ERROR <> 0 GOTO CloseNow
 
-				DELETE FROM Transaction_Details WHERE TransSno = @TransSno
+        DELETE FROM Transaction_Details WHERE TransSno = @TransSno
 				IF @@ERROR <> 0 GOTO CloseNow
 
 				DELETE FROM Image_Details WHERE TransSno = @TransSno AND Image_Grp=2
@@ -2363,6 +2369,12 @@ BEGIN
 
         DELETE FROM Barcoded_Items WHERE TransSno = @TransSno
         IF @@ERROR <> 0 GOTO CloseNow
+
+        DELETE FROM Assay_Records WHERE BarCodeSno IN (SELECT BarCodeSno FROM Barcoded_Items WHERE TransSno=@TransSno)
+			  IF @@ERROR <> 0 GOTO CloseNow
+
+        DELETE FROM BarCoded_Items WHERE TransSno=@TransSno
+			  IF @@ERROR <> 0 GOTO CloseNow
 			END
 		ELSE
 			BEGIN
@@ -2381,9 +2393,9 @@ BEGIN
               GOTO CloseNow
           END
 
-      	INSERT INTO Transactions  (Trans_No,Trans_Date,VouTypeSno,SeriesSno,ClientSno,Due_Date,RefSno,BarCodeRefSno,TotAmount,TaxPer,TaxAmount,RevAmount,NettAmount,Remarks,
+      	INSERT INTO Transactions  (Trans_No,Trans_Date,VouTypeSno,SeriesSno,Payment_Type,ClientSno,Due_Date,RefSno,BarCodeRefSno,TotAmount,TaxPer,TaxAmount,RevAmount,NettAmount,Fixed_Price,Commision,Remarks,
                                     Print_Remarks,Locked,CompSno,UserSno,VouSno)
-        VALUES                    (@Trans_No,@Trans_Date,@VouTypeSno,@SeriesSno,@ClientSno,@Due_Date,@RefSno,@BarCodeRefSno,@TotAmount,@TaxPer,@TaxAmount,@RevAmount,@NettAmount,@Remarks,
+        VALUES                    (@Trans_No,@Trans_Date,@VouTypeSno,@SeriesSno,@Payment_Type,@ClientSno,@Due_Date,@RefSno,@BarCodeRefSno,@TotAmount,@TaxPer,@TaxAmount,@RevAmount,@NettAmount,@Fixed_Price,@Commision,@Remarks,
                                     @Print_Remarks,@Locked,@CompSno,@UserSno,@VouSno)
 
 				IF @@ERROR <> 0 GOTO CloseNow								
@@ -2399,13 +2411,11 @@ BEGIN
 
 	    DECLARE	@IsOpen TINYINT = CASE WHEN @Trans_Date < (SELECT Fin_From FROM Companies WHERE CompSno=@CompSno) THEN 1 ELSE 2 END
 
-      /*DECLARE  @VouDetailXML XML  = CAST([dbo].GetVoucherXML(@CompSno, @VouTypeSno, @PartySno, @IsOpen, @Principal, @AdvIntAmt, @DocChargesAmt, @Rec_Principal, @Rec_Interest, @Rec_Add_Less, @Rec_Default_Amt,  @Rec_Other_Debits,
-	                                            @Rec_Other_Credits, CAST(@PaymentModesXML AS VARCHAR(MAX))) AS XML)  
-
+      DECLARE  @VouDetailXML XML  = CAST([dbo].GetVoucherXML(@CompSno, @VouTypeSno, @ClientSno, @IsOpen, @NettAmount, @Payment_Type, CAST(@PaymentModesXML AS VARCHAR(MAX))) AS XML)  
+      
       EXEC Sp_AccVouchers @VouSno, @VouTypeSno, @SeriesSno, @Trans_No,  @Trans_Date, '', 0, 1, 0, @UserSno, @CompSno, @VouDetailXML, @VouSno OUTPUT
       UPDATE Transactions SET VouSno=@VouSno WHERE TransSno=@TransSno
-      */
-
+      
    IF @ItemDetailXML IS NOT NULL
           BEGIN
               --For Inserting into Subtable
@@ -2452,7 +2462,8 @@ BEGIN
               SELECT  TOP 1   @Sno=Sno,@BarCodeSno=BarCodeSno, @ItemSno=ItemSno, @Item_Desc=Item_Desc, @UomSno=UomSno, @Karat=Karat, @Purity=Purity, @Qty=Qty, @GrossWt=GrossWt, @StoneWt=StoneWt, @Wastage=Wastage,
                               @NettWt=NettWt, @PureWt=PureWt, @Rate=Rate, @Amount=Amount
               FROM            @DetTable
-                  
+
+              DECLARE @LastQty INT = 0
               /*Taking from Temporary Details Table and inserting into details table here*/
               WHILE @@ROWCOUNT <> 0 
                   BEGIN
@@ -2462,20 +2473,35 @@ BEGIN
                       IF @@Error <> 0 GOTO CloseNow
                       SET @DetSno = @@IDENTITY
 
-                      DECLARE @Require_LabTest BIT
-                      SELECT @Require_LabTest= Require_LabTest FROM Items WHERE ItemSno=@ItemSno
+                      DECLARE @Require_LabTest BIT = 0
+                      
+                      IF @VouTypeSno <> 27
+                        BEGIN
+                          SELECT @Require_LabTest= Require_LabTest FROM Items WHERE ItemSno=@ItemSno
+                        END
 
                       --GENERATING AND INSERTING BARCODES FOR THE ITEMS WITH QTY
-                      DECLARE @Stock_Type BIT
+                      DECLARE @Stock_Type TINYINT
                       SELECT @Stock_Type = Stock_Type FROM Voucher_Types WHERE VouTypeSno=@VouTypeSno
+
+                      DECLARE @RefVouTypeSno INT = 0
+                      DECLARE @RefStockType TINYINT = 0
+                      
+                      IF @RefSno <> 0
+                        BEGIN                          
+                          SELECT @RefVouTypeSno = VouTypeSno FROM Transactions WHERE TransSno = @RefSno                          
+                          SELECT @RefStockType=Stock_Type FROM Voucher_Types WHERE VouTypeSno = @RefVouTypeSno
+                        END
+
                       DECLARE @NewBarCodeSno INT
-                      IF @Stock_Type = 1
+
+                      IF (@Stock_Type = 1) AND (@RefSno = 0 OR @RefStockType = 0)
                         BEGIN
                           DECLARE @TmpQty INT = 1
                           WHILE @TmpQty <= @Qty
                             BEGIN                        
                               INSERT INTO Barcoded_Items(TransSno, DetSno, ItemSno, BarCode_No)
-                              VALUES (@TransSno, @DetSno, @ItemSno,@Trans_No+'/'+CAST(@TmpQty AS varchar))
+                              VALUES (@TransSno, @DetSno, @ItemSno,@Trans_No+'/'+CAST(@TmpQty+@LastQty AS varchar))
                               IF @@Error <> 0 GOTO CloseNow
 
                               SET @NewBarCodeSno=@@IDENTITY
@@ -2485,6 +2511,7 @@ BEGIN
                               END
 
                               SET @TmpQty = @TmpQty + 1
+                              SET @LastQty = @LastQty +1
                             END
                         END
 
@@ -2554,17 +2581,18 @@ BEGIN
          DECLARE @LedSno      INT
          DECLARE @Debit       MONEY
          DECLARE @Credit      MONEY
+         DECLARE @Trans_Type  TINYINT
          DECLARE @PayRemarks  VARCHAR(50)
 
          DECLARE @DetTable2 TABLE
              (
-             Sno INT IDENTITY(1,1),LedSno INT,Debit MONEY,Credit MONEY, PayRemarks VARCHAR(50)
+             Sno INT IDENTITY(1,1),LedSno INT,Debit MONEY,Credit MONEY, Trans_Type TINYINT, PayRemarks VARCHAR(50)
              )
          Exec sp_xml_preparedocument @idoc2 OUTPUT, @PaymentModesXML
         
          INSERT INTO @DetTable2
              (
-              LedSno,Debit,Credit,PayRemarks
+              LedSno,Debit,Credit, Trans_Type, PayRemarks
              )
          SELECT  * FROM  OpenXml 
              (
@@ -2572,19 +2600,19 @@ BEGIN
              )
          WITH 
             (
-              LedSno INT '@LedSno',Debit MONEY '@Debit',Credit MONEY '@Credit', PayRemarks VARCHAR(50) '@PayRemarks'
+              LedSno INT '@LedSno',Debit MONEY '@Debit',Credit MONEY '@Credit', Trans_Type TINYINT '@Trans_Type', PayRemarks VARCHAR(50) '@PayRemarks'
             )
-         SELECT      TOP 1 @Sno2=Sno, @LedSno=LedSno, @Debit=Debit, @Credit=Credit, @PayRemarks=PayRemarks
+         SELECT      TOP 1 @Sno2=Sno, @LedSno=LedSno, @Debit=Debit, @Credit=Credit, @Trans_Type=Trans_Type, @PayRemarks=PayRemarks
                      FROM @DetTable2
         /*Taking FROM Temporary Details TABLE AND inserting INTO details TABLE here*/
          WHILE @@ROWCOUNT <> 0 
              BEGIN 
-                 INSERT INTO PaymentMode_Details(TransSno,LedSno,Amount,Remarks) 
-                 VALUES (@TransSno,@LedSno,CASE WHEN @Debit=0 THEN @Credit ELSE @Debit END,@PayRemarks)
+                 INSERT INTO PaymentMode_Details(TransSno,Trans_Type,LedSno,Amount,Remarks) 
+                 VALUES (@TransSno,@Trans_Type,@LedSno,CASE WHEN @Debit=0 THEN @Credit ELSE @Debit END,@PayRemarks)
                  IF @@Error <> 0 GOTO CloseNow
                  DELETE FROM @DetTable2 WHERE Sno = @Sno2
                  
-				 SELECT      TOP 1 @Sno2=Sno,@LedSno=LedSno,@Debit=Debit,@Credit=Credit, @PayRemarks = PayRemarks
+				 SELECT      TOP 1 @Sno2=Sno,@LedSno=LedSno,@Debit=Debit,@Credit=Credit, @Trans_Type=Trans_Type, @PayRemarks = PayRemarks
                  FROM        @DetTable2
              END
          Exec Sp_Xml_Removedocument @idoc2
@@ -2599,39 +2627,41 @@ CloseNow:
 	RETURN 0
 END
 
-GO
+
 
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='VW_TRANSACTIONS') BEGIN DROP VIEW VW_TRANSACTIONS END
 GO
+
+
 CREATE VIEW VW_TRANSACTIONS
 WITH ENCRYPTION
 AS
     SELECT      Trans.TransSno, Trans.Trans_No, Trans.Trans_Date, CAST([dbo].IntToDate(Trans.Trans_Date) as VARCHAR)  as Trans_DateStr, Trans.VouTypeSno, VTyp.VouType_Name, VTyp.Stock_Type, VTyp.Cash_Type,
-                Trans.SeriesSno, Ser.Series_Name,
+                Trans.SeriesSno, Ser.Series_Name, Trans.Payment_Type, Trans.BarCodeRefSno,
                 Trans.ClientSno, Clnt.Client_Name, Clnt.Client_Cat,
-                Trans.Due_Date, Trans.RefSno,
-                SUM(Det.Qty) as TotQty, SUM(Det.GrossWt) as TotGrossWt, SUM(Det.StoneWt) as TotStoneWt, SUM(Det.Wastage) as TotWastage, SUM(Det.NettWt) as TotNettWt, SUM(Det.PureWt) as TotPureWt,
-                Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount,Trans.Remarks, Trans.Print_Remarks, Trans.Locked, Trans.CompSno,
-                Trans.UserSno, Trans.VouSno,
+                Trans.Due_Date, Trans.RefSno, SUM(Det.Qty) as TotQty, SUM(Det.GrossWt) as TotGrossWt, SUM(Det.StoneWt) as TotStoneWt, SUM(Det.Wastage) as TotWastage, SUM(Det.NettWt) as TotNettWt,
+                SUM(Det.PureWt) as TotPureWt, Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount, Trans.Fixed_Price, Trans.Commision, Trans.Remarks, Trans.Print_Remarks,
+                Trans.Locked, Trans.CompSno,Trans.UserSno, Trans.VouSno,
                 Pending_Status = CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno=Trans.TransSno) THEN 1 ELSE 0 END
 
     FROM        Transactions Trans
-                INNER JOIN Voucher_Types VTyp ON VTyp.VouTypeSno = Trans.VouTypeSno
-                INNER JOIN Voucher_Series Ser ON Ser.SeriesSno = Trans.SeriesSno
-                INNER JOIN Client Clnt ON Clnt.ClientSno = Trans.ClientSno
+                INNER JOIN Voucher_Types VTyp           ON VTyp.VouTypeSno = Trans.VouTypeSno
+                INNER JOIN Voucher_Series Ser           ON Ser.SeriesSno = Trans.SeriesSno
+                INNER JOIN Client Clnt                  ON Clnt.ClientSno = Trans.ClientSno
                 LEFT OUTER JOIN Transaction_Details Det ON Det.TransSno = Trans.TransSno
 
     GROUP BY    Trans.TransSno, Trans.Trans_No, Trans.Trans_Date, Trans.VouTypeSno, VTyp.VouType_Name, VTyp.Stock_Type, VTyp.Cash_Type,
                 Trans.SeriesSno, Ser.Series_Name,
                 Trans.ClientSno, Clnt.Client_Name, Clnt.Client_Cat,
                 Trans.Due_Date, Trans.RefSno,                
-                Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount,Trans.Remarks, Trans.Print_Remarks, Trans.Locked, Trans.CompSno,
+                Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount,Trans.Remarks, Trans.Fixed_Price, Trans.Commision, Trans.Print_Remarks, Trans.Locked, Trans.CompSno,Trans.Payment_Type, Trans.BarCodeRefSno,  
                 Trans.UserSno, Trans.VouSno  
 GO
 
 
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Udf_getTransactions') BEGIN DROP FUNCTION Udf_getTransactions END
 GO
+
 
 CREATE FUNCTION Udf_getTransactions(@TransSno INT,@VouTypeSno INT, @SeriesSno INT, @CompSno INT)
 RETURNS Table
@@ -2653,11 +2683,9 @@ RETURN
 
                  ---------------------------------------------------------------------------------------------------
                  /* PAYMENT MODE JSON ---------------------------------- */
-                  (SELECT Pm.*, Led.LedSno as 'Ledger.LedSno', Led.Led_Name as 'Ledger.Name', Led.Led_Name as 'Ledger.Details'  FROM PaymentMode_Details Pm INNER JOIN Ledgers Led ON Led.LedSno = Pm.LedSno WHERE TransSno = Trans.TransSno FOR JSON PATH) PaymentModes_Json,
+                  (SELECT Pm.*, Led.LedSno as 'Ledger.LedSno', Led.Led_Name as 'Ledger.Name', Led.Led_Name as 'Ledger.Details'  FROM PaymentMode_Details Pm INNER JOIN Ledgers Led ON Led.LedSno = Pm.LedSno WHERE TransSno = Trans.TransSno AND Trans_Type=1 FOR JSON PATH) PaymentModes_Json,
                  ---------------------------------------------------------------------------------------------------
-
                  
-
                   /* ITEMS OBJECT (ITEMS JSON)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
                   (SELECT     Det.DetSno, Det.TransSno, Det.BarCodeSno, Det.ItemSno, Det.Item_Desc, Det.UomSno, Det.Karat, Det.Purity, Det.Qty, Det.GrossWt, Det.StoneWt, Det.Wastage, Det.NettWt,
                               Det.PureWt, Det.Rate, Det.Amount,
@@ -2718,6 +2746,14 @@ BEGIN
       DELETE FROM Image_Details WHERE TransSno=@TransSno AND Image_Grp = 2
 			IF @@ERROR <> 0 GOTO CloseNow
 
+      DELETE FROM Assay_Records WHERE BarCodeSno IN (SELECT BarCodeSno FROM Barcoded_Items WHERE TransSno=@TransSno)
+			IF @@ERROR <> 0 GOTO CloseNow
+
+      DELETE FROM BarCoded_Items WHERE TransSno=@TransSno
+			IF @@ERROR <> 0 GOTO CloseNow
+
+      
+
 	COMMIT TRANSACTION
 	RETURN 1
 CloseNow:
@@ -2738,24 +2774,31 @@ WITH ENCRYPTION AS
             UomSno    = (CASE WHEN Um.Base_Qty=0 THEN Det.UomSno ELSE Um.BaseUomSno END),
             Uom_Name  = (CASE WHEN Um.Base_Qty=0 THEN Um.Uom_Name ELSE Bum.Uom_Name END),
             ISNULL(Bar.BarCode_No,'') as BarCode_No,
-				    InQty		    = CASE WHEN VTyp.Stock_Type = 1 THEN Det.Qty		  ELSE 0 END,
-				    OutQty		  = CASE WHEN VTyp.Stock_Type = 2 THEN Det.Qty		  ELSE 0 END,
-				    InGrossWt	  = CASE WHEN VTyp.Stock_Type = 1 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.GrossWt ELSE Det.GrossWt*Um.Base_Qty END)	ELSE 0 END,
-				    OutGrossWt	= CASE WHEN VTyp.Stock_Type = 2 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.GrossWt ELSE Det.GrossWt*Um.Base_Qty END)	ELSE 0 END,
-				    InStoneWt	  = CASE WHEN VTyp.Stock_Type = 1 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.StoneWt ELSE Det.StoneWt*Um.Base_Qty END)	ELSE 0 END,
-				    OutStoneWt	= CASE WHEN VTyp.Stock_Type = 2 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.StoneWt ELSE Det.StoneWt*Um.Base_Qty END)	ELSE 0 END,
-				    InWastage	  = CASE WHEN VTyp.Stock_Type = 1 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.Wastage ELSE Det.Wastage*Um.Base_Qty END)	ELSE 0 END,
-				    OutWastage	= CASE WHEN VTyp.Stock_Type = 2 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.Wastage ELSE Det.Wastage*Um.Base_Qty END)	ELSE 0 END,
-				    InNettWt	  = CASE WHEN VTyp.Stock_Type = 1 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.NettWt ELSE Det.NettWt*Um.Base_Qty END)		ELSE 0 END,
-				    OutNettWt	  = CASE WHEN VTyp.Stock_Type = 2 THEN (CASE WHEN Um.Base_Qty=0 THEN Det.NettWt ELSE Det.NettWt*Um.Base_Qty END)		ELSE 0 END			
+
+				    InQty		    = CASE WHEN (VTyp.Stock_Type = 1 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 2 )) THEN Det.Qty ELSE 0 END,
+				    OutQty		  = CASE WHEN (VTyp.Stock_Type = 2 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 1 )) THEN Det.Qty	ELSE 0 END,
+
+				    InGrossWt	  = CASE WHEN (VTyp.Stock_Type = 1 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 2 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.GrossWt ELSE Det.GrossWt*Um.Base_Qty END)	ELSE 0 END,
+				    OutGrossWt	= CASE WHEN (VTyp.Stock_Type = 2 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 1 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.GrossWt ELSE Det.GrossWt*Um.Base_Qty END)	ELSE 0 END,
+
+				    InStoneWt	  = CASE WHEN (VTyp.Stock_Type = 1 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 2 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.StoneWt ELSE Det.StoneWt*Um.Base_Qty END)	ELSE 0 END,
+				    OutStoneWt	= CASE WHEN (VTyp.Stock_Type = 2 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 1 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.StoneWt ELSE Det.StoneWt*Um.Base_Qty END)	ELSE 0 END,
+
+				    InWastage	  = CASE WHEN (VTyp.Stock_Type = 1 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 2 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.Wastage ELSE Det.Wastage*Um.Base_Qty END)	ELSE 0 END,
+				    OutWastage	= CASE WHEN (VTyp.Stock_Type = 2 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 1 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.Wastage ELSE Det.Wastage*Um.Base_Qty END)	ELSE 0 END,
+
+				    InNettWt	  = CASE WHEN (VTyp.Stock_Type = 1 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 2 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.NettWt ELSE Det.NettWt*Um.Base_Qty   END)		ELSE 0 END,
+				    OutNettWt	  = CASE WHEN (VTyp.Stock_Type = 2 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 1 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.NettWt ELSE Det.NettWt*Um.Base_Qty   END)		ELSE 0 END			
 
 	FROM		Transaction_Details Det
 				  INNER JOIN Items It ON It.ItemSno=Det.ItemSno
 				  INNER JOIN Item_Groups Grp ON Grp.GrpSno = It.GrpSno
 				  INNER JOIN Uom Um ON Um.UomSno = Det.UomSno
           LEFT OUTER JOIN Uom Bum ON Bum.UomSno = Um.BaseUomSno
-				  LEFT OUTER JOIN Barcoded_Items Bar ON Bar.BarCodeSno = Det.BarCodeSno
+				  LEFT OUTER JOIN Barcoded_Items Bar ON Bar.BarCodeSno = Det.BarCodeSno          
 				  INNER JOIN Transactions Trans ON Trans.TransSno = Det.TransSno
+          LEFT OUTER JOIN Transactions RefTrans ON RefTrans.TransSno = Trans.RefSno
+          LEFT OUTER JOIN Voucher_Types RefVTyp ON RefVTyp.VouTypeSno = RefTrans.VouTypeSno
 				  INNER JOIN Voucher_Types VTyp ON VTyp.VouTypeSno = Trans.VouTypeSno AND (VTyp.Stock_Type <> 0)
 				  INNER JOIN Client Clnt ON Clnt.ClientSno = Trans.ClientSno
 
@@ -2796,7 +2839,7 @@ WITH ENCRYPTION AS
             StoneWt       = CAST(Det.StoneWt / Det.Qty AS DECIMAL(8,3)),
             Wastage       = CAST(Det.Wastage / Det.Qty AS DECIMAL(8,3)),
 			      NettWt        = CAST(Det.NettWt / Det.Qty AS DECIMAL(8,3)),
-
+            PureWt        = CAST(Det.NettWt*(Det.Purity/100)AS DECIMAL(8,3)),
             Det.Rate, Amount = CAST(Det.Amount / Det.Qty AS DECIMAL(10,2)),
 
             Issued_Wt     = (SELECT ISNULL(SUM(NettWt),0) FROM Transaction_Details WHERE BarCodeSno=Bar.BarCodeSno),
@@ -2811,7 +2854,6 @@ WITH ENCRYPTION AS
             INNER JOIN Voucher_Types VTyp ON VTyp.VouTypeSno = Trans.VouTypeSno
 
 GO
-
 
 
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Udf_getBarCodeStock') BEGIN DROP FUNCTION Udf_getBarCodeStock END
@@ -2829,46 +2871,238 @@ RETURN
 GO
 
 
-
-
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='VW_ASSAY_RECORDS') BEGIN DROP VIEW VW_ASSAY_RECORDS END
 GO
-
 CREATE VIEW VW_ASSAY_RECORDS
 WITH ENCRYPTION AS
 
-SELECT    Ar.RecordSno, Ar.BarCodeSno, Bar.BarCode_No, Det.ItemSno, It.Item_Name, Trans.Trans_No, Trans.Trans_Date,
-          Clnt.Client_Name, Trans.CompSno, Bar.BarCode_No as Name, It.Item_Name + ' ' + Trans.Trans_No as Details,
+SELECT    Ar.RecordSno, Ar.BarCodeSno, Bar.BarCode_No, Bar.BarCode_No as Name, It.Item_Name + ' ' + Trans.Trans_No as Details,
+          Det.ItemSno, It.Item_Name,Det.Karat, Det.Purity, Det.Item_Desc, Det.Qty, Det.GrossWt, Det.StoneWt, Det.Wastage , Det.NettWt, Det.UomSno, Um.Uom_Name, 
+
+          Trans.Trans_No, Trans.Trans_Date,
+          Clnt.Client_Name, Trans.CompSno, 
           Assay_Status      = CASE
-                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)
-                                THEN (CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)) THEN 2 ELSE 1 END) 
+                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26)
+                                THEN (CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26)) THEN 2 ELSE 1 END) 
                               ELSE 0 END,
 
           IssueTransSno     = CASE
-                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)
-                                THEN (SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26) 
+                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26)
+                                THEN (SELECT TransSno FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26) 
                               ELSE 0 END,
 
           IssueTrans_No     = CASE
-                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)
-                                THEN (SELECT Trans_No FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26) 
+                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26)
+                                THEN (SELECT Trans_No FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26) 
                               ELSE '' END,
 
           ReceiptTransSno   = CASE
-                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)
-                                THEN (CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26))
-                                THEN (SELECT TransSno FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)) ELSE 0 END) 
+                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26)
+                                THEN (CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26))
+                                THEN (SELECT TransSno FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26)) ELSE 0 END) 
                               ELSE 0 END,
 
           ReceiptTrans_No   = CASE
-                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)
-                                THEN (CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26))
-                                THEN (SELECT Trans_No FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE RefSno = Ar.RecordSno AND VouTypeSno=26)) ELSE '' END) 
+                                WHEN EXISTS (SELECT TransSno FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26)
+                                THEN (CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26))
+                                THEN (SELECT Trans_No FROM Transactions WHERE VouTypeSno=27 AND RefSno=(SELECT TransSno FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26)) ELSE '' END) 
                               ELSE '' END
 
 FROM      Assay_Records Ar
           INNER JOIN Barcoded_Items Bar ON Bar.BarCodeSno = Ar.BarCodeSno
           INNER JOIN Transaction_Details Det ON Det.DetSno  = Bar.DetSno
+          INNER JOIN Uom Um ON Um.UomSno = Det.UomSno
           INNER JOIN Items It ON It.ItemSno = Det.ItemSno
           INNER JOIN Transactions Trans ON Trans.TransSno = Det.TransSno
           INNER JOIN Client Clnt ON Clnt.ClientSno = Trans.ClientSno
+GO
+
+
+
+IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Udf_LedgerBook') BEGIN DROP FUNCTION Udf_LedgerBook END
+GO
+
+CREATE FUNCTION Udf_LedgerBook(@LedSno INT, @FromDt INT, @ToDt AS INT, @YearFrom INT, @BranchSno AS INT, @CompSno INT)
+  RETURNS TABLE
+  WITH ENCRYPTION AS
+RETURN
+
+    SELECT      VouSno, DetSno, VouTypeSno,VouType_Name, Vou_Date,
+                vd.Vou_No, vd.Credit, vd.Debit,Led_Name,Narration,
+                Particular = CASE When vd.Credit<> 0 Then (SELECT Top 1 Led_Name FROM VW_VOUCHERDETAILS WHERE VouSno = vd.VouSno AND DetSno <> vd.DetSno AND Debit <> 0)
+                When vd.Debit <> 0 Then (SELECT Top 1 Led_Name FROM VW_VOUCHERDETAILS WHERE VouSno = vd.VouSno AND DetSno <> vd.DetSno AND Credit <> 0)END
+
+    FROM        VW_VOUCHERDETAILS vd
+
+    WHERE       LedSno = @LedSno AND (Vou_Date BETWEEN @FromDt AND @ToDt) AND (@BranchSno = 0 OR BranchSno= @BranchSno) AND vd.CompSno=@CompSno
+GO
+
+
+
+IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Udf_LedgerBookGroup') BEGIN DROP FUNCTION Udf_LedgerBookGroup END
+GO
+
+CREATE FUNCTION Udf_LedgerBookGroup(@LedSno INT, @FromDt INT, @ToDt AS INT, @YearFrom INT, @BranchSno AS INT, @CompSno INT)
+  RETURNS TABLE
+  WITH ENCRYPTION AS
+RETURN
+
+    SELECT      VouSno, DetSno, VouTypeSno,VouType_Name, Vou_Date,
+                vd.Vou_No, vd.Credit, vd.Debit,Led_Name,Narration,
+                Particular = CASE When vd.Credit <> 0 Then (SELECT Top 1 Led_Name FROM VW_VOUCHERDETAILS WHERE VouSno = vd.VouSno AND DetSno <> vd.DetSno AND Debit <> 0)
+                When vd.Debit <> 0 Then  (SELECT Top 1 Led_Name FROM VW_VOUCHERDETAILS WHERE VouSno = vd.VouSno AND DetSno <> vd.DetSno AND Credit <> 0)END
+
+    FROM        VW_VOUCHERDETAILS vd
+
+    WHERE       Led_Desc LIKE (SELECT Grp_Desc +'%' FROM Ledger_Groups WHERE GrpSno =@LedSno)  AND
+                (Vou_Date BETWEEN @FromDt AND @ToDt)
+
+
+GO
+
+
+
+IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Sp_Voucher_General' ) BEGIN DROP PROCEDURE Sp_Voucher_General END
+GO
+
+CREATE PROCEDURE Sp_Voucher_General
+    @VouSno             INT,
+    @Vou_No             VARCHAR(20),
+    @Vou_Date           INT,
+    @VouTypeSno         INT,
+    @SeriesSno          INT,
+    @LedgerSno          INT,
+    @Amount             MONEY,
+    @Narration          VARCHAR(100),
+    @CompSno            INT,
+    @UserSno            INT,
+    @PaymentModesXML		XML,
+    @ImageDetailXML			XML,    
+    @RetSno             INT OUTPUT,
+    @RetVou_No			    VARCHAR(20) OUTPUT
+WITH ENCRYPTION AS
+
+BEGIN
+    SET NOCOUNT ON
+    BEGIN TRANSACTION
+
+    DECLARE @Num_Method TINYINT
+    SELECT @Num_Method=Num_Method FROM Voucher_Series WHERE SeriesSno=@SeriesSno
+
+    IF (@Num_Method=2)
+    BEGIN
+        SET @Vou_No= [dbo].GenerateVoucherNo(@SeriesSno)           
+    END    
+
+      DECLARE	@IsOpen TINYINT = CASE WHEN @Vou_Date < (SELECT Fin_From FROM Companies WHERE CompSno=@CompSno) THEN 1 ELSE 2 END
+      DECLARE  @VouDetailXML XML  = CAST([dbo].GetVoucherXML(@CompSno, @VouTypeSno, @LedgerSno, @IsOpen, @Amount, 1, CAST(@PaymentModesXML AS VARCHAR(MAX))) AS XML)        
+      EXEC Sp_AccVouchers @VouSno, @VouTypeSno, @SeriesSno, @Vou_No,  @Vou_Date, '', 0, 0, 0, @UserSno, @CompSno, @VouDetailXML, @VouSno OUTPUT
+      
+      IF @VouSno = 0 GOTO CloseNow
+        
+       IF (@Num_Method <> 0)
+        BEGIN
+          UPDATE Voucher_Series SET Current_No = Current_No + 1 WHERE SeriesSno=@SeriesSno
+          IF @@ERROR <> 0 GOTO CloseNow
+        END
+
+      IF @PaymentModesXML IS NOT NULL
+      BEGIN
+			DECLARE @XmlPrefix VARCHAR(20) =  '<ROOT> <Voucher>'
+			DECLARE @XmlSuffix VARCHAR(20) =  '</Voucher> </ROOT> '
+			SET @PaymentModesXML = @XmlPrefix + CAST(@PaymentModesXML AS VARCHAR(MAX)) + @XmlSuffix
+         DECLARE @idoc2       INT
+         DECLARE @Sno2        INT 
+         DECLARE @LedSno      INT
+         DECLARE @Debit       MONEY
+         DECLARE @Credit      MONEY
+         DECLARE @Trans_Type  TINYINT
+         DECLARE @PayRemarks  VARCHAR(50)
+
+         DECLARE @DetTable2 TABLE
+             (
+             Sno INT IDENTITY(1,1),LedSno INT,Debit MONEY,Credit MONEY, Trans_Type TINYINT, PayRemarks VARCHAR(50)
+             )
+         Exec sp_xml_preparedocument @idoc2 OUTPUT, @PaymentModesXML
+        
+         INSERT INTO @DetTable2
+             (
+              LedSno,Debit,Credit, Trans_Type, PayRemarks
+             )
+         SELECT  * FROM  OpenXml 
+             (
+              @idoc2, '/ROOT/Voucher/Voucher_Details',2
+             )
+         WITH 
+            (
+              LedSno INT '@LedSno',Debit MONEY '@Debit',Credit MONEY '@Credit', Trans_Type TINYINT '@Trans_Type', PayRemarks VARCHAR(50) '@PayRemarks'
+            )
+         SELECT      TOP 1 @Sno2=Sno, @LedSno=LedSno, @Debit=Debit, @Credit=Credit, @Trans_Type=Trans_Type, @PayRemarks=PayRemarks
+                     FROM @DetTable2
+        /*Taking FROM Temporary Details TABLE AND inserting INTO details TABLE here*/
+         WHILE @@ROWCOUNT <> 0 
+             BEGIN 
+                 INSERT INTO PaymentMode_Details(TransSno,Trans_Type,LedSno,Amount,Remarks) 
+                 VALUES (@VouSno,@Trans_Type,@LedSno,CASE WHEN @Debit=0 THEN @Credit ELSE @Debit END,@PayRemarks)
+                 IF @@Error <> 0 GOTO CloseNow
+                 DELETE FROM @DetTable2 WHERE Sno = @Sno2
+                 
+				 SELECT      TOP 1 @Sno2=Sno,@LedSno=LedSno,@Debit=Debit,@Credit=Credit, @Trans_Type=Trans_Type, @PayRemarks = PayRemarks
+                 FROM        @DetTable2
+             END
+         Exec Sp_Xml_Removedocument @idoc2
+      END
+    
+    SET @RetSno = @VouSno
+    SET @RetVou_No = @Vou_No
+    COMMIT TRANSACTION
+    RETURN @RetSno
+CloseNow:
+    ROLLBACK TRANSACTION
+    RETURN 0
+End
+GO
+
+
+
+IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Udf_getVoucher_General') BEGIN DROP FUNCTION Udf_getVoucher_General END
+GO
+
+CREATE FUNCTION Udf_getVoucher_General(@VouSno INT,@CompSno INT)
+RETURNS Table
+WITH ENCRYPTION AS
+Return
+
+    SELECT    Vou.*, VTyp.VouType_Name,
+             (SELECT Ser.*, Ser.Series_Name as 'Name', Ser.Series_Name as 'Details', VTyp.VouTypeSno as 'VouType.VouTypeSno', VTyp.VouType_Name as 'VouType.VouType_Name',
+                                  VTyp.Cash_Type as 'VouType.Cash_Type', VTyp.Stock_Type as 'VouType.Stock_Type'
+                           FROM   Voucher_Series Ser
+                                  INNER JOIN Voucher_Types VTyp ON VTyp.VouTypeSno = Ser.VouTypeSno
+                           WHERE  SeriesSno = Vou.SeriesSno FOR JSON PATH) Series_Json,
+
+               /* PAYMENT MODE JSON ---------------------------------- */
+              (SELECT Pm.*, Led.LedSno as 'Ledger.LedSno', Led.Led_Name as 'Ledger.Name', Led.Led_Name as 'Ledger.Details'  FROM PaymentMode_Details Pm INNER JOIN Ledgers Led ON Led.LedSno = Pm.LedSno WHERE TransSno = Vou.VouSno AND Trans_Type=2 FOR JSON PATH) PaymentModes_Json,
+              ---------------------------------------------------------------------------------------------------
+
+              /* IMAGES OBJECT (IMAGES JSON)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+              ISNULL((SELECT Img.Image_Name,'' as Image_File, Image_Url='https://finaccsaas.com/AussieMint/data/'+Img.Image_Url, '1' as SrcType, 0 as DelStatus FROM Image_Details Img WHERE TransSno = Vou.VouSno AND Image_Grp=3 FOR JSON PATH),'') Images_Json,
+
+              Ledger_Json = (  SELECT      Led.*, Led.Led_Name as 'Name', Led.Led_Name as 'Details'
+                          FROM        Ledgers Led
+                          WHERE       Led.LedSno = (SELECT  Vd.LedSno
+                                                    FROM    Voucher_Details Vd
+                                                            INNER JOIN Ledgers dLed ON dLed.LedSno = Vd.LedSno AND (dLed.GrpSno NOT IN (22,23,12,13,14))
+                                                    WHERE   VouSno=Vou.VouSno)
+                          FOR JSON PATH ),
+
+              Amount  = (SELECT (SUM(Debit)*2) - SUM(Credit) FROM Voucher_Details WHERE VouSno = Vou.VouSno)
+
+    FROM      Vouchers Vou
+              INNER JOIN Voucher_Types VTyp ON VTyp.VouTypeSno = Vou.VouTypeSno
+
+    WHERE     (VouSno=@VouSno OR @VouSno = 0) AND (Vou.IsAuto =0)  AND (CompSno =@CompSno)
+
+GO
+
+
+

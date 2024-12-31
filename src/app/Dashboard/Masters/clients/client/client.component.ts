@@ -13,10 +13,11 @@ import { MatOption, MatSelect } from '@angular/material/select';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { IntToDatePipe } from '../../../../Pipes/int-to-date.pipe';
 import { SessionStorageService } from '../../../../session-storage.service';
+import { NumberInputDirective } from '../../../Directives/NumberInput';
 
 @Component({
     selector: 'app-client',
-    imports: [CommonModule, FormsModule, MatSelect, MatOption, MatTab, MatTabGroup, IntToDatePipe, MatDialogClose],
+    imports: [CommonModule, FormsModule, MatSelect, MatOption, MatTab, MatTabGroup, IntToDatePipe, MatDialogClose, NumberInputDirective],
     templateUrl: './client.component.html',
     styleUrl: './client.component.scss'
 })

@@ -72,4 +72,65 @@ export class DataService {
     return data;
   }
 
+  HttpGetPrintStyle(printstyle: string){    
+    //this.progressService.sendUpdate("start","Loading...");
+    let data = this.http.get<any>("https://finaccsaas.com/AussieMint/PrintStyles/getPrintStyles.php?stylename="+ printstyle, { })
+    .pipe(map(datarecd => {                      
+      //this.progressService.sendUpdate("stop","");    
+        return ( datarecd);                        
+    }),
+    );    
+    return data;
+  }
+
+HttpSavePrintStyle(StyleName: string, JsonContent: string, savetype:string)
+  {       
+      //this.progressService.sendUpdate("start","Progress...");
+      
+      let postdata: string =JSON.stringify({"StyleName": StyleName, "JsonContent":JsonContent, "savetype":savetype }); 
+    
+      let params = new HttpParams()
+      .set('data', postdata)
+      
+        
+      let apiURL = "https://finaccsaas.com/AussieMint/PrintStyles/savePrintStyle.php";
+    
+      let header = new HttpHeaders();
+      header.set('Access-Control-Allow-Origin', '*');      
+      header.set("content-type", "text/html; charset=UTF-8");      
+      // let data = this.http.post<any>(apiURL, params) ;
+      let data = this.http.get<any>(apiURL, { params })
+        .pipe(map(datarecd => {                      
+        //  this.progressService.sendUpdate("stop","");    
+            return ( datarecd);                        
+        }),
+        );      
+      return data;      
+  }
+
+  HttpgetFileList(StyleName: string, JsonContent: string)
+  {       
+      //this.progressService.sendUpdate("start","Progress...");
+      
+      let postdata: string =JSON.stringify({"StyleName": StyleName, "JsonContent":JsonContent }); 
+    
+      let params = new HttpParams()
+      .set('data', postdata)
+      
+        
+      let apiURL = "https://finaccsaas.com/AussieMint/PrintStyles/getFilesList.php";
+    
+      let header = new HttpHeaders();
+      header.set('Access-Control-Allow-Origin', '*');      
+      header.set("content-type", "text/html; charset=UTF-8");      
+      // let data = this.http.post<any>(apiURL, params) ;
+      let data = this.http.get<any>(apiURL, { params })
+        .pipe(map(datarecd => {                      
+        //  this.progressService.sendUpdate("stop","");    
+            return ( datarecd);                        
+        }),
+        );      
+      return data;      
+  }
+
   }

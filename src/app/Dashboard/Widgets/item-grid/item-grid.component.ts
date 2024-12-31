@@ -11,6 +11,7 @@ import { ImagesComponent } from '../images/images.component';
 import { FileHandle } from '../../../Types/file-handle';
 import { TypeDocFooter } from '../../../Types/TypeDocFooter';
 import { StockselectionComponent } from '../stockselection/stockselection.component';
+import { GlobalsService } from '../../../global.service';
 
 @Component({
   selector: 'app-item-grid',
@@ -26,6 +27,7 @@ export class ItemGridComponent {
   EnableBarCode = input.required();
   GenerateBarCode = input.required();
   EnableAmountCols = input.required();
+  StockSelection = input.required();
 
   ImageSource = input<FileHandle[]>([]); 
   
@@ -39,7 +41,7 @@ export class ItemGridComponent {
   
   @ViewChild('itemDiv') myDivRef!: ElementRef;
 
-  constructor(private itmService: ItemService, private umService: UomService, private dialog: MatDialog) {
+  constructor(private itmService: ItemService, private umService: UomService, private dialog: MatDialog, private globals: GlobalsService) {
     effect(()=>{                  
       this.SetTotals();                  
     })
@@ -60,7 +62,7 @@ export class ItemGridComponent {
       this.SetTotals();     
     }
     else{
-      let item: TypeGridItem = {DetSno:0, BarCode:{BarCodeSno:0, BarCode_No:"", Name:"", Details:""}, Item: this.itmService.Initialize(), Karat:24, Purity:91.6, Item_Desc:"No Dewscription", Qty:3, GrossWt:3.900, StoneWt:.400, Wastage:.100, NettWt:3.400, Uom: this.umService.Initialize(), Rate:6000, Amount:30000};
+      let item: TypeGridItem = {DetSno:0, BarCode:{BarCodeSno:0, BarCode_No:"", Name:"", Details:""}, Item: this.itmService.Initialize(), Karat:0, Purity:0, Item_Desc:"", Qty:0, GrossWt:0, StoneWt:0, Wastage:0, NettWt:0, Uom: this.umService.Initialize(), Rate:0, Amount:0};
       const dialogRef = this.dialog.open(AdditemComponent, 
         {
           data: { "EnableBarCode": this.EnableBarCode(), "GenerateBarCode": this.GenerateBarCode(), "EnableAmountCols": this.EnableAmountCols(), "Item": item},        
@@ -69,7 +71,7 @@ export class ItemGridComponent {
         dialogRef.disableClose = true; 
         dialogRef.afterClosed().subscribe(result => {                  
           if (result) 
-          { 
+          {                  
             this.GridItems()!.push(result);    
             this.SetTotals();           
           }        
@@ -89,17 +91,29 @@ export class ItemGridComponent {
       dialogRef.afterClosed().subscribe(result => {                  
         if (result) 
         { 
-          this.GridItems()!.push(result);    
-          this.SetTotals();           
+          let isExists: boolean = false;
+            this.GridItems()!.forEach(item => {
+              if (item.BarCode.BarCodeSno == result.BarCode.BarCodeSno){
+                this.globals.SnackBar("error", "Item already added in the list", 1000);                
+                isExists = true;
+                return;                
+              }
+            })
+          
+            if (isExists == false){
+              this.GridItems()!.push(result);    
+              this.SetTotals();        
+            }   
         }        
       });  
   }
   
 
 EditItem( item: TypeGridItem, index: number){
-  const dialogRef = this.dialog.open(AdditemComponent, 
+     const dialogRef = this.dialog.open(AdditemComponent, 
     {
-      data: item,        
+      //data: item,        
+      data: { "EnableBarCode": this.EnableBarCode(), "GenerateBarCode": this.GenerateBarCode(), "EnableAmountCols": this.EnableAmountCols(), "Item": item},        
       panelClass: "dialogMat"
     });      
     dialogRef.disableClose = true; 
@@ -123,7 +137,7 @@ EditItem( item: TypeGridItem, index: number){
 
   getUom($event: TypeUom){
 
-  }
+  } 
 
   SetTotals(){    
     this.TotQty  = 0;
@@ -143,7 +157,7 @@ EditItem( item: TypeGridItem, index: number){
     
     this.DocFooter()!.TaxAmount = +((this.DocFooter()!.TaxPer / 100) * this.DocFooter()!.TotalAmount).toFixed(2);
     this.DocFooter()!.RevAmount = +(this.DocFooter()!.TaxAmount).toFixed(2);
-    this.DocFooter()!.NettAmount = +(this.DocFooter()!.TaxAmount +  this.DocFooter()!.TotalAmount).toFixed(2);
+    this.DocFooter()!.NettAmount = +(this.DocFooter()!.TotalAmount).toFixed(2);
 
   }
 

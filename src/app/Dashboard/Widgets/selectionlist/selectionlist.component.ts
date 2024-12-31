@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, effect, ElementRef, input, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
@@ -13,21 +13,28 @@ import { CommonModule } from '@angular/common';
 
 @AutoUnsubscribe 
 export class SelectionlistComponent implements OnInit {
-focus() {
-//throw new Error('Method not implemented.');
-} 
-constructor(private dialog: MatDialog){}
+
+constructor(private dialog: MatDialog){  
+  effect(() =>{    
+    //this.SelectedItem = {} as any;        
+    this.SelectionList = this.DataSource();
+    this.FilteredData = this.DataSource(); 
+  });
+    
+}
   
-  showList: boolean     = false;
-  SelectionList: any [] = [];
-  FilteredData: any []  = [];  
-  activeIndex: number   = 0; 
+  showList: boolean       = false;
+  SelectionList: any []   = [];
+  FilteredData: any []    = [];  
+  activeIndex: number     = 0; 
   
   focused: boolean = false;
   @ViewChild('InputBox') InputBox!: ElementRef;
     
   @Input() Caption!: string; // decorate the property with @Input()
-  @Input() DataSource: any[] = []; // decorate the property with @Input()
+  //@Input() DataSource: any[] = []; // decorate the property with @Input()
+  DataSource = input<any>(); //For Input
+
   @Input() SelectedItem!: any; 
   @Output() newItemEvent = new EventEmitter<any>();
   @Output() newMasterEmit = new EventEmitter<any>();   
@@ -37,14 +44,15 @@ constructor(private dialog: MatDialog){}
   ngAfterViewInit(){
     
   }
+
   ngOnInit(): void {  
     
   }
 
-  ngOnChanges(changes: SimpleChanges) {    
-    this.SelectionList = this.DataSource;
-    this.FilteredData = this.DataSource;         
-}
+//   ngOnChanges(changes: SimpleChanges) {            
+//     this.SelectionList = this.DataSource();
+//     this.FilteredData = this.DataSource();         
+// }
 
 // OpenMaster()
 // {

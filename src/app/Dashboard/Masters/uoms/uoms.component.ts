@@ -5,6 +5,7 @@ import { GlobalsService } from '../../../global.service';
 import { UomComponent } from './uom/uom.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 
 @Component({
     selector: 'app-uoms',
@@ -30,8 +31,17 @@ export class UomsComponent {
 
   constructor(private uomService: UomService, private dialog: MatDialog, private globals: GlobalsService) {}
   state = 'void';
-  UomsList: TypeUom[] = [];
-  FieldNames: string[] = ["#", "Uom_Code", "Uom_Name", "BaseUom_Name","Base_Qty", "Active_Status", "Actions"]
+  UomsList: TypeUom[] = [];  
+  FieldNames: TypeFieldInfo[] = [
+    {Field_Name:"#", Data_Type:"string" }, 
+    {Field_Name:"Uom_Code", Data_Type:"string" }, 
+    {Field_Name:"Uom_Name", Data_Type:"string" }, 
+    {Field_Name:"BaseUom_Name", Data_Type:"string" }, 
+    {Field_Name:"Base_Qty", Data_Type:"number" }, 
+    {Field_Name:"Active_Status", Data_Type:"boolean"}, 
+    {Field_Name:"Actions", Data_Type:"object" },     
+  ]
+
   RemoveSignal: number = 0;
 
   ngOnInit(){

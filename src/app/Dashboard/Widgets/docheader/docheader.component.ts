@@ -9,13 +9,12 @@ import { IntToDatePipe } from '../../../Pipes/int-to-date.pipe';
 import { PaymodesComponent } from '../paymodes/paymodes.component';
 import { MatDialog } from '@angular/material/dialog';
 import { TypeDocFooter } from '../../../Types/TypeDocFooter';
-import { ReportService } from '../../Services/reports.service';
-import { SessionStorageService } from '../../../session-storage.service';
+import { MatOption, MatSelect } from '@angular/material/select';
 
 @Component({
     selector: 'app-docheader',
     standalone: true,
-    imports: [CommonModule, SelectionlistComponent, FormsModule, IntToDatePipe],
+    imports: [CommonModule, SelectionlistComponent, FormsModule, IntToDatePipe, MatSelect, MatOption],
     templateUrl: './docheader.component.html',
     styleUrl: './docheader.component.scss'
 })  
@@ -25,15 +24,18 @@ export class DocheaderComponent {
   DocHeader = input<TypeDocHeader>(); //For Input
   DocFooter = input.required<TypeDocFooter>(); //For Input
   SeriesList: TypeVoucherSeries[]= [];
-  EnableAmountCols = input.required();
-  AssayRecordList: TypeAssayRecord[] = [];
-  SelectedAssayItem!: TypeAssayRecord;
+  EnableAmountCols = input.required(); 
+  RefDetails:string = "";
+  // AssayRecordList: TypeAssayRecord[] = [];
+  // SelectedAssayItem!: TypeAssayRecord;
 
   @Output() actionEvent = new EventEmitter<any>();
 
-  constructor(private transService: TransactionService, private repService: ReportService, private serService: VoucherSeriesService, 
+  constructor(private transService: TransactionService, private serService: VoucherSeriesService, 
     private globals: GlobalsService, private dialog: MatDialog){    
-    effect(() =>{
+    effect(() =>{      
+      console.log(this.DocHeader());
+      
       this.serService.getVoucherSeries(0, this.DocHeader()!.Series.VouType.VouTypeSno ).subscribe(data=>{
         this.SeriesList = JSON.parse(data.apiData);          
         if (this.DocHeader()!.TransSno == 0){
@@ -46,9 +48,9 @@ export class DocheaderComponent {
   }   
 
   ngOnInit(){      
-    this.repService.getAssayRecords().subscribe(data=>{
-      this.AssayRecordList = JSON.parse(data.apiData);
-    })
+    // this.repService.getAssayRecords().subscribe(data=>{
+    //   this.AssayRecordList = JSON.parse(data.apiData);
+    // })
   }
   
 
@@ -59,9 +61,16 @@ export class DocheaderComponent {
     })
   }
   
-  getReference($event: TypeTransaction){
-    this.DocHeader()!.Reference = $event;
+  getReference($event: TypeTransaction){        
+    this.RefDetails = "";
+    this.DocHeader()!.Reference = $event;    
+    this.RefDetails = "Amount: " +  (+$event.NettAmount).toFixed(2);
     this.actionEvent.emit({"Action":"RefTransaction","Trans":$event});
+  }
+
+  getAssayItem($event: TypeAssayRecord){
+    this.DocHeader()!.BarReference = $event;
+    this.actionEvent.emit({"Action":"BarReference","Trans":$event});
   }
 
   DateToInt($event: any): number{        
@@ -69,15 +78,13 @@ export class DocheaderComponent {
   }
 
   OpenPaymentModes(){
-    console.log(this.DocHeader()!.PaymentModes);
-    
     if (this.DocFooter().NettAmount == 0) { this.globals.SnackBar("error","Nett Amount is zero!!",1000); return; }
     const dialogRef = this.dialog.open(PaymodesComponent, 
       { 
         panelClass:['rightdialogMat'],        
         position:{"right":"0","top":"0" },              
         maxWidth: 'none',        
-        data: {"Amount": this.DocFooter().NettAmount, "PaymentModeList": this.DocHeader()!.PaymentModes} ,
+        data: {"Amount": this.DocFooter().NettAmount, "PaymentModeList": this.DocHeader()!.PaymentModes, "Trans_Type": 1} ,
       });
       
       dialogRef.disableClose = true;  
@@ -90,8 +97,6 @@ export class DocheaderComponent {
       }); 
   }
   
-  getAssayItem($event: TypeAssayRecord){
-    this.SelectedAssayItem = $event;
-  }
+
 }
  

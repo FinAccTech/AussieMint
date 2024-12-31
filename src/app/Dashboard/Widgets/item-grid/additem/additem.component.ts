@@ -28,7 +28,10 @@ export class AdditemComponent {
 
   BarCodeValid: boolean = true;
   ItemNameValid: boolean = true;
-  UomValid: boolean = true;
+  QtyValid: boolean = true; 
+  KaratValid: boolean = true; 
+  PurityValid: boolean = true; 
+  UomValid: boolean = true; 
   NettWtValid: boolean = true;
   AmountValid: boolean = true;
 
@@ -43,6 +46,7 @@ export class AdditemComponent {
   }
  
   ngOnInit(){
+    
     this.itmService.getItems(0,0).subscribe(data=>{
       this.ItemsList = JSON.parse (data.apiData);
     });
@@ -63,6 +67,9 @@ export class AdditemComponent {
   ValidateInputs(): boolean{
     if (this.EnableBarCode) { if (!this.GridItem.BarCode || this.GridItem.BarCode.BarCodeSno == 0 ){ this.BarCodeValid = false; return false; } else { this.BarCodeValid = true; }}
     if (!this.GridItem.Item || this.GridItem.Item.ItemSno == 0 ){ this.ItemNameValid = false; return false; } else { this.ItemNameValid = true; }
+    if (!this.GridItem.Qty || this.GridItem.Qty == 0 ){ this.QtyValid = false; return false; } else { this.QtyValid = true; }
+    if (!this.GridItem.Karat || this.GridItem.Karat == 0 ){ this.KaratValid = false; return false; } else { this.KaratValid = true; }
+    if (!this.GridItem.Purity || this.GridItem.Purity == 0 ){ this.PurityValid = false; return false; } else { this.PurityValid = true; }
     if (!this.GridItem.Uom || this.GridItem.Uom.UomSno == 0 ){ this.UomValid = false; return false; } else { this.UomValid = true; }
     if (!this.GridItem.NettWt || this.GridItem.NettWt == 0 ){ this.NettWtValid = false; return false; } else { this.NettWtValid = true; }
     if (this.EnableAmountCols){
@@ -77,8 +84,7 @@ export class AdditemComponent {
 
   getBarCode($event: TypeBarCode){
     this.GridItem.BarCode = $event;
-    this.GridItem.Item = {ItemSno: this.GridItem.BarCode.ItemSno!, Item_Name: this.GridItem.BarCode.Item_Name!, Name: this.GridItem.BarCode.Item_Name!, Details:this.GridItem.BarCode.Item_Name!,};
-    
+    this.GridItem.Item = {ItemSno: this.GridItem.BarCode.ItemSno!, Item_Name: this.GridItem.BarCode.Item_Name!, Name: this.GridItem.BarCode.Item_Name!, Details:this.GridItem.BarCode.Item_Name!,};    
   }
 
   getUom($event: TypeUom){

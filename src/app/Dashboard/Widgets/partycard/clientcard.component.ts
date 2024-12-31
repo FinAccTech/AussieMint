@@ -1,4 +1,4 @@
-import { Component, effect, Input, input, signal, Signal ,  } from '@angular/core';
+import { Component, effect, EventEmitter, Input, input, Output, signal, Signal ,  } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
 import { ClientService, TypeClient } from '../../Services/client.service';
@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
 export class ClientcardComponent {
 
   SelectedClient = input<TypeClient>();
- 
+  @Output() onChangedClient = new EventEmitter<TypeClient>();
 
   constructor(private dialog: MatDialog, private clntService: ClientService) {
     effect(() => {
@@ -76,6 +76,8 @@ export class ClientcardComponent {
     this.SelectedClient()!.CompSno = $event.CompSno;
     this.SelectedClient()!.Name = $event.Name;
     this.SelectedClient()!.Details = $event.Details;    
+    
+    this.onChangedClient.emit(this.SelectedClient());
     
   }
 

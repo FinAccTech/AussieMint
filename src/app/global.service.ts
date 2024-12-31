@@ -57,6 +57,7 @@ export class GlobalsService
     VTypAdvanceSales:     number = 25;
     VTypLabTestingIssue:  number = 26;
     VTypLabTestingReceipt:number = 27;
+    VTypGRN:              number = 28;
 
     //Dialog Types    
     DialogTypeProgress  = 0; 
@@ -192,6 +193,9 @@ export class GlobalsService
         break;      
         case 27:
           return "Lab Testing - Receipt"
+        break;      
+        case 28:
+          return "GRN"
         break;      
       }
       return "";
@@ -356,6 +360,14 @@ GetMonthName(Month: number, ReturnAlias: boolean):string{
   return MonthName;
 }
 
+GetMonthFirstDateAsInt():number{
+  let nDate = new Date();  
+  nDate.setDate(1);
+  nDate.setMonth(new Date().getMonth());
+  nDate.setFullYear(new Date().getFullYear());
+  return (this.DateToInt (nDate));
+}
+
 GetVoucherXml(vou: TypeVoucherLedger[]):string{
   let StrXml = '';
   StrXml = '<ROOT>';
@@ -442,6 +454,7 @@ GetPaymentModeXml(Pmode: TypePaymentModes[], VouType: TypeVoucherTypes):string{
              break;         
        }
        StrXml += 'PayRemarks="' + mode.Remarks + '" ' ;	    
+       StrXml += 'Trans_Type="' + mode.Trans_Type + '" ' ;	    
      StrXml += '>';
      StrXml += '</Voucher_Details> ';
    })    
@@ -450,3 +463,4 @@ GetPaymentModeXml(Pmode: TypePaymentModes[], VouType: TypeVoucherTypes):string{
 
 
 }
+

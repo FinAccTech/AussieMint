@@ -33,7 +33,7 @@ export interface TypeBarCode{
     Karat?          : number;
     Purity?         : number;
     GrossWt?        : number;
-    StonWt?         : number;
+    StoneWt?        : number;
     Wastage?        : number;
     NettWt?         : number;
     Rate?           : number;
@@ -42,6 +42,6 @@ export interface TypeBarCode{
     Balance_Wt?     : number;
     Stock_Status?   : number;
     CompSno?        : number;
-    Name            : string;
-    Details         : string;
+    Name?            : string;
+    Details?         : string;
 }

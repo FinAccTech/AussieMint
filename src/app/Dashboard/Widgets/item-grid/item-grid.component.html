@@ -5,15 +5,19 @@
     </div>
 
     <div class="gridHeader">        
-        <div class="actions" (click)="AddItem()" >                                    
-            <i class='bx bx-plus edit' ></i>          
-            <p>Add Item</p>  
-        </div>
-
-        <div class="actions" (click)="SelectfromInventory()">                                    
-            <i class='bx bx-store-alt stock'  ></i>       
-            <p>Select from Inventory</p>  
-        </div>
+        @if (StockSelection()) {
+            <div class="actions" (click)="SelectfromInventory()">                                    
+                <i class='bx bx-store-alt stock'  ></i>       
+                <p>Select from Inventory</p>  
+            </div>
+        }
+        @else {
+            <div class="actions" (click)="AddItem()" >                                    
+                <i class='bx bx-plus edit' ></i>          
+                <p>Add Item</p>  
+            </div>
+        }
+        
     </div>
 
     @if (!DirectItemEntry) {

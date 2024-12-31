@@ -17,6 +17,7 @@ export const menuTree =[
         [
             {   Caption: "Advance Doc - Purchase", Iconn: "", RouterLink:"transactions/24" },
             {   Caption: "Purchase Order", Iconn: "", RouterLink:"transactions/10" },
+            {   Caption: "GRN", Iconn: "", RouterLink:"transactions/28" },
             {   Caption: "Buying Contract", Iconn: "", RouterLink:"transactions/11" },
             {   Caption: "RCTI", Iconn: "", RouterLink:"transactions/12"   },            
         ]
@@ -63,6 +64,9 @@ export const menuTree =[
             {   Caption: "Ledger Groups", Iconn: "", RouterLink:"ledgergroups"   },
             {   Caption: "Ledgers", Iconn: "", RouterLink:"ledgers" },
             {   Caption: "Voucher", Iconn: "", RouterLink:"vouchers" },
+
+            {   Caption: "CashBook", Iconn: "", RouterLink:"daybook" },
+            {   Caption: "Client Statement", Iconn: "", RouterLink:"ledgerbook" },
         ]
     },
 
@@ -72,8 +76,11 @@ export const menuTree =[
         RouterLink: "",
         SubMenu: 
         [
+            {   Caption: "Client History", Iconn: "", RouterLink:"clienthistory" },            
             {   Caption: "Pending Documents", Iconn: "", RouterLink:"pendingdocuments" },            
             {   Caption: "Stock Report", Iconn: "", RouterLink:"stockreport" },            
+            {   Caption: "Bar Coded Stock Report", Iconn: "", RouterLink:"barcodedstockreport" },     
+            {   Caption: "Lab Reports", Iconn: "", RouterLink:"labreports" },            
         ]
     },
 
@@ -99,7 +106,7 @@ export const menuTree =[
             {   Caption: "Voucher Series", Iconn: "", RouterLink:"voucherseries"   },
             {   Caption: "App Setup", Iconn: "", RouterLink:"appsetup"   },
             {   Caption: "Users", Iconn: "", RouterLink:"users"   },
-            {   Caption: "Companies", Iconn: "", RouterLink:"printsetup"   },
+            {   Caption: "Print Setup", Iconn: "", RouterLink:"printsetup"   },
         ]
     }
 ]

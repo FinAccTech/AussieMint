@@ -1,0 +1,68 @@
+table{
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom: none;
+
+    th,td{
+        padding: 1rem;
+        //border-bottom: .5px solid #ddd;        
+        text-align: left;
+    }
+
+    th{
+        background-color: #FBFBFD;
+        font-weight: 500;
+        
+    }
+
+    tr{
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+    }
+    tr:hover{
+        background-color: #FBFBFD;
+        cursor: pointer;
+    }
+
+    .actions{ 
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        
+
+        i{            
+            padding: .7rem;
+            border-radius: 50%;            
+        }
+
+        i.edit{
+            color: green;
+            background-color: #e9f7e6;            
+        }
+
+        i.edit:hover{            
+            background-color: green;
+            color: #fff;
+        }
+
+        i.delete{
+            background-color: #FFE9E3;
+            color: red;
+        }
+
+        i.delete:hover{            
+            background-color: red;
+            color: #fff;
+        }
+        
+        i.print{
+            background-color: rgb(248, 231, 248);
+            color: purple;
+        }
+
+        i.print:hover{            
+            background-color: purple;
+            color: #fff;
+        }
+    }
+}

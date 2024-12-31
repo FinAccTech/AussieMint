@@ -6,6 +6,7 @@ import { GlobalsService } from '../../../global.service';
 import { LedgerComponent } from './ledger/ledger.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 
 @Component({
     selector: 'app-ledgers',
@@ -33,7 +34,16 @@ export class LedgersComponent {
   constructor(private ledService: LedgerService, private dialog: MatDialog, private globals: GlobalsService) {}
   
   LedgersList: TypeLedger[] = [];
-  FieldNames: string[] = ["#", "Led_Code", "Led_Name", "Grp_Name", "IsStd", "Actions"]
+    
+  FieldNames: TypeFieldInfo[] = [
+    {Field_Name:"#", Data_Type:"string" }, 
+    {Field_Name:"Led_Code", Data_Type:"string" }, 
+    {Field_Name:"Led_Name", Data_Type:"string" }, 
+    {Field_Name:"Grp_Name", Data_Type:"string" }, 
+    {Field_Name:"IsStd", Data_Type:"boolean" }, 
+    {Field_Name:"Actions", Data_Type:"object" },  
+  ]
+
   RemoveSignal: number = 0;
   state = 'void';
   ngOnInit(){

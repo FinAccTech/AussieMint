@@ -1,0 +1,91 @@
+<div class="printContainer">
+    <div class="contentSideSection">
+      <div class="header">
+        <input type="text" placeholder="Enter Style Name here" [(ngModel)]="StyleName" />
+        <button (click)="CreateNewStyle()"> <i class="fa fa-plus" aria-hidden="true"></i> Create New Style</button> 
+      </div>
+
+      <div class="content">
+        <div class="filesList">          
+          <table>
+            @for (file of FilesList; track $index) {
+              <tr (click)="LoadPrintStyle(file)" >
+                <td>{{$index+1}}</td>
+                <td >{{file}}</td>
+              </tr>
+            }
+            
+          </table>
+        </div>
+ 
+        <div class="fieldsList">
+          <table>            
+              <tr (click)="patchValue('TransSno')"> <td>1</td>  <td>TransSno</td></tr>
+              <tr (click)="patchValue('Trans_No')"> <td>2</td><td>Trans_No</td></tr>
+              <tr (click)="patchValue('Series_Name')"> <td>3</td><td>Series_Name</td></tr>
+              <tr (click)="patchValue('Trans_Date')"> <td>4</td><td>Trans_Date</td></tr>
+              <tr (click)="patchValue('Due_Date')"> <td>5</td><td>Due_Date</td></tr>
+              <tr (click)="patchValue('Reference')"> <td>6</td><td>Reference</td></tr>
+              <tr (click)="patchValue('Payment_Type')"> <td>7</td><td>Payment_Type</td></tr>
+              <tr (click)="patchValue('Remarks')"> <td>8</td><td>Remarks</td></tr>
+              <tr (click)="patchValue('Print_Remarks')"> <td>9</td><td>Print_Remarks</td></tr>
+              <tr (click)="patchValue('TotQty')"> <td>10</td><td>TotQty</td></tr>
+              <tr (click)="patchValue('TotGrossWt')"> <td>11</td><td>TotGrossWt</td></tr>
+              <tr (click)="patchValue('TotNettWt')"> <td>12</td><td>TotNettWt</td></tr>
+              <tr (click)="patchValue('TotAmount')"> <td>13</td><td>TotAmount</td></tr>
+              <tr (click)="patchValue('TaxPer')"> <td>14</td><td>TaxPer</td></tr>
+              <tr (click)="patchValue('TaxAmount')"> <td>15</td><td>TaxAmount</td></tr>
+              <tr (click)="patchValue('RevAmount')"> <td>16</td><td>RevAmount</td></tr>
+              <tr (click)="patchValue('NettAmount')"> <td>17</td><td>NettAmount</td></tr>
+              <tr (click)="patchValue('ItemImages')"> <td>18</td><td>ItemImages</td></tr>
+              
+              <tr (click)="patchValue('ClientSno')"> <td>20</td><td>ClientSno</td></tr>
+              <tr (click)="patchValue('Client_Code')"> <td>21</td><td>Client_Code</td></tr>
+              <tr (click)="patchValue('Client_Name')"> <td>22</td><td>Client_Name</td></tr>
+              <tr (click)="patchValue('Client_Address')"> <td>23</td><td>Client_Address</td></tr>
+              <tr (click)="patchValue('Client_Suburb')"> <td>24</td><td>Client_Suburb</td></tr>
+              <tr (click)="patchValue('Client_Post_Code')"> <td>25</td><td>Client_Post_Code</td></tr>
+              <tr (click)="patchValue('Client_State')"> <td>26</td><td>Client_State</td></tr>
+              <tr (click)="patchValue('Client_Mobile')"> <td>27</td><td>Client_Mobile</td></tr>
+              <tr (click)="patchValue('Client_Sex')"> <td>28</td><td>Client_Sex</td></tr>
+              <tr (click)="patchValue('Client_Dob')"> <td>29</td><td>Client_Dob</td></tr>
+              <tr (click)="patchValue('Client_Issue_Date')"> <td>30</td><td>Client_Issue_Date</td></tr>
+              <tr (click)="patchValue('Client_Expiry_Date')"> <td>31</td><td>Client_Expiry_Date</td></tr>
+              <tr (click)="patchValue('Client_Id_Number')"> <td>32</td><td>Client_Id_Number</td></tr>
+              <tr (click)="patchValue('Client_Director_Name')"> <td>33</td><td>Client_Director_Name</td></tr>
+              <tr (click)="patchValue('Client_Email')"> <td>34</td><td>Client_Email</td></tr>
+              <tr (click)="patchValue('Client_Gst_No')"> <td>35</td><td>Client_Gst_No</td></tr>
+              <tr (click)="patchValue('Client_Remarks')"> <td>36</td><td>Client_Remarks</td></tr>
+              <tr (click)="patchValue('Client_Profile_Image')"> <td>37</td><td>Client_Profile_Image</td></tr>
+              <tr (click)="patchValue('Client_Images')"> <td>38</td><td>Client_Images</td></tr>
+          </table>
+        </div>
+      </div>
+    
+      
+    </div>
+
+    <div class="contentPreview">
+      <div class="header">                  
+        <div class="headerLeft">
+          <button (click)="LoadPreview()"><i class="fa fa-print" aria-hidden="true"></i> Print Preview</button>          
+          <button (click)="SavetoServer()"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save to Server</button>
+          {{UploadError}}
+        </div>
+
+        <div class="headerRight">
+          <button (click)="InsertField()" ><i class="fa fa-code" aria-hidden="true"></i> Insert Field Set </button>          
+          <button (click)="InsertBox()" ><i class="fa fa-square-o" aria-hidden="true"></i> Insert Box </button>          
+          <button (click)="InsertImage()" ><i class="fa fa-picture-o" aria-hidden="true"></i> Insert Image </button>                    
+        </div>
+      </div>
+
+        @if (SelectedStyle && SelectedStyle !== '') {
+        <div class="content">           
+          <textarea [(ngModel)]="jsoncontent" id="jsoncontent"> </textarea>
+        </div>
+        }
+      
+    </div>
+  </div>
+

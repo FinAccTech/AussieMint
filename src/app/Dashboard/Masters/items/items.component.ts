@@ -6,6 +6,7 @@ import { ItemComponent } from './item/item.component';
 import { IGroupService } from '../../Services/igroup.service';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 
 @Component({
     selector: 'app-items',
@@ -31,7 +32,16 @@ export class ItemsComponent {
   constructor(private itemService: ItemService, private grpService: IGroupService, private dialog: MatDialog, private globals: GlobalsService) {}
   state = 'void';
   ItemsList: TypeItem[] = [];
-  FieldNames: string[] = ["#", "Item_Code", "Item_Name", "Grp_Name", "Active_Status", "Actions"]
+    
+  FieldNames: TypeFieldInfo[] = [
+    {Field_Name:"#", Data_Type:"string" }, 
+    {Field_Name:"Item_Code", Data_Type:"string" }, 
+    {Field_Name:"Item_Name", Data_Type:"string" }, 
+    {Field_Name:"Grp_Name", Data_Type:"string" }, 
+    {Field_Name:"Active_Status", Data_Type:"boolean"}, 
+    {Field_Name:"Actions", Data_Type:"object" },     
+  ]
+
   RemoveSignal: number = 0;
 
   ngOnInit(){

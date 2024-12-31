@@ -58,8 +58,8 @@ CREATE TABLE Voucher_Types
 GO
 
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Opening',0,0)
-INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Receipt',0,0)
-INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Payment',0,0)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Receipt',0,1)
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Payment',0,2)
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Journal',0,0)
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Contra',0,0)
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Memorandum',0,0)
@@ -84,7 +84,7 @@ INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Advance D
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Advance Doc Sales',0,1)
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Lab Testing Issue',2,0)
 INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('Lab Testing Receipt',1,0)
-
+INSERT INTO Voucher_Types(VouType_Name,Stock_Type,Cash_Type)  VALUES ('GRN',1,0)
 
 GO
 
@@ -404,6 +404,7 @@ CREATE TABLE Client
 	Gst_Number VARCHAR(50),
 	Director_Name VARCHAR(50),
 	Remarks VARCHAR(100),
+   DECIMAL(5,2),
 	AreaSno INT,
   LedSno INT,
 	Blocked BIT,
@@ -423,6 +424,7 @@ CREATE TABLE  Image_Details
 )
 GO
 
+
 CREATE TABLE Transactions
 (
   TransSno        INT PRIMARY KEY IDENTITY(1,1),
@@ -430,6 +432,7 @@ CREATE TABLE Transactions
   Trans_Date      INT,
   VouTypeSno      INT,
   SeriesSno       INT,
+  Payment_Type    TINYINT,
   ClientSno       INT,
 
   Due_Date        INT,
@@ -442,6 +445,8 @@ CREATE TABLE Transactions
   RevAmount       MONEY,
   NettAmount      MONEY,
 
+  Fixed_Price     MONEY,
+  Commision       DECIMAL(5,2),
   Remarks         VARCHAR(100),
   Print_Remarks   VARCHAR(100),
 
@@ -490,6 +495,7 @@ CREATE TABLE PaymentMode_Details
 (
   PmSno     INT PRIMARY KEY IDENTITY(1,1),
   TransSno  INT,
+  Trans_Type TINYINT,
   LedSno    INT,
   Amount    MONEY,
   Remarks   VARCHAR(50)

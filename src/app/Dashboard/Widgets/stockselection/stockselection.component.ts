@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogClose, MatDialogRef } from '@angular/material
 import { TypeBarCode, TypeGridItem } from '../../../Types/TypeGridItem';
 import { ReportService } from '../../Services/reports.service';
 import { TableviewComponent } from '../tableview/tableview.component';
+import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 
 @Component({
   selector: 'app-stockselection',
@@ -16,8 +17,18 @@ export class StockselectionComponent {
   private repService: ReportService) 
   {}
 
-  BarCodedList: TypeBarCode[] = [];
-  FieldNames: string[] = ["#", "VouType_Name", "Trans_Date", "Item_Name", "BarCode_No", "NettWt","Issued_Wt", "Balance_Wt"]
+  BarCodedList: TypeBarCode[] = [];  
+  FieldNames: TypeFieldInfo[] = [
+    {Field_Name:"#", Data_Type:"string" }, 
+    {Field_Name:"VouType_Name", Data_Type:"string" }, 
+    {Field_Name:"Trans_Date", Data_Type:"date" }, 
+    {Field_Name:"Item_Name", Data_Type:"string" }, 
+    {Field_Name:"BarCode_No", Data_Type:"string" }, 
+    {Field_Name:"NettWt", Data_Type:"number", Decimals:3 }, 
+    {Field_Name:"Issued_Wt", Data_Type:"number", Decimals:3 }, 
+    {Field_Name:"Balance_Wt", Data_Type:"number", Decimals:3 }, 
+  ]
+
   TotalFields: string[] = ["NettWt", "Issued_Wt", "Balance_Wt"]
 
   ngOnInit(){
@@ -36,7 +47,7 @@ export class StockselectionComponent {
                     Purity: selItem.Purity!,
                     Qty: 1,
                     GrossWt: selItem.GrossWt!,
-                    StoneWt: selItem.StonWt!,
+                    StoneWt: selItem.StoneWt!,
                     Wastage: selItem.Wastage!,
                     NettWt: selItem.NettWt!,
                     Uom: {UomSno: selItem.UomSno!, Uom_Name: selItem.Uom_Name!, Name: selItem.Uom_Name, Details:selItem.Uom_Name},

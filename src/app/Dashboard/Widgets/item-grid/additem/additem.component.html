@@ -33,17 +33,17 @@
         </div>
 
         <div class="formRow">            
-            <div class="formGroup" >
+            <div class="formGroup" [ngClass]="!KaratValid ? 'invalidSel' : ''">
                 <input type="number" class="formControl" required NumberInput MaxValue="24"  [(ngModel)] = "GridItem.Karat" (blur)="CalcPurity(GridItem)" />
                 <label for="" class="formLabel">Karat </label>                                                            
             </div> 
         
-            <div class="formGroup" >
+            <div class="formGroup" [ngClass]="!PurityValid ? 'invalidSel' : ''">
                 <input type="number" class="formControl" required  NumberInput MaxValue="100" [(ngModel)] = "GridItem.Purity" (blur)="CalcKarat(GridItem)" />
                 <label for="" class="formLabel">Purity </label>                                                                           
             </div> 
         
-            <div class="formGroup" >                        
+            <div class="formGroup" [ngClass]="!QtyValid ? 'invalidSel' : ''" >                        
                 <input type="number" class="formControl" required  NumberInput [(ngModel)] = "GridItem.Qty"  />
                 <label for="" class="formLabel"> Qty </label>
             </div>            

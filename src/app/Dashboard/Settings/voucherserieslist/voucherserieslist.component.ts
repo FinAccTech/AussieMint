@@ -5,6 +5,7 @@ import { GlobalsService } from '../../../global.service';
 import { VoucherseriesComponent } from './voucherseries/voucherseries.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 
 @Component({
     selector: 'app-voucherserieslist',
@@ -31,7 +32,18 @@ export class VoucherserieslistComponent {
   state = 'void';
 
   SeriesList: TypeVoucherSeries[] = [];
-  FieldNames: string[] = ["#", "Series_Name", "VouType_Name", "Prefix", "Current_No", "IsStd", "Active_Status", "Actions"]
+  
+  FieldNames: TypeFieldInfo[] = [
+    {Field_Name:"#", Data_Type:"string" }, 
+    {Field_Name:"Series_Name", Data_Type:"string" }, 
+    {Field_Name:"VouType_Name", Data_Type:"string" }, 
+    {Field_Name:"Prefix", Data_Type:"string" }, 
+    {Field_Name:"Current_No", Data_Type:"number" }, 
+    {Field_Name:"IsStd", Data_Type:"boolean" },  
+    {Field_Name:"Active_Status", Data_Type:"boolean" },  
+    {Field_Name:"Actions", Data_Type:"object" },  
+  ]
+
   RemoveSignal: number = 0;
 
   ngOnInit(){

@@ -6,6 +6,7 @@ import { TypeTransaction } from '../../Services/transaction.service';
 import { ReportService } from '../../Services/reports.service';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 
 @Component({
   selector: 'app-pendingdocs',
@@ -30,7 +31,16 @@ export class PendingdocsComponent {
   VouTypeSno: number = 0;
   VouTypeName: string = "";
   TransList: TypeTransaction[] = [];
-  FieldNames: string[] = ["#", "Trans_No", "Trans_DateStr", "Client_Name", "TotNettWt", "NettAmount"]
+  
+  FieldNames: TypeFieldInfo[] = [
+    {Field_Name:"#", Data_Type:"string" }, 
+    {Field_Name:"Trans_No", Data_Type:"string" }, 
+    {Field_Name:"Trans_Date", Data_Type:"string" },     
+    {Field_Name:"Client_Name", Data_Type:"string" }, 
+    {Field_Name:"TotNettWt", Data_Type:"string" }, 
+    {Field_Name:"NettAmount", Data_Type:"string" }, 
+  ]
+  
   TotalFields: string[] = ["TotNettWt", "NettAmount"]
   
   constructor(private globals: GlobalsService, private repService: ReportService ) {}
@@ -46,7 +56,7 @@ export class PendingdocsComponent {
 
   LoadPendingReport(){        
     this.VouTypeName = this.globals.GetVouTypeName(this.VouTypeSno);
-    this.repService.getPendingDocuments(this.VouTypeSno).subscribe(data =>{
+    this.repService.getPendingDocuments(this.VouTypeSno,0).subscribe(data =>{
       this.TransList = JSON.parse(data.apiData);
     })
   }

@@ -7,6 +7,7 @@ import { TableviewComponent } from '../../Widgets/tableview/tableview.component'
 import { SelectionlistComponent } from "../../Widgets/selectionlist/selectionlist.component";
 import { IGroupService, TypeItemGroup } from '../../Services/igroup.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 
 @Component({
   selector: 'app-stockreport',
@@ -33,7 +34,19 @@ export class StockreportComponent {
 
   StockList: TypeStockReport[] = [];
 
-  FieldNames: string[] = ["#", "Item_Name", "Karat", "Purity", "Uom_Name", "Qty", "GrossWt", "StoneWt", "Wastage", "NettWt"]
+  FieldNames: TypeFieldInfo[] = [
+    {Field_Name:"#", Data_Type:"string" }, 
+    {Field_Name:"Item_Name", Data_Type:"string" }, 
+    {Field_Name:"Karat", Data_Type:"string" }, 
+    {Field_Name:"Purity", Data_Type:"string" }, 
+    {Field_Name:"Uom_Name", Data_Type:"string"}, 
+    {Field_Name:"Qty", Data_Type:"number" }, 
+    {Field_Name:"GrossWt", Data_Type:"number", Decimals:3 }, 
+    {Field_Name:"StoneWt", Data_Type:"number", Decimals:3 }, 
+    {Field_Name:"Wastage", Data_Type:"number", Decimals:3 }, 
+    {Field_Name:"NettWt", Data_Type:"number", Decimals:3 }, 
+  ]
+
   TotalFields: string[] = ["Qty", "GrossWt", "StoneWt", "Wastage", "NettWt"]
   
   constructor(private globals: GlobalsService, private grpService: IGroupService,  private repService: ReportService ) {}

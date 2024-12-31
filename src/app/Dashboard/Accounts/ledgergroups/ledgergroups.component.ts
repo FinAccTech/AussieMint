@@ -6,6 +6,7 @@ import { LedgergroupComponent } from './ledgergroup/ledgergroup.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 
 @Component({
     selector: 'app-ledgergroups',
@@ -31,8 +32,17 @@ export class LedgergroupsComponent {
   constructor(private lgrpService: LedgerGroupService, private dialog: MatDialog, private globals: GlobalsService) {}
   state = 'void';
 
-  LedgerGroupsList: TypeLedgerGroup[] = [];
-  FieldNames: string[] = ["#", "Grp_Code", "Grp_Name", "GrpUnder_Name", "Active_Status", "Actions"]
+  LedgerGroupsList: TypeLedgerGroup[] = [];  
+  FieldNames: TypeFieldInfo[] = [
+    {Field_Name:"#", Data_Type:"string" }, 
+    {Field_Name:"Grp_Code", Data_Type:"string" }, 
+    {Field_Name:"Grp_Name", Data_Type:"string" }, 
+    {Field_Name:"GrpUnder_Name", Data_Type:"string" }, 
+    {Field_Name:"IsStd", Data_Type:"boolean" }, 
+    {Field_Name:"Actions", Data_Type:"object" },  
+  ]
+
+
   RemoveSignal: number = 0;
 
   ngOnInit(){
@@ -42,6 +52,8 @@ export class LedgergroupsComponent {
     this.lgrpService.getLedgerGroups(0).subscribe(data =>{
       if (data.queryStatus == 1){
         this.LedgerGroupsList = JSON.parse(data.apiData);          
+        console.log(this.LedgerGroupsList);
+        
       }
       else{
         this.globals.SnackBar("error",data.apiData,2000);

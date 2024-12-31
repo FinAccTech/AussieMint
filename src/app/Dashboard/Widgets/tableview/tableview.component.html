@@ -79,13 +79,24 @@
                                                         @default {
                                                             <td style="text-align: right; padding-right: 1rem;" > {{row[element.Field_Name] | number }} </td>
                                                         }
-                                                    }
-                                                                                                        
+                                                    }                                                                                                        
                                                 }
+                                                @case ("boolean") {
+                                                    <td style="text-align: center;" >
+                                                        <label class="toggle" style="pointer-events: none;">
+                                                            <input class="toggle-checkbox" type="checkbox" [checked]="row[element.Field_Name]"> 
+                                                            <div class="toggle-switch"></div>
+                                                            <!-- <span class="toggle-label"> {{row[element.Field_Name] == (1 || true)  ? 'Active' : 'InActive' }}  </span> -->
+                                                        </label>
+                                                    </td>
+                                                }
+
                                                 @case ("image") {
-                                                    @if ( row[element.Field_Name] && row[element.Field_Name].length > 0 ) {
-                                                        <img style="border-radius: 50%; filter: drop-shadow(8px 10px 8px #D3AC67); " [src]="row[element.Field_Name]"  width="70" height="70" />
-                                                    }
+                                                    <td style="text-align: center;" >
+                                                        @if ( row[element.Field_Name] && row[element.Field_Name].length > 0 ) {                                                        
+                                                            <img style="border-radius: 50%; filter: drop-shadow(8px 10px 8px #D3AC67); " [src]="row[element.Field_Name]"  width="70" height="70" />
+                                                        }
+                                                    </td>
                                                 }
                                                 @default {
                                                     @if (row[element.Field_Name] == "{#Total#}") {
@@ -95,24 +106,7 @@
                                                     }                                                    
                                                 }
                                             }
-                                            <!-- @if (element.Field_Name.toLocaleLowerCase().includes("image") ) {
-                                                <td>
-                                                    @defer (when row[element.Field_Name] && row[element.Field_Name].length > 0 ) {
-                                                        <img style="border-radius: 50%; filter: drop-shadow(8px 10px 8px #D3AC67); " [src]="row[element.Field_Name]"  width="70" height="70" />
-                                                    }                                            
-                                                    @loading {
-                                                        <span>Loading Image</span>
-                                                    }                                            
-                                                </td>         
-                                            }
-                                            @else {            
-                                                @if (row[element.Field_Name] == "{#Total#}") {
-                                                    <td></td>
-                                                }   
-                                                @else {
-                                                    <td> {{row[element.Field_Name]}} </td>
-                                                }                                                                         
-                                            }                                     -->
+                                         
                                         }
                                     }                
                                 }                

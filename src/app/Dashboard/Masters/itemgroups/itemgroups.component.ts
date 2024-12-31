@@ -5,6 +5,7 @@ import { GlobalsService } from '../../../global.service';
 import { TableviewComponent } from "../../Widgets/tableview/tableview.component";
 import { ItemgroupComponent } from './itemgroup/itemgroup.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 
 @Component({
     selector: 'app-itemgroups',
@@ -30,7 +31,16 @@ export class ItemgroupsComponent {
   state = 'void';
 
   GroupsList: TypeItemGroup[] = [];
-  FieldNames: string[] = ["#", "Grp_Code", "Grp_Name", "Market_Rate", "Active_Status", "Actions"]
+    
+  FieldNames: TypeFieldInfo[] = [
+    {Field_Name:"#", Data_Type:"string" }, 
+    {Field_Name:"Grp_Code", Data_Type:"string" }, 
+    {Field_Name:"Grp_Name", Data_Type:"string" }, 
+    {Field_Name:"Market_Rate", Data_Type:"number" }, 
+    {Field_Name:"Active_Status", Data_Type:"boolean"}, 
+    {Field_Name:"Actions", Data_Type:"object" },     
+  ]
+
   RemoveSignal: number = 0;
 
   ngOnInit(){

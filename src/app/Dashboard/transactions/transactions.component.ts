@@ -8,6 +8,8 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { MatDialog } from '@angular/material/dialog';
 import { AdvancedocComponent } from './advancedoc/advancedoc.component';
 import { TypeFieldInfo } from '../../Types/TypeFieldInfo';
+import { VoucherprintService } from '../Services/voucherprint.service';
+import { LabtestComponent } from './labtest/labtest.component';
 
 @Component({
   selector: 'app-transactions',
@@ -25,8 +27,8 @@ import { TypeFieldInfo } from '../../Types/TypeFieldInfo';
         animate('1000ms ease-out')
       ])
     ])
-  ]
-})
+  ] 
+}) 
 
 export class TransactionsComponent {
 //"#", "Trans_No", "Trans_DateStr", "Client_Name", "TotNettWt", "NettAmount","Actions"
@@ -43,7 +45,7 @@ export class TransactionsComponent {
   TotalFields: string[] = ["TotNettWt", "NettAmount"]
   RemoveSignal: number = 0;
 
-  constructor(private route: ActivatedRoute, private dialog: MatDialog, private globals: GlobalsService, private transService: TransactionService){
+  constructor(private route: ActivatedRoute, private dialog: MatDialog, private globals: GlobalsService, private transService: TransactionService, private vouPrint: VoucherprintService){
     
   }
  
@@ -70,6 +72,8 @@ export class TransactionsComponent {
         this.EntryMode= false;
         this.VouTypeSno =  +(params['voutypesno']);     
         this.VouTypeName = this.globals.GetVouTypeName(this.VouTypeSno);     
+        this.FromDate = 0;
+        this.ToDate = 0;
         this.LoadTransactionList();        
       });  
   }
@@ -89,39 +93,15 @@ export class TransactionsComponent {
   }
 
   AddNewTransaction(){    
-    let Trans = this.transService.InitializeTransaction();
+    let Trans     = this.transService.InitializeTransaction();
     Trans.Series.VouType.VouTypeSno = this.VouTypeSno;    
-    Trans.TaxPer = 10;    
+    Trans.TaxPer  = 10;    
+
     this.ChildTransaction = Trans;
-    if ((Trans.Series.VouType.VouTypeSno == this.globals.VTypAdvancePurchase) || (Trans.Series.VouType.VouTypeSno == this.globals.VTypAdvanceSales)){
-      const dialogRef = this.dialog.open(AdvancedocComponent, 
-        {
-          width: '60vw',
-          maxWidth: 'none',
-          data: Trans,        
-          panelClass: "dialogMat"
-        });      
-        dialogRef.disableClose = true; 
-        dialogRef.afterClosed().subscribe(result => {        
-          
-          if (result) 
-          { 
-            // if (Sno !== 0) { return; }
-            // this.ItemsList.push(result);          
-          }        
-        }); 
-    }
-    else{
-      this.EntryMode = true;
-    }    
+
+    this.OpenTransactionComp(Trans);      
   }
 
-  handleEventFromChild(event: string){
-    if (event =="iexit"){
-      this.EntryMode= false;
-    }
-  }
-  
   OpenTransaction(Trans: TypeTransaction){           
     
     Trans.Series        = JSON.parse(Trans.Series_Json)[0];
@@ -135,8 +115,128 @@ export class TransactionsComponent {
     Trans.GridItems     = JSON.parse(Trans.Items_Json);    
     
     this.ChildTransaction = Trans;    
-    this.EntryMode = true;
+
+    this.OpenTransactionComp(Trans);
+
+    // if ((Trans.Series.VouType.VouTypeSno == this.globals.VTypAdvancePurchase) || (Trans.Series.VouType.VouTypeSno == this.globals.VTypAdvanceSales)){
+    //   const dialogRef = this.dialog.open(AdvancedocComponent, 
+    //     {
+    //       width: '60vw',
+    //       maxWidth: 'none',
+    //       data: Trans,        
+    //       panelClass: "dialogMat"
+    //     });      
+    //     dialogRef.disableClose = true; 
+    //     dialogRef.afterClosed().subscribe(result => {        
+    //         this.LoadTransactionList();                 
+    //     }); 
+    // }
+    // else{
+    //   this.EntryMode = true;
+    // }    
+    
   } 
+
+  OpenTransactionComp(Trans: TypeTransaction){
+    switch (Trans.Series.VouType.VouTypeSno) {
+      case this.globals.VTypAdvancePurchase:
+        const dialogRef = this.dialog.open(AdvancedocComponent, 
+          {
+            width: '60vw',
+            maxWidth: 'none',
+            data: Trans,        
+            panelClass: "dialogMat"
+          });      
+          dialogRef.disableClose = true; 
+          dialogRef.afterClosed().subscribe(result => {     
+            this.LoadTransactionList();                           
+          }); 
+        break;
+
+      case this.globals.VTypAdvanceSales:
+        const dialogRef1 = this.dialog.open(AdvancedocComponent, 
+          {
+            width: '60vw',
+            maxWidth: 'none',
+            data: Trans,        
+            panelClass: "dialogMat"
+          });      
+          dialogRef1.disableClose = true; 
+          dialogRef1.afterClosed().subscribe(result => {                    
+            this.LoadTransactionList();                           
+          }); 
+      break;
+      
+      case this.globals.VTypLabTestingIssue:
+        const dialogRef2 = this.dialog.open(LabtestComponent, 
+          {
+            width: '60vw',
+            maxWidth: 'none',
+            data: Trans,        
+            panelClass: "dialogMat"
+          });      
+          dialogRef2.disableClose = true; 
+          dialogRef2.afterClosed().subscribe(result => {                    
+            this.LoadTransactionList();                           
+          }); 
+      break;
+
+    case this.globals.VTypLabTestingReceipt:
+        const dialogRef3 = this.dialog.open(LabtestComponent, 
+          {
+            width: '60vw',
+            maxWidth: 'none',
+            data: Trans,        
+            panelClass: "dialogMat"
+          });      
+          dialogRef3.disableClose = true; 
+          dialogRef3.afterClosed().subscribe(result => {                    
+            this.LoadTransactionList();                           
+          }); 
+      break;
+
+      default:
+        this.EntryMode = true;
+        break;
+    }  
+  }
+
+  PrintTransaction(trans: TypeTransaction){            
+    
+    trans.Series = JSON.parse(trans.Series_Json)[0];
+    trans.Client = JSON.parse(trans.Client_Json)[0];
+    if (trans.Items_Json && trans.Items_Json !== ''){
+      trans.GridItems = JSON.parse(trans.Items_Json);
+    }
+    else{
+      trans.GridItems = [];
+    }
+    if (trans.Images_Json && trans.Images_Json !== ''){
+      trans.ImageSource = JSON.parse(trans.Images_Json);
+    }
+    else{
+      trans.ImageSource =[];
+    }
+    
+    if (trans.Series.Print_Style == ""){ this.globals.SnackBar("error","No Print Style applied. Apply Print Styles in Voucher Series ", 1000); return; }
+      else { this.vouPrint.PrintVoucher(trans, trans.Series.Print_Style!);}
+
+    // if (trans.Series.Print_Style !== "") {
+    //   this.vouprint.Style_Loan_Pgf(trans, trans.Series.Print_Style!);
+    // }
+  }
+
+  handleEventFromChild(event: string){
+    if (event =="iexit"){
+      this.EntryMode= false;
+    }
+    else if (event =="iexitwithchanges"){
+      this.EntryMode= false;
+      this.LoadTransactionList();
+    }
+  }
+  
+  
  
   DeleteTransaction(Trans: TypeTransaction, index: number){    
     this.transService.deleteTransaction(Trans.TransSno).subscribe(data=>{
@@ -161,8 +261,12 @@ export class TransactionsComponent {
         this.globals.QuestionAlert("Are you sure you want to delete this Transaction").subscribe(data=>{
           if (data == 1){
             this.DeleteTransaction($event.Data,$event.Index);
+            this.LoadTransactionList();
           }
         });
+        break;
+      case 3:
+          this.PrintTransaction($event.Data);
         break;
       case "Filter":
         this.FromDate = $event.FromDate;

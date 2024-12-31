@@ -33,12 +33,13 @@ export class PaymodesComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,                
   )  {}
 
-  ngOnInit(){            
+  ngOnInit(){         
+           
     this.ledService.getPaymentModes().subscribe(data=>{
       this.PaymnentModeLedgers = JSON.parse(data.apiData);
 
       if (this.data.PaymentModeList.length == 0){
-        this.PayModesList.push ({ "PmSno":0, "TransSno":0, "Ledger": this.PaymnentModeLedgers[0], "Amount" : this.data.Amount, "Remarks":"", })
+        this.PayModesList.push ({ PmSno:0, TransSno:0, Ledger: this.PaymnentModeLedgers[0], Amount : this.data.Amount, Remarks:"", Trans_Type: this.data.Trans_Type })
         this.ModeValid[this.PayModesList.length-1] = true;        
         this.AmtValid[this.PayModesList.length-1] = true;        
       }
@@ -63,7 +64,7 @@ export class PaymodesComponent {
   }
 
   AddMode(){
-    this.PayModesList.push (this.transService.InitializePaymentModes())
+    this.PayModesList.push ({PmSno: 0, TransSno:   0, Trans_Type: this.data.Trans_Type, Ledger: this.ledService.Initialize(), Amount: 0, Remarks: "",});
     this.ModeValid[this.PayModesList.length-1] = true;
     this.AmtValid[this.PayModesList.length-1] = true;
   }

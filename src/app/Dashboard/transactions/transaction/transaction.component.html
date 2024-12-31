@@ -2,18 +2,21 @@
 
     <div class="formWrapper">
         
-        <div class="header">
-            <app-titleheader [Title]="VouTypeName" (actionEvent)="handleActionFromChild($event)" />                    
+        <div class="client">
+            <app-clientcard [SelectedClient]="SelectedClient" (onChangedClient)="NewClientChanged($event)" />
         </div>
 
         <div class="doc">
             <app-docheader [DocHeader]="DocHeader" [DocFooter]="DocFooter" [EnableAmountCols]="EnableAmountCols" (actionEvent)="handleActionFromChild($event)"   />
         </div>    
         
-         
-        <div class="client">
-            <app-clientcard [SelectedClient]="SelectedClient" />
+      
+
+        <div class="header">
+            <app-titleheader [Title]="VouTypeName" (actionEvent)="handleActionFromChild($event)" />                    
         </div>
+         
+        
         
         <div class="item">
             <app-item-grid  [GridItems]="GridItems" 
@@ -21,6 +24,7 @@
                             [ImageSource]="ImageSource" 
                             [EnableBarCode]="EnableBarCode" 
                             [EnableAmountCols]="EnableAmountCols"
+                            [StockSelection] = "StockSelection"
                             [GenerateBarCode]="GenerateBarCode"
                             />
         </div> 

@@ -1,0 +1,34 @@
+<div [@myAnimation]="state">
+    <div class="listContainer">
+        <div class="headerCard">
+            <div class="headerLeft">     
+                <span class="bar"></span>
+                <p class="heading"> &nbsp; Bar Code Stock Report</p>                    
+            </div>
+
+            <div class="headerRight" style="width: 30%;">
+                         
+            </div>
+        </div> 
+
+        <div class="tableBody">
+
+            @defer (when BarCodedStockList.length >0) {
+                <app-tableview  [DataSource]="BarCodedStockList" 
+                                [FieldNames]="FieldNames"                             
+                                [TotalFields]="TotalFields" 
+                                [RowsPerPage] = "100"
+                                > </app-tableview>                        
+            }
+            @placeholder {
+                <p>Report list Here</p>
+            }
+            @loading {
+                <p>Loading in Progress</p>
+            } 
+            
+        </div>
+    </div>
+</div>
+
+

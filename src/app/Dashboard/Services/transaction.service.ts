@@ -50,6 +50,7 @@ export class TransactionService {
         Trans_Date:         DateToInt(new Date()),
         IsOpen:             0,        
         Series:             this.seriesService.Initialize(),
+        Payment_Type:       0,
         Client:             this.clntService.Initialize(),
     
         Due_Date:           DateToInt(new Date()),
@@ -61,6 +62,9 @@ export class TransactionService {
         RevAmount:          0,
         NettAmount:         0,
     
+        Fixed_Price:        0,
+        Commision:          0,
+
         Remarks:            "",
         Print_Remarks:      "",
     
@@ -98,7 +102,11 @@ InitializeDocHeader(){
         Due_Date:       0,
         Reference:      this.InitializeTransaction(),
         RefList:        [],
+        BarReference:   this.InitializeAssayRecord(),
+        BarRefList:     [],
         PaymentModes:   [],
+        Payment_Type:   0,
+        Client:         this.clntService.Initialize(),
     }
     return Doc
 }
@@ -112,11 +120,41 @@ InitializePaymentModes(){
     let Pmode:      TypePaymentModes = {            
         PmSno:      0,
         TransSno:   0,
+        Trans_Type: 1,
         Ledger:     this.ledService.Initialize(),
         Amount:     0,
         Remarks:    "",
     }
     return Pmode
+}
+
+InitializeAssayRecord(){
+    let aRecord:      TypeAssayRecord = {            
+        RecordSno:          0,
+        BarCodeSno:         0,
+        BarCode_No:         "",
+        ItemSno:            0,
+        Item_Name:          "",
+        Karat:              0,
+        Purity:             0,
+        Item_Desc:          "",
+        Qty:                0,
+        GrossWt:            0,
+        StoneWt:            0,
+        Wastage:            0,
+        NettWt:             0,
+        UomSno:             0,
+        Uom_Name:           "",
+        Trans_No:           "",
+        Trans_Date:         0,
+        Client_Name:        "",
+        Assay_Status:       0,
+        IssueTransSno:      0,
+        IssueTrans_No:      "",
+        ReceiptTransSno:    0,
+        ReceiptTrans_No:    "",
+    }
+    return aRecord
 }
 
 }
@@ -129,13 +167,18 @@ export  interface TypeDocHeader{
     Due_Date?:          number;
     Reference:          TypeTransaction;
     RefList:            TypeTransaction[];
+    BarReference:       TypeAssayRecord;
+    BarRefList:         TypeAssayRecord[];
     PaymentModes:       TypePaymentModes[];
+    Payment_Type:       number;
+    Client:             TypeClient;
 }
 
 
 export interface TypePaymentModes{
     PmSno:      number;
     TransSno:   number;
+    Trans_Type: number;
     Ledger:     TypeLedger;
     Amount:     number;
     Remarks:    string
@@ -147,6 +190,7 @@ export interface TypeTransaction{
     Trans_Date:         number,    
     IsOpen:             number;    
     Series:             TypeVoucherSeries,
+    Payment_Type:       number;
     Client:             TypeClient,
     
     Due_Date:           number,
@@ -158,6 +202,8 @@ export interface TypeTransaction{
     RevAmount:          number,
     NettAmount:         number,
   
+    Fixed_Price:        number,
+    Commision:          number,
     Remarks:            string,
     Print_Remarks:      string,
   
@@ -189,8 +235,18 @@ export interface TypeAssayRecord{
     BarCode_No:         string;
     ItemSno:            number;
     Item_Name:          string;
+    Karat:              number;
+    Purity:             number;
+    Item_Desc:          string;
+    Qty:                number;
+    GrossWt:            number;
+    StoneWt:            number;
+    Wastage:            number;
+    NettWt:             number;
+    UomSno:             number;
+    Uom_Name:           string;    
     Trans_No:           string;
-    Trans_Date:         string;
+    Trans_Date:         number;
     Client_Name:        string;
     Assay_Status:       number;
     IssueTransSno:      number;

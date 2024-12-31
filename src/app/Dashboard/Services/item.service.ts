@@ -27,6 +27,11 @@ export class ItemService {
       let postdata ={ "ItemSno" :  ItemSno }; 
       return this.dataService.HttpPost(postdata, "/deleteItem");                
   }
+  
+  getSampleGoldItem(): Observable<TypeHttpResponse> {
+    let postdata ={ "CompSno" : this.sessionService.GetCompany().CompSno }; 
+    return this.dataService.HttpGet(postdata, "/getSampleGoldItem");                
+  } 
 
 Initialize(){    
     let Item: TypeItem = {            
@@ -59,8 +64,8 @@ export interface TypeItem {
     Create_Date?: number;
     UserSno?: number;
     CompSno?: number;   
-    Name: string;
-    Details: string;
+    Name?: string;
+    Details?: string;
 }
 
 

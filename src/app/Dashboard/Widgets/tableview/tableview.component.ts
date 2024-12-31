@@ -28,7 +28,7 @@ interface TypeTotal{
 })
 
 
-export class TableviewComponent {
+export class TableviewComponent { 
   DataSource  = input.required<any[]>();
   
   FieldNames  = input.required<TypeFieldInfo[]>();

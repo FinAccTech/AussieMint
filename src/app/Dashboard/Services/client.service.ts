@@ -56,6 +56,7 @@ Initialize(){
         Gst_Number: "",
         Director_Name: "",
         Remarks: "",
+        Commision: 0,
         Images_Json: "",
         ImagesSource: [],
         Profile_Image: "",
@@ -91,6 +92,7 @@ export interface TypeClient {
     Gst_Number: string;
     Director_Name: string;
     Remarks: string;
+    Commision: number;
     Profile_Image: string;
     Area: TypeArea;
     Blocked: number;

@@ -43,8 +43,7 @@
     }
     
     .menuHeader{
-        border-top: 1px solid #ddd;
-        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;                
+        border-top: 1px solid #ddd;        
         display: flex;
         padding-left: 5%;
         padding-right: 5%;
@@ -132,6 +131,11 @@
                 }
             }
         }
+    }
+    .menuBorder{
+        background-image: repeating-linear-gradient(to right, #a2682a 0%, #be8c3c 8%, #be8c3c 18%, #d3b15f 27%, #faf0a0 35%, #ffffc2 40%, #faf0a0 50%, #d3b15f 58%, #be8c3c 67%, #b17b32 77%, #bb8332 83%, #d4a245 88%, #e1b453 93%, #a4692a 100%);
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;                
+        padding: .020rem;
     }
 }
    

@@ -1,0 +1,137 @@
+<div class="modalForm">
+    <div class="header">
+        <div class="headerLeft">
+            <span class="bar"></span>
+            <p> &nbsp; Lab Test {{data.Series.VouType.VouTypeSno==26 ? 'Issue' : 'Receipt'}} </p>
+        </div>
+        <div class="headerRight">
+            <p mat-dialog-close="" >&times;</p>
+        </div>
+    </div>
+
+    <div class="body"> 
+        <div class="docRow">
+            <div style="width: 100%;" [ngClass]="!SeriesNameValid ? 'invalidSel' : ''"> 
+                <app-selectionlist [Caption]="'Doc Series'" [DataSource]="SeriesList" [SelectedItem]="data.Series"  (newItemEvent)="getSeries($event)"></app-selectionlist>
+            </div>        
+            <div class="formGroup" [ngClass]="!DocNoValid ? 'invalidSel' : ''">
+                <input type="text" style="text-align: center;" class="formControl" readonly required [(ngModel)]="data.Trans_No"  />
+                <label for="" class="formLabel"> Doc No </label>                            
+            </div>
+    
+            <div class="formGroup" >                    
+                <input type="date" class="formControl"  [ngModel]="data.Trans_Date | intToDate | date:'yyyy-MM-dd'" (blur)="data.Trans_Date = DateToInt($event) " />                    
+                <label for="" class="formLabel"> Doc Date </label>                             
+            </div>
+    
+            <div class="formGroup">                    
+                <input type="date" class="formControl"  [ngModel]="data.Due_Date! | intToDate | date:'yyyy-MM-dd'" (blur)="data.Due_Date = DateToInt($event) " />                    
+                <label for="" class="formLabel"> Due Date </label>                             
+            </div>                
+        </div>    
+    
+        
+        <div class="row" style="margin-top: 1.5rem;" >
+            <div class="col50" [ngClass]="!ClientNameValid ? 'invalidSel' : ''">
+                <app-selectionlist [Caption]="'Client'" [DataSource]="ClientList" [SelectedItem]="data.Client"  (newItemEvent)="getClient($event)"></app-selectionlist>
+            </div>
+
+            <div class="col50">
+                @if (data.Series.VouType.VouTypeSno == 26) {
+                    <div>            
+                        <app-selectionlist [Caption]="'Testing Item'" [DataSource]="BarRefList" [SelectedItem]="BarReference"  (newItemEvent)="getAssayItem($event)" ></app-selectionlist>
+                    </div>       
+                }
+                @else {
+                    <div>            
+                        <app-selectionlist [Caption]="'Issue No'" [DataSource]="IssuesList" [SelectedItem]="IssueTrans"  (newItemEvent)="getIssueTrans($event)" ></app-selectionlist>
+                    </div>       
+                }
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 1.5rem;" >
+            <div class="col100">
+                <div class="row">
+                    <div class="col100">
+                        @if (BarReference) {
+                            <table>
+                                <thead>
+                                    <th>Item Name</th>
+                                    <th>Item Desc</th>
+                                    <th>Karat</th>
+                                    <th>Purity</th>
+                                    <th>GrossWt</th>
+                                    <th>StoneWt</th>
+                                    <th>NettWt</th>
+                                    <th>Uom</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{BarReference.Item_Name}}</td>
+                                        <td>{{BarReference.Item_Desc}}</td>
+                                        <td>{{BarReference.Karat}}</td>
+                                        <td>{{BarReference.Purity}}</td>
+                                        <td>{{BarReference.GrossWt}}</td>
+                                        <td>{{BarReference.StoneWt}}</td>
+                                        <td>{{BarReference.NettWt}}</td>
+                                        <td>{{BarReference.Uom_Name}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>                                                        
+                        }
+
+                        @if (IssueTrans) {
+                            <table>
+                                <thead>
+                                    <th>Bar Code</th>
+                                    <th>Item Name</th>
+                                    <th>Item Desc</th>                                    
+                                    <th>Sample Gold</th>
+                                    <th>Uom</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{IssueTrans.GridItems[0].BarCode.BarCode_No}}</td>
+                                        <td>{{IssueTrans.GridItems[0].Item.Item_Name}}</td>
+                                        <td>{{IssueTrans.GridItems[0].Item_Desc}}</td>                                        
+                                        <td>{{IssueTrans.GridItems[0].NettWt}}</td>
+                                        <td>{{IssueTrans.GridItems[0].Uom.Uom_Name}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>     
+                        }
+                    </div>                    
+                </div>
+
+                <div class="row" style="margin-top: 1.5rem;">
+                    <div class="col50">
+                        @if (data.Series.VouType.VouTypeSno == 26) {
+                        <div class="formGroup" [ngClass]="!SampleGoldValid ? 'invalidSel' : ''">
+                            <input type="number" class="formControl" NumberInput MaxValue="100" [(ngModel)]="SampleGold"/>                    
+                            <label for="" class="formLabel"> Sample Gold </label>                  
+                        </div>}
+                        @else {
+                            <div class="formGroup" [ngClass]="!RecdPurityValid ? 'invalidSel' : ''">
+                                <input type="number" class="formControl" NumberInput MaxValue="100" [(ngModel)]="RecdPurity"/>                    
+                                <label for="" class="formLabel"> Received Gold Purity  </label>                  
+                            </div>
+                        }
+                    </div>
+                    <div class="col50">
+                        <div class="formGroup">
+                            <input type="text" class="formControl" [(ngModel)]="data.Remarks"/>                    
+                            <label for="" class="formLabel"> Remarks </label>                  
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <button (click)="SaveDocuemnt()" > <i class="fa-solid fa-floppy-disk"></i> &nbsp; Save</button>        
+    </div>
+</div>

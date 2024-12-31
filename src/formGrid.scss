@@ -4,20 +4,22 @@
     grid-template-rows: .3fr .5fr 1.5fr .5fr;
     grid-template-columns: 1fr 1fr;
     grid-template-areas: 
-        'header header'
-        'doc client'
+        'header header'            
+        'client doc'            
         // 'moreinfo moreinfo'
         'item item'
         'footer footer';
     gap: .5rem;
 
+    .doc{        
+        grid-area: doc;        
+    }
+    
     .header{
         grid-area: header;                
     }
 
-    .doc{        
-        grid-area: doc;        
-    }
+    
     // .moreinfo{        
     //     grid-area: moreinfo;
     // }
@@ -39,10 +41,10 @@
         grid-template-rows: .3fr 1fr 1fr 2fr .5fr;
         grid-template-columns: 1fr ;
         grid-template-areas: 
-        'header header'
-        'doc doc'
         'client client'
-        'moreinfo moreinfo'
+        'header header'        
+        'doc doc'        
+        // 'moreinfo moreinfo'
         'item item'
         'footer footer';
     }

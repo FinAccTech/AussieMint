@@ -3,12 +3,12 @@
         <img src="assets/images/logo.webp" height="40" width="200" />
         <br><br><br><br>
         <div class="formGroupsansBorder">                    
-            <input type="text" class="formControl"  [(ngModel)]="UserName" />
+            <input type="text" class="formControl" (keyup.enter)="CheckUser()"  [(ngModel)]="UserName" />
             <label for="" class="formLabel"> UserName </label>
         </div>
         <br><br>
         <div class="formGroupsansBorder">                    
-            <input type="password" class="formControl" [(ngModel)]="Password"/>
+            <input type="password" class="formControl" (keyup.enter)="CheckUser()" [(ngModel)]="Password"/>
             <label for="" class="formLabel"> Password </label>
         </div>
 

@@ -397,6 +397,7 @@ $AussieMint-theme: mat.define-theme((
 
 .btnOutlined{  
   background-color: #fff;
+  border-radius: .5rem;
   color: var(--ColorPrimary);
   border: 1px solid var(--ColorPrimary);
   padding: .5rem;

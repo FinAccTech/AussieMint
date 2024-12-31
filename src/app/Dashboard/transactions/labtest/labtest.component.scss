@@ -1,0 +1,80 @@
+.docRow{
+    display: flex;
+    flex-direction: row;        
+    margin-bottom: .4rem;
+    column-gap: .4rem;
+    padding: 0rem .6rem 0 .6rem;
+}
+
+.partyDetails{
+    display: flex;
+    flex-direction: column;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    
+    .general{        
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: .7rem;
+        .imageArea{
+            flex: 1;
+            img{
+                border-radius: 1rem;
+                width: 100%;
+                height: 100%;
+            }
+        }
+        .otherDetails{
+            flex: 2;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            row-gap: .5rem;
+
+            p.name{
+                font-size: 1.2rem;
+                font-weight: 500;
+            }
+        }
+    }
+
+    .imgList{
+        padding: .7rem;
+        display: flex;
+        row-gap: .4rem;
+        img{
+            border-radius: 50%;
+        }
+    }   
+}
+
+table{
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom: none;
+
+    th{
+        color: #fff;
+    }
+    th,td{
+        padding: .8rem;
+        border-bottom: .5px solid var(--ColorPrimary);        
+        text-align: left;
+    }
+
+    th{
+        background-color: var(--ColorPrimary);
+        font-weight: 500;        
+    }
+
+    tr{
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+    }
+    tr:hover{
+        background-color: #FBFBFD;
+        cursor: pointer;
+    }
+
+   
+}

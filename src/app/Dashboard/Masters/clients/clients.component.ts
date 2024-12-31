@@ -5,6 +5,7 @@ import { GlobalsService } from '../../../global.service';
 import { ClientComponent } from './client/client.component';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 
 @Component({
     selector: 'app-clients',
@@ -30,7 +31,19 @@ export class ClientsComponent {
   constructor(private clientService: ClientService, private dialog: MatDialog, private globals: GlobalsService) {}
   state = 'void';
   ClientsList: TypeClient[] = [];
-  FieldNames: string[] = ["#", "Client_Code", "Client_Name", "City", 'Profile_Image', "Mobile","State", "Area_Name", "Actions"]
+  
+  FieldNames: TypeFieldInfo[] = [
+    {Field_Name:"#", Data_Type:"string" }, 
+    {Field_Name:"Client_Code", Data_Type:"string" }, 
+    {Field_Name:"Client_Name", Data_Type:"string" }, 
+    {Field_Name:"City", Data_Type:"string" }, 
+    {Field_Name:"Profile_Image", Data_Type:"image" }, 
+    {Field_Name:"Mobile", Data_Type:"string" }, 
+    {Field_Name:"State", Data_Type:"string" }, 
+    {Field_Name:"Area_Name", Data_Type:"string" },     
+    {Field_Name:"Actions", Data_Type:"object" },     
+  ]
+
   RemoveSignal: number = 0;
 
   ngOnInit(){
@@ -76,7 +89,7 @@ export class ClientsComponent {
   DeleteClient(Clnt: TypeClient, index: number){    
     this.clientService.deleteClient(Clnt.ClientSno).subscribe(data=>{
       if (data.queryStatus == 1){        
-        this.RemoveSignal = index;
+        this.RemoveSignal = index;        
         this.globals.SnackBar("info", "Client deleted Successfully", 1500);
       }
       else{

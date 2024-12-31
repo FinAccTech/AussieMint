@@ -1,0 +1,72 @@
+<div class="modalForm">
+    <div class="header">
+        <div class="headerLeft">
+            <span class="bar"></span>
+            <p> &nbsp; {{data.Client_Name}} </p>
+        </div>
+        <div class="headerRight">
+            <p mat-dialog-close="" >&times;</p>
+        </div>
+    </div>
+    <div class="body">
+        <div class="clientDetails">
+            <div class="imgArea">
+                <img src="{{data.Profile_Image ? data.Profile_Image : 'assets/images/noimage.jpg' }}" height="100" width="100" />
+            </div>
+
+            <div class="details">
+                <p class="name">{{data.Client_Name}}</p>
+                <p>{{data.Address}}</p>
+                <p>{{data.Mobile}}</p>
+            </div>
+        </div>
+
+        <div class="pendingSection">         
+            @if (PendingList && PendingList.length > 0) {
+                <table>
+                    <caption>Pending Documents</caption>
+                    <thead>                    
+                        <th>Document</th>
+                        <th>Document No</th>
+                        <th>Date</th>                        
+                        <th>Amount</th>            
+                        <th></th>        
+                    </thead>
+                    <tbody>
+
+                        @for (trans of PendingList; track $index) {
+                            <tr>
+                                <td data-label="Document">{{trans.Series.VouType.VouType_Name}}</td>
+                                <td data-label="Document No">{{trans.Trans_No}}</td>
+                                <td data-label="Date">{{trans.Trans_Date}}</td>
+                                <td data-label="Amount">{{trans.NettAmount | number}}</td>
+                                <td>
+                                    <button class="btnOutlined" (click)="OpenDocument(trans.Series.VouType.VouTypeSno)" >
+                                        @switch (trans.Series.VouType.VouTypeSno) {
+                                            @case (24) {
+                                                Create GRN
+                                            }
+                                            @case (25) {
+                                                Create DC
+                                            }
+                                            @case (28) {
+                                                Create Buying Contract
+                                            }
+                                            @case (14) {
+                                                Create Sales Invoice
+                                            }
+                                        }
+                                        
+                                        
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+
+</div>

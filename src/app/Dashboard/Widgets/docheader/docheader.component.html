@@ -22,30 +22,58 @@
         </div>                
     </div>    
 
-    <div class="docRow">
-        @if (DocHeader()?.Series?.VouType?.VouTypeSno !== 26) {
-            <div style="width: 50%;">            
-                <app-selectionlist [Caption]="'Reference'" [DataSource]="DocHeader()!.RefList" [SelectedItem]="DocHeader()!.Reference"  (newItemEvent)="getReference($event)" ></app-selectionlist>
-            </div>        
-        }
-        @if (DocHeader()?.Series?.VouType?.VouTypeSno == 26) {
-            <div style="width: 50%;">            
-                <app-selectionlist [Caption]="'Testing Item'" [DataSource]="AssayRecordList" [SelectedItem]="SelectedAssayItem"  (newItemEvent)="getAssayItem($event)" ></app-selectionlist>
-            </div>       
-        }
 
-        @if (EnableAmountCols()) {
-            <div style="width: 50%; text-align: center;">
-                <button class="btnOutlined" (click)="OpenPaymentModes()" > <i class='bx bx-credit-card-front'></i> Payment Modes </button>
+        <div class="row">
+            <div class="col50">
+                <!-- @if (DocHeader()?.Series?.VouType?.VouTypeSno !== 26) { -->
+                    <div>            
+                        <app-selectionlist [Caption]="'Reference'" [DataSource]="DocHeader()!.RefList" [SelectedItem]="DocHeader()!.Reference"  (newItemEvent)="getReference($event)" ></app-selectionlist>
+                    </div>        
+                <!-- } -->
+                <!-- @if (DocHeader()?.Series?.VouType?.VouTypeSno == 26) { -->
+                    <!-- <div>            
+                        <app-selectionlist [Caption]="'Testing Item'" [DataSource]="DocHeader()!.BarRefList" [SelectedItem]="DocHeader()!.BarReference"  (newItemEvent)="getAssayItem($event)" ></app-selectionlist>
+                    </div>        -->
+                <!-- } -->
             </div>
-        }
-    </div>
+
+            <div class="col50">
+                @if (EnableAmountCols()) {
+                    <div class="row">
+                        <div class="col50">
+                            <div class="matGroup">
+                                <div class="matSelect"> 
+                                    <mat-select [(value)]="DocHeader()!.Payment_Type">
+                                        <mat-option [value]="0">Cash</mat-option>
+                                        <mat-option [value]="1">Credit</mat-option>                                                        
+                                    </mat-select>
+                                </div>
+                                <div class="matLabel">
+                                    &nbsp;&nbsp; Payment Type
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col50">
+                            @if (DocHeader()!.Payment_Type == 0) {
+                                <div style="width: 100%; text-align: center;">
+                                    <button class="btnOutlined" (click)="OpenPaymentModes()" > <i class='bx bx-credit-card-front'></i> Payment Modes </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        
 
    
     <div class="docRow">
         <div class="formGroup">
-            <!-- <input type="text" class="formControl" [(ngModel)]="DocHeader()!.PaymentModes" required/>
-            <label for="" class="formLabel"> Details </label>                             -->
+            
+            @if (this.DocHeader()?.Reference && this.DocHeader()?.Reference?.NettAmount !==0) {
+                {{RefDetails}}
+            }
+            
         </div>
     </div>
     

@@ -13,8 +13,18 @@ export class ReportService {
     private dataService: DataService
 ) { }
 
-    getPendingDocuments(VouTypeSno: number): Observable<TypeHttpResponse> {
-        let postdata ={ "VouTypeSno" :  VouTypeSno, "CompSno" : this.sessionService.GetCompany().CompSno  }; 
+    getClientHistory(ClientSno: number): Observable<TypeHttpResponse> {
+      let postdata ={ "ClientSno" :  ClientSno  }; 
+      return this.dataService.HttpGet(postdata, "/getClientHistory");                
+    } 
+
+    getRecentTransactions(RowCount: number): Observable<TypeHttpResponse> {
+      let postdata ={ "RowCount" :  RowCount, "CompSno" : this.sessionService.GetCompany().CompSno  }; 
+      return this.dataService.HttpGet(postdata, "/getRecentTransactions");                
+    } 
+
+    getPendingDocuments(VouTypeSno: number, ClientSno: number): Observable<TypeHttpResponse> {
+        let postdata ={ "VouTypeSno" :  VouTypeSno, "ClientSno" :  ClientSno, "CompSno" : this.sessionService.GetCompany().CompSno  }; 
         return this.dataService.HttpGet(postdata, "/getPendingDocuments");                
     } 
 
@@ -28,10 +38,20 @@ export class ReportService {
       return this.dataService.HttpGet(postdata, "/getBarCodeStock");                
     } 
     
-    getAssayRecords(): Observable<TypeHttpResponse> {
-      let postdata ={ "CompSno" : this.sessionService.GetCompany().CompSno  }; 
+    getAssayRecords(RecordSno: number): Observable<TypeHttpResponse> {
+      let postdata ={ "RecordSno": RecordSno, "CompSno" : this.sessionService.GetCompany().CompSno  }; 
       return this.dataService.HttpGet(postdata, "/getAssayRecords");                
-    } 
+    }
+
+    getDayBook(FromDate: number, ToDate: number): Observable<TypeHttpResponse> {
+      let postdata ={ "FromDate" :  FromDate, "ToDate": ToDate, "CompSno" :  this.sessionService.GetCompany().CompSno }; 
+      return this.dataService.HttpGet(postdata, "/getDayBook");                
+    }
+
+    getLedgerBook(LedSno: number,  FromDate: number, ToDate: number): Observable<TypeHttpResponse> {
+      let postdata ={ "LedSno": LedSno, "FromDate" :  FromDate, "ToDate": ToDate, "CompSno" :  this.sessionService.GetCompany().CompSno }; 
+      return this.dataService.HttpGet(postdata, "/getLedgerBook");                
+    }
 }
 
 
@@ -47,4 +67,24 @@ export interface TypeStockReport{
   StoneWt: number;
   Wastage: number;
   NettWt: number;
+}
+
+export interface TypeLedgerBook {
+  DetSno: number;
+  VouSno: number;
+  Vou_Date: number;
+  TrackSno: number;
+  VouTypeSno: number;
+  VouType_Name: string;
+  Vou_No: string;
+  LedSno: number;
+  GrpSno: number;
+  Grp_Name: string;
+  Led_Name: string;
+  Credit: number;
+  Debit: number;
+  Grp_Nature: number;
+  BranchSno: number;
+  Narration: number;
+  CompSno: number;
 }

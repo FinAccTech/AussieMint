@@ -1,3 +1,48 @@
 <div class="indexpageContainer">
      <h1>Welcome !!! </h1>
+     
+     <div class="recentTrans">
+          @for (trans of rTransList; track $index) {
+               <div class="trans" (click)="OpenDocument(trans.VouTypeSno)" >
+                    <div class="transBox">
+                         <p class="boldText"> {{getFirstLetters(trans.VouTypeSno)}} </p>                    
+                    </div>
+                    <p class="caption">
+                         {{GetVouTypeName(trans.VouTypeSno)}}
+                    </p>
+               </div>
+          }
+     </div>
+
+     <div class="midSection">
+          <div class="clientSection">
+               <div class="searchBox">
+                    <div class="generalSearchBox">
+                        <input type="text" required  placeholder="Type here to Search for Clients" [(ngModel)]="searchText" />                
+                        <div class="iconRight">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div> 
+                    </div>
+                </div>
+
+               <div class="clientList">
+                    @for (clnt of ClientList| search: searchText ;track $index) {
+                         <div class="client" (click)="OpenClientProfile(clnt)" >
+                              @if (!clnt.Profile_Image || clnt.Profile_Image.length == 0 || clnt.Profile_Image == '') {
+                                   <img src="assets/images/noimage.jpg" height="50" width="50" />
+                              }
+                              @else {
+                                   <img src="{{clnt.Profile_Image}}" height="50" width="50" />
+                              }
+                              
+                              <p>{{ clnt.Client_Name }}</p>
+                         </div>
+                    }
+               </div>
+          </div>
+
+          <div class="pendingSection">
+               
+          </div>
+     </div>
 </div>

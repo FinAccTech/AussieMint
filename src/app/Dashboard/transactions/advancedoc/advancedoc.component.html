@@ -78,10 +78,30 @@
             </div>
 
             <div class="col50">
-                <div class="formGroup">
-                    <input type="text" class="formControl" readonly [ngModel]="data.Remarks"/>                    
-                    <label for="" class="formLabel"> Remarks </label>                  
+                <div class="row">
+                    <div class="col50">
+                        <div class="formGroup">
+                            <input type="number" class="formControl" NumberInput [(ngModel)]="data.Fixed_Price"/>                    
+                            <label for="" class="formLabel"> Fixed Price </label>                  
+                        </div>
+                    </div>
+                    <div class="col50">
+                        <div class="formGroup">
+                            <input type="number" class="formControl" NumberInput MaxValue="100" [(ngModel)]="data.Commision"/>                    
+                            <label for="" class="formLabel"> Commision </label>                  
+                        </div>
+                    </div>
                 </div>
+
+                <div class="row" style="margin-top: 1.5rem;" >
+                    <div class="col100">
+                        <div class="formGroup">
+                            <input type="text" class="formControl" [(ngModel)]="data.Remarks"/>                    
+                            <label for="" class="formLabel"> Remarks </label>                  
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
 

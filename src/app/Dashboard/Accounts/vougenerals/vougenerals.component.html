@@ -1,0 +1,47 @@
+
+@if (!EntryMode) {
+    <!-- <div [@myAnimation]="state">         -->
+        <div class="listContainer">
+            <div class="headerCard">
+                <div class="headerLeft">     
+                    <span class="bar"></span>
+                    <p class="heading"> &nbsp; General Vouchers</p>                    
+                </div>
+
+                <div class="headerRight">
+                    <button class="newBtn" (click)="AddNewTransaction()">
+                        <i class='bx bx-plus bx-tada' ></i>Create New
+                    </button>          
+                </div>
+            </div> 
+
+            <div class="tableBody">
+
+                @defer (when VouList.length >0) {
+                    <app-tableview  [DataSource]="VouList" 
+                                    [FieldNames]="FieldNames" 
+                                    [RemoveSignal]="RemoveSignal" 
+                                    [TotalFields]="TotalFields" 
+                                    [FromDate] = "FromDate"
+                                    [ToDate] = "ToDate"
+                                    [EnableDateSelection] = "true"
+                                    (actionEvent)="handleActionFromTable($event)"  > </app-tableview>                        
+                }
+                @placeholder {
+                    <p>Voucher list Here</p>
+                }
+                @loading {
+                    <p>Loading in Progress</p>
+                } 
+                
+            </div>
+        </div>    
+    <!-- </div> -->
+}
+
+@if (EntryMode) {
+    <div>
+        <!-- <app-transaction (actionEvent)="handleEventFromChild($event)" [ChildTransaction]="ChildTransaction"  /> -->
+         <app-vougeneral />
+    </div>
+}
