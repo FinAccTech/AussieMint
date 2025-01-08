@@ -28,6 +28,7 @@ export interface TypeBarCode{
     DetSno?         : number;
     ItemSno?        : number;
     Item_Name?      : string;
+    Item_Desc?      : string;
     UomSno?         : number;
     Uom_Name?       : string;
     Karat?          : number;

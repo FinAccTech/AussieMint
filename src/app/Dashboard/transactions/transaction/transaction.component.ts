@@ -425,8 +425,7 @@ export class TransactionComponent {
     switch (this.ChildTransaction.Series.VouType.VouTypeSno) {
       case this.globals.VTypGRN:
         this.DocHeader.RefList = [];
-        this.repService.getPendingDocuments(this.globals.VTypAdvancePurchase, ClientSno).subscribe(data => {
-          // this.DocHeader.Reference = null!;
+        this.repService.getPendingDocuments(this.globals.VTypAdvancePurchase, ClientSno).subscribe(data => {          
           this.DocHeader.RefList = JSON.parse (data.apiData);
         })
         break;
@@ -450,8 +449,27 @@ export class TransactionComponent {
               let adplist = JSON.parse (data.apiData);              
               this.DocHeader.RefList = [...pdList, ...adplist];              
           })
-      })
+        })
         break;
+
+      case this.globals.VTypDeliveryDoc:
+        this.DocHeader.RefList = [];
+        this.repService.getPendingDocuments(this.globals.VTypAdvanceSales, ClientSno).subscribe(data => {          
+          this.DocHeader.RefList = JSON.parse (data.apiData);
+        })
+        break;
+
+      case this.globals.VTypSalesInvoice:
+        this.DocHeader.RefList = [];
+        this.repService.getPendingDocuments(this.globals.VTypDeliveryDoc, ClientSno).subscribe(data => {                      
+            let pdList = JSON.parse (data.apiData);
+            this.repService.getPendingDocuments(this.globals.VTypAdvanceSales, ClientSno).subscribe(data => {              
+                let adplist = JSON.parse (data.apiData);              
+                this.DocHeader.RefList = [...pdList, ...adplist];              
+            })
+        })
+        break;
+
     }
    }
 }

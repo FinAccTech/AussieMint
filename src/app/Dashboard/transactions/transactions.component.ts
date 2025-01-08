@@ -93,12 +93,10 @@ export class TransactionsComponent {
   }
 
   AddNewTransaction(){    
-    let Trans     = this.transService.InitializeTransaction();
+    let Trans                       = this.transService.InitializeTransaction();
     Trans.Series.VouType.VouTypeSno = this.VouTypeSno;    
-    Trans.TaxPer  = 10;    
-
-    this.ChildTransaction = Trans;
-
+    Trans.TaxPer                    = 10;    
+    this.ChildTransaction           = Trans;
     this.OpenTransactionComp(Trans);      
   }
 

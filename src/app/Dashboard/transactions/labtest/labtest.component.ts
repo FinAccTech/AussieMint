@@ -91,13 +91,17 @@ export class LabtestComponent {
         if (this.data.TransSno !== 0){
           this.BarReference = this.BarRefList[0];
         }
+        this.BarRefList = this.BarRefList.filter(ref=>{  return ref.IssueTransSno == 0; })
       })
-      this.SampleGold = this.data.GridItems[0].NettWt;    
+      if (this.data.TransSno !== 0){
+        this.SampleGold = this.data.GridItems[0].NettWt;    
+      }
     }
     else{
       if (this.data.TransSno ==0){
       this.repService.getPendingDocuments(this.globals.VTypLabTestingIssue,0).subscribe(data=>{
-        this.IssuesList = JSON.parse(data.apiData);
+        this.IssuesList = JSON.parse(data.apiData);        
+        
       })
       }
       else{
@@ -161,7 +165,7 @@ export class LabtestComponent {
           DetSno:     0,
           Item:       this.SampleItem,    
           Item_Desc:  "Sample Gold from Testing",
-          Karat:      0,
+          Karat:      this.IssueTrans.GridItems[0].Karat,
           Purity:     this.RecdPurity,
           Qty:        1,
           GrossWt:    this.IssueTrans.GridItems[0].NettWt,
@@ -176,8 +180,6 @@ export class LabtestComponent {
   
     }
     
-   
-   
     
     //All Xmls
     this.data.ItemDetailXML   = this.globals.GetItemXml(this.data.GridItems);

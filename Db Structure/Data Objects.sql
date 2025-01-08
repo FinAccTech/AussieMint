@@ -2415,7 +2415,11 @@ BEGIN
       
       EXEC Sp_AccVouchers @VouSno, @VouTypeSno, @SeriesSno, @Trans_No,  @Trans_Date, '', 0, 1, 0, @UserSno, @CompSno, @VouDetailXML, @VouSno OUTPUT
       UPDATE Transactions SET VouSno=@VouSno WHERE TransSno=@TransSno
-      
+      IF @@ERROR <> 0 GOTO CloseNow
+
+      DECLARE @RecdPurity DECIMAL(5,2) --ONLY IF IT IS LAB TESTING RECEIPT. THIS IS TO UPDATE PURITY OF PREVIOUS ITEMS IN DETAILS TABLE
+      DECLARE @RecdBarCodeSno INT =0
+
    IF @ItemDetailXML IS NOT NULL
           BEGIN
               --For Inserting into Subtable
@@ -2468,6 +2472,15 @@ BEGIN
               WHILE @@ROWCOUNT <> 0 
                   BEGIN
                     DECLARE @DetSno INT
+
+                      IF @VouTypeSno = 27  --ONLY IF IT IS LAB TESTING RECEIPT
+                        BEGIN
+                          SET @RecdBarCodeSno  = @BarCodeSno
+                          SET @RecdPurity = @Purity
+
+                        END
+
+
                       INSERT INTO Transaction_Details(TransSno,BarCodeSno, ItemSno, Item_Desc, UomSno, Karat, Purity, Qty, GrossWt, StoneWt, Wastage, NettWt, PureWt, Rate, Amount) 
                       VALUES (@TransSno,@BarCodeSno, @ItemSno, @Item_Desc, @UomSno, @Karat, @Purity, @Qty, @GrossWt, @StoneWt, @Wastage, @NettWt, @PureWt, @Rate, @Amount)
                       IF @@Error <> 0 GOTO CloseNow
@@ -2523,6 +2536,14 @@ BEGIN
                   END
               Exec Sp_Xml_Removedocument @idoc
           END
+
+    IF @VouTypeSno = 27
+      BEGIN
+        UPDATE Transaction_Details SET Purity = @RecdPurity WHERE BarCodeSno=@RecdBarCodeSno
+        IF @@ERROR <> 0 GOTO CloseNow			
+        UPDATE Transaction_Details SET Purity = @RecdPurity WHERE DetSno = (SELECT DetSno FROM BarCoded_Items WHERE BarCodeSno=@BarCodeSno)
+        IF @@ERROR <> 0 GOTO CloseNow			        
+      END
 
    IF @ImageDetailXML IS NOT NULL
               BEGIN                     
@@ -2626,12 +2647,11 @@ CloseNow:
 	ROLLBACK TRANSACTION
 	RETURN 0
 END
-
+GO
 
 
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='VW_TRANSACTIONS') BEGIN DROP VIEW VW_TRANSACTIONS END
 GO
-
 
 CREATE VIEW VW_TRANSACTIONS
 WITH ENCRYPTION
@@ -2639,8 +2659,8 @@ AS
     SELECT      Trans.TransSno, Trans.Trans_No, Trans.Trans_Date, CAST([dbo].IntToDate(Trans.Trans_Date) as VARCHAR)  as Trans_DateStr, Trans.VouTypeSno, VTyp.VouType_Name, VTyp.Stock_Type, VTyp.Cash_Type,
                 Trans.SeriesSno, Ser.Series_Name, Trans.Payment_Type, Trans.BarCodeRefSno,
                 Trans.ClientSno, Clnt.Client_Name, Clnt.Client_Cat,
-                Trans.Due_Date, Trans.RefSno, SUM(Det.Qty) as TotQty, SUM(Det.GrossWt) as TotGrossWt, SUM(Det.StoneWt) as TotStoneWt, SUM(Det.Wastage) as TotWastage, SUM(Det.NettWt) as TotNettWt,
-                SUM(Det.PureWt) as TotPureWt, Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount, Trans.Fixed_Price, Trans.Commision, Trans.Remarks, Trans.Print_Remarks,
+                Trans.Due_Date, Trans.RefSno, ISNULL(SUM(Det.Qty),0) as TotQty, ISNULL(SUM(Det.GrossWt),0) as TotGrossWt, ISNULL(SUM(Det.StoneWt),0) as TotStoneWt, ISNULL(SUM(Det.Wastage),0) as TotWastage, ISNULL(SUM(Det.NettWt),0) as TotNettWt,
+                ISNULL(SUM(Det.PureWt),0) as TotPureWt, Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount, Trans.Fixed_Price, Trans.Commision, Trans.Remarks, Trans.Print_Remarks,
                 Trans.Locked, Trans.CompSno,Trans.UserSno, Trans.VouSno,
                 Pending_Status = CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno=Trans.TransSno) THEN 1 ELSE 0 END
 
@@ -2833,7 +2853,7 @@ GO
 CREATE VIEW VW_BARCODE_REGISTER
 WITH ENCRYPTION AS
 
-  SELECT    Trans.TransSno, VTyp.VouType_Name, Trans.Trans_No, Trans.Trans_Date, Det.DetSno, Det.ItemSno, It.Item_Name, Bar.BarCodeSno, Bar.BarCode_No, Det.Karat, Det.Purity,
+  SELECT    Trans.TransSno, VTyp.VouType_Name, Trans.Trans_No, Trans.Trans_Date, Det.DetSno, Det.ItemSno, It.Item_Name, Det.Item_Desc, Bar.BarCodeSno, Bar.BarCode_No, Det.Karat, Det.Purity,
             Det.UomSno, Um.Uom_Name,
             GrossWt       = CAST(Det.GrossWt / Det.Qty AS DECIMAL(8,3)),
             StoneWt       = CAST(Det.StoneWt / Det.Qty AS DECIMAL(8,3)),
@@ -2842,8 +2862,17 @@ WITH ENCRYPTION AS
             PureWt        = CAST(Det.NettWt*(Det.Purity/100)AS DECIMAL(8,3)),
             Det.Rate, Amount = CAST(Det.Amount / Det.Qty AS DECIMAL(10,2)),
 
-            Issued_Wt     = (SELECT ISNULL(SUM(NettWt),0) FROM Transaction_Details WHERE BarCodeSno=Bar.BarCodeSno),
-            Balance_Wt    = Det.NettWt - (SELECT ISNULL(SUM(NettWt),0) FROM Transaction_Details WHERE BarCodeSno=Bar.BarCodeSno),
+            Issued_Wt     = ( SELECT    ISNULL(SUM(NettWt),0)
+                              FROM      Transaction_Details Dt
+                                        INNER JOIN Transactions Tr ON Tr.TransSno=Dt.TransSno
+                                        INNER JOIN Voucher_Types Vt On Vt.VouTypeSno = Tr.VouTypeSno
+                              WHERE     BarCodeSno=Bar.BarCodeSno AND Vt.Stock_Type = 2),
+
+            Balance_Wt    = Det.NettWt - ( SELECT    ISNULL(SUM(NettWt),0)
+                              FROM      Transaction_Details Dt
+                                        INNER JOIN Transactions Tr ON Tr.TransSno=Dt.TransSno
+                                        INNER JOIN Voucher_Types Vt On Vt.VouTypeSno = Tr.VouTypeSno
+                              WHERE     BarCodeSno=Bar.BarCodeSno AND Vt.Stock_Type = 2),
             Stock_Status  = CASE WHEN (SELECT ISNULL(SUM(NettWt),0) FROM Transaction_Details WHERE BarCodeSno=Bar.BarCodeSno) <= Det.NettWt THEN 0 ELSE 1 END,
             Trans.CompSno
   FROM      Barcoded_Items Bar
@@ -2866,9 +2895,10 @@ RETURN
 
   SELECT    Bar.*, Bar.BarCode_No as Name, Item_Name as Details
   FROM      VW_BARCODE_REGISTER Bar
-  WHERE     (CompSno=@CompSno) AND Stock_Status=0
+  WHERE     (CompSno=@CompSno) --AND Stock_Status=0
 
 GO
+
 
 
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='VW_ASSAY_RECORDS') BEGIN DROP VIEW VW_ASSAY_RECORDS END
@@ -3103,6 +3133,8 @@ Return
     WHERE     (VouSno=@VouSno OR @VouSno = 0) AND (Vou.IsAuto =0)  AND (CompSno =@CompSno)
 
 GO
+
+
 
 
 

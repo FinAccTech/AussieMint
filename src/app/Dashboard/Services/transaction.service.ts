@@ -68,6 +68,13 @@ export class TransactionService {
         Remarks:            "",
         Print_Remarks:      "",
     
+        TotQty:             0,
+        TotGrossWt:         0,
+        TotStoneWt:         0,
+        TotWastage:         0,
+        TotNettWt:          0,
+        TotPureWt:          0,
+
         Locked:             0, 
         UserSno:            this.sessionService.GetUser().UserSno,
         CompSno:            this.sessionService.GetCompany().CompSno,
@@ -207,6 +214,13 @@ export interface TypeTransaction{
     Remarks:            string,
     Print_Remarks:      string,
   
+    TotQty:             number,
+    TotGrossWt:         number,
+    TotStoneWt:         number,
+    TotWastage:         number,
+    TotNettWt:          number,
+    TotPureWt:          number,
+
     Locked:             number,    
     UserSno:            number,
     CompSno:            number,

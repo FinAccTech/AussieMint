@@ -12,7 +12,7 @@
                         <mat-select [(value)]="ReportStatus" (selectionChange)="FilterPendingReport()" >                            
                             <mat-option [value]="0">Not Tested</mat-option>
                             <mat-option [value]="1">Sent for Testing</mat-option>
-                            <mat-option [value]="2">Not Received from Testing</mat-option>                                                                  
+                            <mat-option [value]="2">Testing Completed</mat-option>                                                                  
                         </mat-select>
                     </div>
                     <div class="matLabel">
@@ -45,7 +45,7 @@
                         <td> {{item.Client_Name}}</td>
                         <td>
                             @if (item.IssueTransSno == 0) {
-                                <button class="btnOutlined">Create Issue</button>
+                                <button class="btnOutlined" (click)="CreateLabIssue()">Create Issue</button>
                             }
                             @else {
                                 {{item.IssueTrans_No}}
@@ -54,7 +54,7 @@
                         </td>
                         <td>
                             @if (item.ReceiptTransSno == 0) {
-                                <button class="btnOutlined" >Create Receipt</button>
+                                <button class="btnOutlined" (click)="CreateLabReceipt()" >Create Receipt</button>
                             }
                             @else {
                                 {{item.ReceiptTrans_No}}

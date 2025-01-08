@@ -101,6 +101,8 @@ export class ItemGridComponent {
             })
           
             if (isExists == false){
+              console.log(result);
+              
               this.GridItems()!.push(result);    
               this.SetTotals();        
             }   

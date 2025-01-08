@@ -54,7 +54,6 @@ export class ReportService {
     }
 }
 
-
 export interface TypeStockReport{
   ItemSno : number;
   Item_Name: string;

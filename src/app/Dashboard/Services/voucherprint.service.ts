@@ -227,12 +227,8 @@ GetHtmlFromFieldSet(FldList: [], FieldSet: TypePrintFields, LeftMargin: number, 
                                 for (let i=0; i<=Emptyspace*2; i++){
                                     StrEmptySpace += '&nbsp;';
                                 }
-                                
-                                
                             }                            
                             
-                            //console.log( fld.fldvalue + StrEmptySpace);
-
                             StrHtml += `
                             <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ +fld.top + `px; font-family:` + fld.fontname + `; font-size:`+ fld.fontsize + `px; font-weight:`+ fld.fontweight + `; color:`+ fld.forecolor + `; text-align:right " >
                                 ` + StrEmptySpace + Object.entries(item).find(([key, val]) => key === fld.fldvalue)?.[1]  + `
@@ -404,21 +400,23 @@ GetPrintFields(Trans: TypeTransaction){
 
     if (Trans.Items_Json && Trans.Items_Json !==''){
         let itemList = JSON.parse(Trans.Items_Json);
+        console.log(itemList);
+        
         itemList.forEach((it:any)=>{
             PrintFields.ItemDetails.push({BarCodeSno: it.BarCodeSno,
-                BarCode_Name: it.BarCode_Name,
-                ItemSno: it.ItemSno,
-                Item_Name: it.Item_Name,
+                BarCode_Name: it.BarCode.BarCode_Name,
+                ItemSno: it.Item.ItemSno,
+                Item_Name: it.Item.Item_Name,
                 Item_Desc: it.Item_Desc,
                 Karat: it.Karat,
                 Purity: it.Purity,   
                 Qty: it.Qty,
-                Gross_Wt: it.Gross_Wt,
-                Stone_Wt: it.Stone_Wt,
+                Gross_Wt: it.GrossWt,
+                Stone_Wt: it.StoneWt,
                 Wastage: it.Wastage,
-                Nett_Wt: it.Nett_Wt,
-                UomSno: it.UomSno,
-                Uom_Name: it.Uom_Name,
+                Nett_Wt: it.NettWt,
+                UomSno: it.Uom.UomSno,
+                Uom_Name: it.Uom.Uom_Name,
                 Rate: it.Rate,
                 Amount: it.Amount });            
         })                
@@ -438,7 +436,6 @@ GetPrintFields(Trans: TypeTransaction){
         })
     }
     
-
     return PrintFields;
    }
 

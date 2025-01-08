@@ -16,7 +16,7 @@ export const menuTree =[
         SubMenu: 
         [
             {   Caption: "Advance Doc - Purchase", Iconn: "", RouterLink:"transactions/24" },
-            {   Caption: "Purchase Order", Iconn: "", RouterLink:"transactions/10" },
+            // {   Caption: "Purchase Order", Iconn: "", RouterLink:"transactions/10" },
             {   Caption: "GRN", Iconn: "", RouterLink:"transactions/28" },
             {   Caption: "Buying Contract", Iconn: "", RouterLink:"transactions/11" },
             {   Caption: "RCTI", Iconn: "", RouterLink:"transactions/12"   },            
@@ -30,7 +30,7 @@ export const menuTree =[
         SubMenu: 
         [
             {   Caption: "Advance Doc - Sales", Iconn: "", RouterLink:"transactions/25" },
-            {   Caption: "Sales Order", Iconn: "", RouterLink:"transactions/13" },
+            // {   Caption: "Sales Order", Iconn: "", RouterLink:"transactions/13" },
             {   Caption: "Delivery Doc", Iconn: "", RouterLink:"transactions/14" },
             {   Caption: "Sales Invoice", Iconn: "", RouterLink:"transactions/15" },            
         ]

@@ -9,6 +9,7 @@ select * from VW_ASSAY_RECORDS
 select * from voucher_types
 select * from VW_BARCODE_REGISTER
 select * from Items where item_code='sg'
+
 /*
 	truncate table transactions
 	truncate table transaction_Details
@@ -28,3 +29,5 @@ as sqq
 
 select * from   VW_STOCK_REGISTER
 select * from   Voucher_Types
+
+select * from Udf_getBarCodeStock(1)

@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { TypeAssayRecord } from '../../Services/transaction.service';
+import { TransactionService, TypeAssayRecord } from '../../Services/transaction.service';
 import { ReportService } from '../../Services/reports.service';
 import { GlobalsService } from '../../../global.service';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
 import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
+import { MatDialog } from '@angular/material/dialog';
+import { LabtestComponent } from '../../transactions/labtest/labtest.component';
 
 @Component({
   selector: 'app-pendinglabreport',
@@ -34,7 +36,7 @@ export class PendinglabreportComponent {
 
   TotalFields: string[] = ["NettAmount"]
   
-  constructor(private globals: GlobalsService, private repService: ReportService ) {}
+  constructor(private globals: GlobalsService, private dialog: MatDialog, private transService: TransactionService, private repService: ReportService ) {}
   state = 'void';
    
   ngOnInit(){
@@ -47,7 +49,8 @@ export class PendinglabreportComponent {
   LoadPendingReport(){        
     this.repService.getAssayRecords(0).subscribe(data =>{
       this.ReportList = JSON.parse(data.apiData);
-      this.FilteredList = this.ReportList;
+      this.FilteredList = this.ReportList;      
+      this.FilterPendingReport()
     })    
   }
 
@@ -55,5 +58,37 @@ export class PendinglabreportComponent {
     this.FilteredList = this.ReportList.filter(rep =>{
       return rep.Assay_Status == this.ReportStatus;
     })
+  }
+
+  CreateLabIssue(){
+    let Trans                       = this.transService.InitializeTransaction();
+    Trans.Series.VouType.VouTypeSno = this.globals.VTypLabTestingIssue;    
+     const dialogRef2 = this.dialog.open(LabtestComponent, 
+      {
+        width: '60vw',
+        maxWidth: 'none',
+        data: Trans,        
+        panelClass: "dialogMat"
+      });      
+      dialogRef2.disableClose = true; 
+      dialogRef2.afterClosed().subscribe(result => {                    
+        this.LoadPendingReport();                           
+      }); 
+  }
+
+  CreateLabReceipt(){
+    let Trans                       = this.transService.InitializeTransaction();
+    Trans.Series.VouType.VouTypeSno = this.globals.VTypLabTestingReceipt;    
+     const dialogRef2 = this.dialog.open(LabtestComponent, 
+      {
+        width: '60vw',
+        maxWidth: 'none',
+        data: Trans,        
+        panelClass: "dialogMat"
+      });      
+      dialogRef2.disableClose = true; 
+      dialogRef2.afterClosed().subscribe(result => {                    
+        this.LoadPendingReport();                           
+      }); 
   }
 }

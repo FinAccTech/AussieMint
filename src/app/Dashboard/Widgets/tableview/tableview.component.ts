@@ -118,6 +118,7 @@ export class TableviewComponent {
  }
 
  SetTotals(){  
+    
   if (!this.PagedDataList || this.PagedDataList.length < 1  || !this.TotalFields() || this.TotalFields()!.length < 1 ){
     return;
   }
@@ -188,6 +189,8 @@ export class TableviewComponent {
 }
 
  isNumeric(value: any): boolean {
-  return !isNaN(parseFloat(value));
-}
+  return !isNaN(parseFloat(value)) && isFinite(value);
+ }
+
+ 
 }

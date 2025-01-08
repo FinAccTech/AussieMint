@@ -42,8 +42,20 @@
         padding: 0rem .6rem 0 .6rem;
     }
 
-    
- 
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    th{
+        background-color: #ddd;
+        padding: .2rem;
+    }
+    th,td{
+        text-align: center;
+        border: 1px solid #dad5d5;
+    }
 }
 
 

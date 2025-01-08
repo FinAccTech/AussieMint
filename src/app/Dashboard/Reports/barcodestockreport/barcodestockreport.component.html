@@ -7,14 +7,24 @@
             </div>
 
             <div class="headerRight" style="width: 30%;">
-                         
+                <div class="matGroup" style="width: 100%;" >
+                    <div class="matSelect"> 
+                        <mat-select [(value)]="ShowEmptyStock" (selectionChange)="FilterStockReport()" >                            
+                            <mat-option [value]="0">Hide Empty Stock</mat-option>
+                            <mat-option [value]="1">Show Empty Stopck</mat-option>                            
+                        </mat-select>
+                    </div>
+                    <div class="matLabel">
+                        &nbsp;&nbsp; Report Status
+                    </div>
+                </div>
             </div>
         </div> 
-
+ 
         <div class="tableBody">
 
-            @defer (when BarCodedStockList.length >0) {
-                <app-tableview  [DataSource]="BarCodedStockList" 
+            @defer (when FilteredBarCodedStockList.length >0) {
+                <app-tableview  [DataSource]="FilteredBarCodedStockList" 
                                 [FieldNames]="FieldNames"                             
                                 [TotalFields]="TotalFields" 
                                 [RowsPerPage] = "100"

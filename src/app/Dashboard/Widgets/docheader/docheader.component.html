@@ -71,7 +71,27 @@
         <div class="formGroup">
             
             @if (this.DocHeader()?.Reference && this.DocHeader()?.Reference?.NettAmount !==0) {
-                {{RefDetails}}
+                <table>
+                    <thead>
+                        <th>Doc No</th>
+                        <th>Doc Date</th>
+                        <th>Amount</th>
+                        <th>Weight</th>
+                        <th>Rate</th>
+                        <th>Commision</th>
+                    </thead>
+                    @for (item of RefDetails; track $index) {
+                        <tr>
+                            <td> {{item.Doc_No}} </td>
+                            <td> {{item.Doc_Date | intToDate | date:'dd-MM-yyyy' }} </td>
+                            <td> {{item.Doc_Amount | number}} </td>
+                            <td> {{item.Doc_Weight}} </td>
+                            <td> {{item.Doc_Rate | number}} </td>
+                            <td> {{item.Doc_Commision}} </td>                        
+                        </tr>
+                    }
+                    
+                </table>
             }
             
         </div>

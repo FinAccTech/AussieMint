@@ -23,6 +23,7 @@ export class StockselectionComponent {
     {Field_Name:"VouType_Name", Data_Type:"string" }, 
     {Field_Name:"Trans_Date", Data_Type:"date" }, 
     {Field_Name:"Item_Name", Data_Type:"string" }, 
+    {Field_Name:"Item_Desc", Data_Type:"string" }, 
     {Field_Name:"BarCode_No", Data_Type:"string" }, 
     {Field_Name:"NettWt", Data_Type:"number", Decimals:3 }, 
     {Field_Name:"Issued_Wt", Data_Type:"number", Decimals:3 }, 
@@ -34,6 +35,8 @@ export class StockselectionComponent {
   ngOnInit(){
     this.repService.getBarCodeStock().subscribe(data=>{
       this.BarCodedList = JSON.parse(data.apiData);
+      console.log(this.BarCodedList);
+      
     })
   }
 
@@ -42,7 +45,7 @@ export class StockselectionComponent {
     item = {BarCode:{"BarCodeSno": selItem.BarCodeSno, BarCode_No: selItem.BarCode_No, Name: selItem.BarCode_No!, Details: selItem.BarCode_No!}, 
                     DetSno: selItem.DetSno!,
                     Item:{ItemSno: selItem.ItemSno!, Item_Name:selItem.Item_Name!, Name:selItem.Item_Name!, Details:selItem.Item_Name! },
-                    Item_Desc: "",
+                    Item_Desc: selItem.Item_Desc!,
                     Karat: selItem.Karat!,
                     Purity: selItem.Purity!,
                     Qty: 1,

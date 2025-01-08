@@ -1,18 +1,17 @@
 import { Component } from '@angular/core';
-import { TypeTransaction } from '../../Services/transaction.service';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
 import { GlobalsService } from '../../../global.service';
-import { ReportService, TypeStockReport } from '../../Services/reports.service';
+import { ReportService} from '../../Services/reports.service';
 import { TableviewComponent } from '../../Widgets/tableview/tableview.component';
-import { SelectionlistComponent } from "../../Widgets/selectionlist/selectionlist.component";
-import { IGroupService, TypeItemGroup } from '../../Services/igroup.service';
+import { IGroupService} from '../../Services/igroup.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 import { TypeBarCode } from '../../../Types/TypeGridItem';
+import { MatOption, MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-stockreport',
-  imports: [TableviewComponent,],
+  imports: [TableviewComponent, MatSelect, MatOption],
   templateUrl: './barcodestockreport.component.html',
   styleUrl: './barcodestockreport.component.scss',
   animations: [
@@ -31,6 +30,8 @@ import { TypeBarCode } from '../../../Types/TypeGridItem';
 @AutoUnsubscribe
 export class BarCodeStockreportComponent {      
   BarCodedStockList: TypeBarCode[] = [];  
+  FilteredBarCodedStockList: TypeBarCode[] = [];  
+  ShowEmptyStock: number = 0;
   FieldNames: TypeFieldInfo[] = [
     {Field_Name:"#", Data_Type:"string" }, 
     {Field_Name:"VouType_Name", Data_Type:"string" }, 
@@ -57,6 +58,13 @@ export class BarCodeStockreportComponent {
   LoadReport(){            
     this.repService.getBarCodeStock().subscribe(data =>{      
       this.BarCodedStockList = JSON.parse(data.apiData);
+      this.FilterStockReport();
+    })
+  }
+
+  FilterStockReport(){
+    this.FilteredBarCodedStockList = this.BarCodedStockList.filter(item=>{
+      return  this.ShowEmptyStock==0 ? item.Balance_Wt! > 0 : item ;
     })
   }
  
