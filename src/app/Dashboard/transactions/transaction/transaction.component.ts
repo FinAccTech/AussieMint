@@ -15,6 +15,8 @@ import { TypeDocFooter } from '../../../Types/TypeDocFooter';
 import { SessionStorageService } from '../../../session-storage.service';
 import { ReportService } from '../../Services/reports.service';
 import { LedgerService, TypeLedger } from '../../Services/ledger.service';
+import { ItemService, TypeItem } from '../../Services/item.service';
+import { UomService } from '../../Services/uom.service';
 
 @Component({ 
   selector: 'app-transaction',
@@ -48,7 +50,7 @@ export class TransactionComponent {
   DocFooter!:       TypeDocFooter;  
   ImageSource:      FileHandle[] = [];
 
-  
+  EnableTaxCols:      boolean   = false;
   EnableAmountCols:   boolean   = false;
   StockSelection:     boolean   = false;
   EnableBarCode:      boolean   = false;
@@ -66,6 +68,8 @@ export class TransactionComponent {
     private sessionService: SessionStorageService,
     private repService:     ReportService,
     private ledService:     LedgerService,
+    private iteService: ItemService,
+    private umService: UomService
   ){
     this.DocHeader        = transService.InitializeDocHeader();  
     this.SelectedClient   = clntService.Initialize();                
@@ -105,10 +109,34 @@ export class TransactionComponent {
         this.actionEvent.emit("iexit");
         break;
 
-      case "RefTransaction": 
-        this.ClearDocument(true);
-        if (Object.keys($event.Trans).length === 0) { return; }
-        this.LoadRefDocument($event.Trans);
+      case "RefTransaction":            
+        switch (this.ChildTransaction.Series.VouType.VouTypeSno) {
+          case this.globals.VTypBuyingContract:
+            this.ClearDocument(true);     
+            if (Object.keys($event.Trans).length === 0) { return; }
+            this.LoadRefDocument($event.Trans);   
+            break;
+        
+          case this.globals.VTypRCTI:
+            this.ClearDocument(true);     
+            if (Object.keys($event.Trans).length === 0) { return; }
+            this.LoadRefDocument($event.Trans);   
+            break;
+          case this.globals.VTypSalesInvoice:
+            this.ClearDocument(true);     
+            if (Object.keys($event.Trans).length === 0) { return; }
+            this.LoadRefDocument($event.Trans);   
+            break;
+          case this.globals.VTypMeltingReceipt:
+            this.LoadStandardItems(this.globals.VTypMeltingReceipt);
+            break;
+          case this.globals.VTypRefiningReceipt:
+            this.LoadStandardItems(this.globals.VTypRefiningReceipt);
+            break;
+          case this.globals.VTypCastingReceipt:
+            this.LoadStandardItems(this.globals.VTypCastingReceipt);
+            break;
+        }                
         break;
       case "BarReference":
         this.ClearDocument(true);
@@ -133,8 +161,7 @@ export class TransactionComponent {
     this.ImageSource    = [];
   }
 
-  SaveDocument(){
-    
+  SaveDocument(){    
     if (this.ValidateInputs() == false){ return; }
     this.ChildTransaction.Series        = this.DocHeader.Series;
     this.ChildTransaction.Trans_No      = this.DocHeader.Trans_No;
@@ -194,7 +221,7 @@ export class TransactionComponent {
       this.transService.getTransactions(this.ChildTransaction.RefSno,0,0,0,0).subscribe(data=>{
         this.DocHeader.Reference    = JSON.parse(data.apiData)[0];
       });
-    }
+    } 
     
     // if ( (this.ChildTransaction.TransSno !== 0) && (this.ChildTransaction.BarCodeRefSno !==0)){
     //   this.repService.getAssayRecords(this.ChildTransaction.BarCodeRefSno).subscribe(data=>{
@@ -220,8 +247,7 @@ export class TransactionComponent {
     this.DocFooter.NettAmount     = this.ChildTransaction.NettAmount;    
   }
 
-  LoadRefDocument(Trans: TypeTransaction){
-        
+  LoadRefDocument(Trans: TypeTransaction){        
     Trans.Client = JSON.parse(Trans.Client_Json)[0];
     Trans.GridItems = JSON.parse(Trans.Items_Json);
     if (Trans.Images_Json){
@@ -241,7 +267,6 @@ export class TransactionComponent {
     else{
       this.GridItems                = this.ChildTransaction.GridItems = [];
     }
-    
 
     this.ImageSource = this.ChildTransaction.ImageSource = Trans.ImageSource;
     //For Footer Component Fields
@@ -251,6 +276,98 @@ export class TransactionComponent {
     this.DocFooter.TaxAmount      = this.ChildTransaction.TaxAmount = Trans.TaxAmount;
     this.DocFooter.RevAmount      = this.ChildTransaction.RevAmount = Trans.RevAmount;
     this.DocFooter.NettAmount     = this.ChildTransaction.NettAmount = Trans.NettAmount;
+  }
+
+  LoadStandardItems(VouTypeSno: number){
+    switch (VouTypeSno) {
+      case this.globals.VTypMeltingReceipt:
+        this.iteService.getStdItemByCode('MB').subscribe(data =>{
+          let meltedBar: TypeItem = JSON.parse(data.apiData)[0];
+          this.umService.getStdUomByCode('GMS').subscribe(data=>{
+            let GmsUom = JSON.parse(data.apiData)[0];
+            this.GridItems = [
+              {
+                BarCode:    {BarCodeSno:0, BarCode_No: ""},
+                DetSno:     0,
+                Item:       meltedBar,
+                Item_Desc:  "",
+                Karat:      0,
+                Purity:     0,
+                Qty:        1,
+                GrossWt:    0,
+                StoneWt:    0,
+                Wastage:    0,
+                NettWt:     0,
+                Uom:        GmsUom,
+                Rate:       0,
+                Amount:     0,
+              }
+            ]
+            this.ChildTransaction.GridItems = this.GridItems;
+          })          
+        })        
+        break;
+    
+      case this.globals.VTypRefiningReceipt:
+        this.iteService.getRefiningReceiptItems().subscribe(data =>{
+          let RefineItems: TypeItem[] = JSON.parse(data.apiData);
+          this.umService.getStdUomByCode('GMS').subscribe(data=>{
+            let GmsUom = JSON.parse(data.apiData)[0];
+            RefineItems.forEach(itm=>{
+
+              this.GridItems.push(
+                {
+                  BarCode:    {BarCodeSno:0, BarCode_No: ""},
+                  DetSno:     0,
+                  Item:       itm,
+                  Item_Desc:  "",
+                  Karat:      0,
+                  Purity:     0,
+                  Qty:        1,
+                  GrossWt:    0,
+                  StoneWt:    0,
+                  Wastage:    0,
+                  NettWt:     0,
+                  Uom:        GmsUom,
+                  Rate:       0,
+                  Amount:     0,
+                }
+              )
+            })
+            this.ChildTransaction.GridItems = this.GridItems;
+          })          
+        })       
+                
+      break;
+
+      case this.globals.VTypCastingReceipt:
+        this.iteService.getStdItemByCode('CB').subscribe(data =>{
+          let meltedBar: TypeItem = JSON.parse(data.apiData)[0];
+          this.umService.getStdUomByCode('GMS').subscribe(data=>{
+            let GmsUom = JSON.parse(data.apiData)[0];
+            this.GridItems = [
+              {
+                BarCode:    {BarCodeSno:0, BarCode_No: ""},
+                DetSno:     0,
+                Item:       meltedBar,
+                Item_Desc:  "",
+                Karat:      0,
+                Purity:     0,
+                Qty:        1,
+                GrossWt:    0,
+                StoneWt:    0,
+                Wastage:    0,
+                NettWt:     0,
+                Uom:        GmsUom,
+                Rate:       0,
+                Amount:     0,
+              }
+            ]
+            this.ChildTransaction.GridItems = this.GridItems;
+          })          
+        })       
+        break;
+    }
   }
 
   NewClientChanged($event: TypeClient){    
@@ -268,7 +385,6 @@ export class TransactionComponent {
       this.globals.SnackBar("error", "Invalid Item details",1000);
       return false;
     }
-
     return true;
    }
 
@@ -306,6 +422,7 @@ export class TransactionComponent {
         this.EnableBarCode = false;
         this.GenerateBarCode  = true;
         this.StockSelection = false;
+        this.EnableTaxCols = true;
         // this.repService.getPendingDocuments(this.globals.VTypGRN).subscribe(data => {
         //   this.DocHeader.RefList = JSON.parse (data.apiData);
         // })
@@ -332,6 +449,7 @@ export class TransactionComponent {
         this.EnableAmountCols= true;
         this.EnableBarCode = true;
         this.StockSelection = true;
+        this.EnableTaxCols = true;
         // this.repService.getPendingDocuments(this.globals.VTypDeliveryDoc).subscribe(data => {
         //   this.DocHeader.RefList = JSON.parse (data.apiData);
         // })
@@ -345,9 +463,9 @@ export class TransactionComponent {
 
       case this.globals.VTypMeltingReceipt:
         this.EnableAmountCols= false;
-        this.EnableBarCode = true;
+        this.EnableBarCode = false;
         this.GenerateBarCode  = true;
-        this.StockSelection = true;
+        this.StockSelection = false;
         // this.repService.getPendingDocuments(this.globals.VTypMeltingIssue).subscribe(data => {
         //   this.DocHeader.RefList = JSON.parse (data.apiData);
         // })
@@ -361,9 +479,9 @@ export class TransactionComponent {
 
       case this.globals.VTypRefiningReceipt:
         this.EnableAmountCols= false;
-        this.EnableBarCode = true;
+        this.EnableBarCode = false;
         this.GenerateBarCode  = true;
-        this.StockSelection = true;
+        this.StockSelection = false;
         // this.repService.getPendingDocuments(this.globals.VTypRefiningIssue).subscribe(data => {
         //   this.DocHeader.RefList = JSON.parse (data.apiData);
         // })
@@ -379,7 +497,7 @@ export class TransactionComponent {
         this.EnableAmountCols= false;
         this.EnableBarCode = true;
         this.GenerateBarCode  = true;
-        this.StockSelection = true;
+        this.StockSelection = false;
         // this.repService.getPendingDocuments(this.globals.VTypCastingIssue).subscribe(data => {
         //   this.DocHeader.RefList = JSON.parse (data.apiData);
         // })
@@ -399,7 +517,7 @@ export class TransactionComponent {
         //   this.DocHeader.RefList = JSON.parse (data.apiData);
         // })
       break;
-
+ 
       case this.globals.VTypLabTestingIssue:
         this.EnableAmountCols= false;
         this.EnableBarCode = false;
@@ -434,6 +552,8 @@ export class TransactionComponent {
         this.DocHeader.RefList = [];
         this.repService.getPendingDocuments(this.globals.VTypGRN, ClientSno).subscribe(data => {                      
             let pdList = JSON.parse (data.apiData);
+            console.log(pdList);
+            
             this.repService.getPendingDocuments(this.globals.VTypAdvancePurchase, ClientSno).subscribe(data => {              
                 let adplist = JSON.parse (data.apiData);              
                 this.DocHeader.RefList = [...pdList, ...adplist];              
@@ -467,6 +587,34 @@ export class TransactionComponent {
                 let adplist = JSON.parse (data.apiData);              
                 this.DocHeader.RefList = [...pdList, ...adplist];              
             })
+        })
+        break;
+
+      case this.globals.VTypMeltingReceipt:
+        this.DocHeader.RefList = [];
+        this.repService.getPendingDocuments(this.globals.VTypMeltingIssue, ClientSno).subscribe(data => {          
+          this.DocHeader.RefList = JSON.parse (data.apiData);
+        })
+        break;
+
+      case this.globals.VTypRefiningReceipt:
+      this.DocHeader.RefList = [];
+      this.repService.getPendingDocuments(this.globals.VTypRefiningIssue, ClientSno).subscribe(data => {          
+        this.DocHeader.RefList = JSON.parse (data.apiData);
+      })
+      break;
+
+      case this.globals.VTypCastingReceipt:
+      this.DocHeader.RefList = [];
+      this.repService.getPendingDocuments(this.globals.VTypCastingIssue, ClientSno).subscribe(data => {          
+        this.DocHeader.RefList = JSON.parse (data.apiData);
+      })
+      break;
+
+      case this.globals.VTypJobworkDelivery:
+        this.DocHeader.RefList = [];
+        this.repService.getPendingDocuments(this.globals.VTypJobworkInward, ClientSno).subscribe(data => {          
+          this.DocHeader.RefList = JSON.parse (data.apiData);
         })
         break;
 

@@ -55,20 +55,24 @@ export class PendinglabreportComponent {
   }
 
   FilterPendingReport(){    
+    if (this.ReportStatus == 0) { this.FilteredList = this.ReportList; return};
     this.FilteredList = this.ReportList.filter(rep =>{
-      return rep.Assay_Status == this.ReportStatus;
+      return rep.Assay_Status == this.ReportStatus-1;
     })
   }
 
-  CreateLabIssue(){
+  CreateLabIssue( Record: TypeAssayRecord){
     let Trans                       = this.transService.InitializeTransaction();
-    Trans.Series.VouType.VouTypeSno = this.globals.VTypLabTestingIssue;    
+    Trans.Series.VouType.VouTypeSno = this.globals.VTypLabTestingIssue;     
+    Trans.BarCodeRefSno = Record.RecordSno;
+    Trans.Client.ClientSno = Record.ClientSno;
+
      const dialogRef2 = this.dialog.open(LabtestComponent, 
       {
-        width: '60vw',
-        maxWidth: 'none',
-        data: Trans,        
-        panelClass: "dialogMat"
+        panelClass:['rightdialogMat'],        
+        position:{"right":"0","top":"0" },              
+        maxWidth: 'none',        
+        data: Trans,
       });      
       dialogRef2.disableClose = true; 
       dialogRef2.afterClosed().subscribe(result => {                    
@@ -76,15 +80,17 @@ export class PendinglabreportComponent {
       }); 
   }
 
-  CreateLabReceipt(){
+  CreateLabReceipt( Record: TypeAssayRecord){
     let Trans                       = this.transService.InitializeTransaction();
     Trans.Series.VouType.VouTypeSno = this.globals.VTypLabTestingReceipt;    
+    Trans.Client.ClientSno = Record.ClientSno;
+    Trans.RefSno = Record.IssueTransSno;
      const dialogRef2 = this.dialog.open(LabtestComponent, 
       {
-        width: '60vw',
-        maxWidth: 'none',
-        data: Trans,        
-        panelClass: "dialogMat"
+        panelClass:['rightdialogMat'],        
+        position:{"right":"0","top":"0" },              
+        maxWidth: 'none',        
+        data: Trans,
       });      
       dialogRef2.disableClose = true; 
       dialogRef2.afterClosed().subscribe(result => {                    

@@ -55,6 +55,8 @@ export class TransactionService {
     
         Due_Date:           DateToInt(new Date()),
         RefSno:             0,
+        PrintReference:     [],
+        PrintReference_Json: "",
         BarCodeRefSno:      0,
         TotAmount:          0,
         TaxPer:             0,
@@ -154,6 +156,7 @@ InitializeAssayRecord(){
         Uom_Name:           "",
         Trans_No:           "",
         Trans_Date:         0,
+        ClientSno:          0,
         Client_Name:        "",
         Assay_Status:       0,
         IssueTransSno:      0,
@@ -202,6 +205,8 @@ export interface TypeTransaction{
     
     Due_Date:           number,
     RefSno:             number,
+    PrintReference:     any,
+    PrintReference_Json: string,
     BarCodeRefSno:      number,
     TotAmount:          number,
     TaxPer:             number,
@@ -261,6 +266,7 @@ export interface TypeAssayRecord{
     Uom_Name:           string;    
     Trans_No:           string;
     Trans_Date:         number;
+    ClientSno:          number;
     Client_Name:        string;
     Assay_Status:       number;
     IssueTransSno:      number;

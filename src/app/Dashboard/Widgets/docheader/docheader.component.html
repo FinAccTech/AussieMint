@@ -62,38 +62,64 @@
                         </div>
                     </div>
                 }
+
             </div>
         </div>
         
 
    
     <div class="docRow">
-        <div class="formGroup">
-            
-            @if (this.DocHeader()?.Reference && this.DocHeader()?.Reference?.NettAmount !==0) {
-                <table>
-                    <thead>
-                        <th>Doc No</th>
-                        <th>Doc Date</th>
-                        <th>Amount</th>
-                        <th>Weight</th>
-                        <th>Rate</th>
-                        <th>Commision</th>
-                    </thead>
-                    @for (item of RefDetails; track $index) {
-                        <tr>
-                            <td> {{item.Doc_No}} </td>
-                            <td> {{item.Doc_Date | intToDate | date:'dd-MM-yyyy' }} </td>
-                            <td> {{item.Doc_Amount | number}} </td>
-                            <td> {{item.Doc_Weight}} </td>
-                            <td> {{item.Doc_Rate | number}} </td>
-                            <td> {{item.Doc_Commision}} </td>                        
-                        </tr>
-                    }
-                    
-                </table>
+        <div class="formGroup">        
+            @if (RefTypeStock == false) {
+                @if (this.DocHeader()?.Reference && this.DocHeader()?.Reference?.NettAmount !==0) {
+                    <table>
+                        <thead> 
+                            <th>Doc No</th>
+                            <th>Doc Date</th>
+                            <th>Amount</th>
+                            <th>Weight</th>
+                            <th>Rate</th>
+                            <th>Buy Back Price</th>
+                        </thead>
+                        @for (item of RefDetails; track $index) {
+                            <tr>
+                                <td> {{item.Doc_No}} </td>
+                                <td> {{item.Doc_Date | intToDate | date:'dd-MM-yyyy' }} </td>
+                                <td> {{item.Doc_Amount | number}} </td>
+                                <td> {{item.NettWt}} </td>
+                                <td> {{item.Doc_Rate | number}} </td>
+                                <td> {{item.Doc_Commision}} </td>                        
+                            </tr>
+                        }
+                        
+                    </table>
+                }
             }
-            
+            @else {
+                @if (this.DocHeader()?.Reference ) {
+                    <table>
+                        <thead> 
+                            <th>Issue No</th>
+                            <th>Issue Date</th>
+                            <th>Issue Qty</th>
+                            <th>Gross Wt</th>
+                            <th>Nett Wt</th>
+                            <th>Amount</th>
+                        </thead>
+                        @for (item of RefDetails; track $index) {
+                            <tr>
+                                <td> {{item.Doc_No}} </td>
+                                <td> {{item.Doc_Date | intToDate | date:'dd-MM-yyyy' }} </td>
+                                <td> {{item.TotQty | number}} </td>
+                                <td> {{item.GrossWt}} </td>
+                                <td> {{item.NettWt }} </td>
+                                <td> {{item.Doc_Amount | number}} </td>                        
+                            </tr>
+                        }
+                        
+                    </table>
+                }
+            }   
         </div>
     </div>
     

@@ -12,6 +12,7 @@ export class DocfooterComponent {
   
   DocFooter = input<TypeDocFooter>();
   EnableAmountCols = input.required();
+  EnableTaxCols = input.required();
 
   @Output() actionEvent = new EventEmitter<any>();
   

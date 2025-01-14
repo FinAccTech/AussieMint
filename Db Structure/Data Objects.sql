@@ -708,32 +708,43 @@ BEGIN
   INSERT INTO Area (Area_Code,Area_Name,Remarks,Active_Status,Create_Date,UserSno,CompSno) VALUES ('PRIMARY','PRIMARY','',1,dbo.DateToInt(GETDATE()),1,@CompSno)
   
   INSERT INTO Item_Groups(Grp_Code, Grp_Name, Market_Rate, Remarks, Active_Status, Create_Date, UserSno, CompSno)
-  VALUES ('AG', 'GOLD',0, '', 1, dbo.DateToInt(GETDATE()), 1, @CompSno)
+  VALUES ('AU', 'GOLD',0, '', 1, dbo.DateToInt(GETDATE()), 1, @CompSno)
   INSERT INTO Item_Groups(Grp_Code, Grp_Name, Market_Rate, Remarks, Active_Status, Create_Date, UserSno, CompSno)
-  VALUES ('AU', 'SILVER',0, '', 1, dbo.DateToInt(GETDATE()), 1, @CompSno)
+  VALUES ('AG', 'SILVER',0, '', 1, dbo.DateToInt(GETDATE()), 1, @CompSno)
   INSERT INTO Item_Groups(Grp_Code, Grp_Name, Market_Rate, Remarks, Active_Status, Create_Date, UserSno, CompSno)
   VALUES ('PD', 'PALLADIUM',0, '', 1, dbo.DateToInt(GETDATE()), 1, @CompSno)
   INSERT INTO Item_Groups(Grp_Code, Grp_Name, Market_Rate, Remarks, Active_Status, Create_Date, UserSno, CompSno)
   VALUES ('PT', 'PLATINUM',0, '', 1, dbo.DateToInt(GETDATE()), 1, @CompSno)
 
 
-  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Active_Status, Create_Date, UserSno, CompSno,Remarks)
-  VALUES ('OG','Ornament Gold',1,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'')
-  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Active_Status, Create_Date, UserSno, CompSno,Remarks)
-  VALUES ('MB','Melted Bar',1,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'')
-  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Active_Status, Create_Date, UserSno, CompSno,Remarks)
-  VALUES ('RB','Refined Gold',1,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'')
-  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Active_Status, Create_Date, UserSno, CompSno,Remarks)
-  VALUES ('CB','Casted Bar',1,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'')
-  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Active_Status, Create_Date, UserSno, CompSno,Remarks)
-  VALUES ('SG','Sample Gold',1,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'')
+  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Require_LabTest, Active_Status, Create_Date, UserSno, CompSno,Remarks, IsStd)
+  VALUES ('OG','Ornament Gold',1,0,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'',1)
+  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Require_LabTest, Active_Status, Create_Date, UserSno, CompSno,Remarks, IsStd)
+  VALUES ('MB','Melted Bar',1,1,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'',1)
+  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Require_LabTest,Active_Status, Create_Date, UserSno, CompSno,Remarks, IsStd)
+  VALUES ('RG','Refined Gold',1,0,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'',1)
+  INSERT INTO Items(Item_Code, Item_Name, GrpSno,Require_LabTest, Active_Status, Create_Date, UserSno, CompSno,Remarks, IsStd)
+  VALUES ('CB','Casted Bar',1,0,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'',1)
+  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Require_LabTest,Active_Status, Create_Date, UserSno, CompSno,Remarks, IsStd)
+  VALUES ('SG','Sample Gold',1,0,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'',1)
+  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Require_LabTest,Active_Status, Create_Date, UserSno, CompSno,Remarks, IsStd)
+  VALUES ('UG','Undissolved Gold',1,0,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'',1)
+  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Require_LabTest, Active_Status, Create_Date, UserSno, CompSno,Remarks, IsStd)
+  VALUES ('AUAGCL','AU in Ag Chloride',1,0,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'',1)
+  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Require_LabTest, Active_Status, Create_Date, UserSno, CompSno,Remarks, IsStd)
+  VALUES ('REG','Recovery Gold',1,0,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'',1)
 
-  INSERT INTO Uom(Uom_Code, Uom_Name, BaseUomSno, Base_Qty, Active_Status, Remarks, Create_Date, UserSno, CompSno)
-  VALUES ('GMS','Grams',0,0,1,'',[dbo].DateToInt(GETDATE()),1,@CompSno)
-  INSERT INTO Uom(Uom_Code, Uom_Name, BaseUomSno, Base_Qty, Active_Status, Remarks, Create_Date, UserSno, CompSno)
-  VALUES ('OUN','Ounce',1,31.1,1,'',[dbo].DateToInt(GETDATE()),1,@CompSno)
-  INSERT INTO Uom(Uom_Code, Uom_Name, BaseUomSno, Base_Qty, Active_Status, Remarks, Create_Date, UserSno, CompSno)
-  VALUES ('KG','Kilogram',1,1000,1,'',[dbo].DateToInt(GETDATE()),1,@CompSno)
+  INSERT INTO Items(Item_Code, Item_Name, GrpSno, Require_LabTest, Active_Status, Create_Date, UserSno, CompSno,Remarks, IsStd)
+  VALUES ('AGS','Silver',2,0,1,[dbo].DateToInt(GETDATE()), 1,@CompSno,'',1)
+
+  
+
+  INSERT INTO Uom(Uom_Code, Uom_Name, BaseUomSno, Base_Qty, Active_Status, Remarks, Create_Date, UserSno, CompSno, IsStd)
+  VALUES ('GMS','Grams',0,0,1,'',[dbo].DateToInt(GETDATE()),1,@CompSno,1)
+  INSERT INTO Uom(Uom_Code, Uom_Name, BaseUomSno, Base_Qty, Active_Status, Remarks, Create_Date, UserSno, CompSno, IsStd)
+  VALUES ('OUN','Ounce',1,31.1,1,'',[dbo].DateToInt(GETDATE()),1,@CompSno,1)
+  INSERT INTO Uom(Uom_Code, Uom_Name, BaseUomSno, Base_Qty, Active_Status, Remarks, Create_Date, UserSno, CompSno, IsStd)
+  VALUES ('KG','Kilogram',1,1000,1,'',[dbo].DateToInt(GETDATE()),1,@CompSno,1)
 
   INSERT INTO Transaction_Setup(      AreaCode_AutoGen, AreaCode_Prefix, AreaCode_CurrentNo, ClientCode_AutoGen,ClientCode_Prefix, ClientCode_CurrentNo, 
                                       GrpCode_AutoGen, GrpCode_Prefix, GrpCode_CurrentNo,
@@ -962,9 +973,19 @@ BEGIN
     BEGIN TRANSACTION
         IF EXISTS(SELECT ItemSno FROM Items WHERE ItemSno=@ItemSno)
             BEGIN
-                UPDATE Items SET Item_Code=@Item_Code,Item_Name=@Item_Name,GrpSno=@GrpSno,Require_LabTest=@Require_LabTest,Remarks=@Remarks,Active_Status=@Active_Status,Create_Date=@Create_Date,UserSno=@UserSno,CompSno=@CompSno
-                WHERE ItemSno=@ItemSno
-                IF @@ERROR <> 0 GOTO CloseNow
+                DECLARE @IsStd BIT = (SELECT IsStd FROM Items WHERE ItemSno=@ItemSno)
+                IF @IsStd = 0
+                  BEGIN
+                    UPDATE Items SET Item_Code=@Item_Code,Item_Name=@Item_Name,GrpSno=@GrpSno,Require_LabTest=@Require_LabTest,Remarks=@Remarks,Active_Status=@Active_Status,Create_Date=@Create_Date,UserSno=@UserSno,CompSno=@CompSno
+                    WHERE ItemSno=@ItemSno
+                    IF @@ERROR <> 0 GOTO CloseNow
+                  END
+                ELSE
+                  BEGIN
+                    UPDATE Items SET Item_Name=@Item_Name,Require_LabTest=@Require_LabTest,Remarks=@Remarks,Active_Status=@Active_Status,Create_Date=@Create_Date,UserSno=@UserSno,CompSno=@CompSno
+                    WHERE ItemSno=@ItemSno
+                    IF @@ERROR <> 0 GOTO CloseNow
+                  END
             End
         Else
             BEGIN
@@ -982,8 +1003,8 @@ BEGIN
                   GoTo CloseNow
               End
 
-             INSERT INTO Items(Item_Code,Item_Name,GrpSno,Require_LabTest,Remarks,Active_Status,Create_Date,UserSno,CompSno)
-             VALUES (@Item_Code,@Item_Name,@GrpSno,@Require_LabTest,@Remarks,@Active_Status,@Create_Date,@UserSno,@CompSno)
+             INSERT INTO Items(Item_Code,Item_Name,GrpSno,Require_LabTest,Remarks,Active_Status,Create_Date,UserSno,CompSno,IsStd)
+             VALUES (@Item_Code,@Item_Name,@GrpSno,@Require_LabTest,@Remarks,@Active_Status,@Create_Date,@UserSno,@CompSno,0)
              IF @@ERROR <> 0 GOTO CloseNow
              SET @ItemSno = @@IDENTITY
 
@@ -1034,8 +1055,13 @@ WITH ENCRYPTION AS
 BEGIN
     SET NOCOUNT ON
     BEGIN TRANSACTION
-            DELETE FROM Items WHERE ItemSno=@ItemSno
-            IF @@ERROR <> 0 GOTO CloseNow
+        IF (SELECT IsStd FROM Items WHERE ItemSno=@ItemSno) =1
+          BEGIN
+            Raiserror ('Standard Items cannot be deleted', 16, 1)
+            GoTo CloseNow
+          END
+        DELETE FROM Items WHERE ItemSno=@ItemSno
+        IF @@ERROR <> 0 GOTO CloseNow
     COMMIT TRANSACTION
     RETURN 1
 CloseNow:
@@ -1066,9 +1092,19 @@ BEGIN
     BEGIN TRANSACTION
         IF EXISTS(SELECT UomSno FROM Uom WHERE UomSno=@UomSno)
             BEGIN
-                UPDATE Uom SET Uom_Code=@Uom_Code,Uom_Name=@Uom_Name,BaseUomSno=@BaseUomSno,Base_Qty=@Base_Qty,Active_Status=@Active_Status,Remarks=@Remarks,Create_Date=@Create_Date,UserSno=@UserSno,CompSno=@CompSno
-                WHERE UomSno=@UomSno
-                IF @@ERROR <> 0 GOTO CloseNow
+                DECLARE @IsStd BIT = (SELECT IsStd FROM Uom WHERE UomSno=@UomSno)
+                IF @IsStd = 0
+                  BEGIN
+                    UPDATE Uom SET Uom_Code=@Uom_Code,Uom_Name=@Uom_Name,BaseUomSno=@BaseUomSno,Base_Qty=@Base_Qty,Active_Status=@Active_Status,Remarks=@Remarks,Create_Date=@Create_Date,UserSno=@UserSno,CompSno=@CompSno
+                    WHERE UomSno=@UomSno
+                    IF @@ERROR <> 0 GOTO CloseNow
+                  END
+                ELSE
+                  BEGIN
+                    UPDATE Uom SET Uom_Name=@Uom_Name,BaseUomSno=@BaseUomSno,Base_Qty=@Base_Qty,Active_Status=@Active_Status,Remarks=@Remarks,Create_Date=@Create_Date,UserSno=@UserSno,CompSno=@CompSno
+                    WHERE UomSno=@UomSno
+                    IF @@ERROR <> 0 GOTO CloseNow
+                  END
             End
         Else
             BEGIN
@@ -1086,8 +1122,8 @@ BEGIN
                   GoTo CloseNow
               End
 
-             INSERT INTO Uom(Uom_Code,Uom_Name,BaseUomSno,Base_Qty,Active_Status,Remarks,Create_Date,UserSno,CompSno)
-             VALUES (@Uom_Code,@Uom_Name,@BaseUomSno,@Base_Qty,@Active_Status,@Remarks,@Create_Date,@UserSno,@CompSno)
+             INSERT INTO Uom(Uom_Code,Uom_Name,BaseUomSno,Base_Qty,Active_Status,Remarks,Create_Date,UserSno,CompSno, IsStd)
+             VALUES (@Uom_Code,@Uom_Name,@BaseUomSno,@Base_Qty,@Active_Status,@Remarks,@Create_Date,@UserSno,@CompSno,0)
              IF @@ERROR <> 0 GOTO CloseNow
              SET @UomSno = @@IDENTITY
 
@@ -1134,8 +1170,13 @@ WITH ENCRYPTION AS
 BEGIN
     SET NOCOUNT ON
     BEGIN TRANSACTION
-            DELETE FROM Uom WHERE UomSno=@UomSno
-            IF @@ERROR <> 0 GOTO CloseNow
+      IF (SELECT IsStd FROM Uom WHERE UomSno=@UomSno) =1
+          BEGIN
+            Raiserror ('Standard Uoms cannot be deleted', 16, 1)
+            GoTo CloseNow
+          END
+      DELETE FROM Uom WHERE UomSno=@UomSno
+      IF @@ERROR <> 0 GOTO CloseNow
     COMMIT TRANSACTION
     RETURN 1
 CloseNow:
@@ -2722,8 +2763,13 @@ RETURN
                   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
              
                   /* IMAGES OBJECT (IMAGES JSON)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
-                  ISNULL((SELECT Img.Image_Name,'' as Image_File, Image_Url='https://finaccsaas.com/AussieMint/data/'+Img.Image_Url, '1' as SrcType, 0 as DelStatus FROM Image_Details Img WHERE TransSno = Trans.TransSno AND Image_Grp=2 FOR JSON PATH),'') Images_Json
+                  ISNULL((SELECT Img.Image_Name,'' as Image_File, Image_Url='https://finaccsaas.com/AussieMint/data/'+Img.Image_Url, '1' as SrcType, 0 as DelStatus FROM Image_Details Img WHERE TransSno = Trans.TransSno AND Image_Grp=2 FOR JSON PATH),'') Images_Json,                      
                   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  /* PRINT REFERENCE OBJECT( ONLY FOR PRINTING PURPOSE)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+                  ISNULL((SELECT TransSno Trans_No, Trans_Date, Fixed_Price, Commision, TotNettWt, NettAmount FROM VW_TRANSACTIONS WHERE TransSno = Trans.RefSno FOR JSON PATH),'') as PrintReference_Json
+                  ----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+                  
 
       FROM        VW_TRANSACTIONS Trans                  
 
@@ -2731,7 +2777,7 @@ RETURN
 
       GO
 
-GO
+
 
 
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Sp_Transaction_Delete') BEGIN DROP PROCEDURE Sp_Transaction_Delete END
@@ -2909,7 +2955,7 @@ WITH ENCRYPTION AS
 SELECT    Ar.RecordSno, Ar.BarCodeSno, Bar.BarCode_No, Bar.BarCode_No as Name, It.Item_Name + ' ' + Trans.Trans_No as Details,
           Det.ItemSno, It.Item_Name,Det.Karat, Det.Purity, Det.Item_Desc, Det.Qty, Det.GrossWt, Det.StoneWt, Det.Wastage , Det.NettWt, Det.UomSno, Um.Uom_Name, 
 
-          Trans.Trans_No, Trans.Trans_Date,
+          Trans.Trans_No, Trans.Trans_Date, Trans.ClientSno,
           Clnt.Client_Name, Trans.CompSno, 
           Assay_Status      = CASE
                                 WHEN EXISTS (SELECT TransSno FROM Transactions WHERE BarCodeRefSno = Ar.RecordSno AND VouTypeSno=26)

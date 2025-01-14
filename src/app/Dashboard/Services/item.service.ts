@@ -28,11 +28,16 @@ export class ItemService {
       return this.dataService.HttpPost(postdata, "/deleteItem");                
   }
   
-  getSampleGoldItem(): Observable<TypeHttpResponse> {
-    let postdata ={ "CompSno" : this.sessionService.GetCompany().CompSno }; 
-    return this.dataService.HttpGet(postdata, "/getSampleGoldItem");                
+  getStdItemByCode(Item_Code:string): Observable<TypeHttpResponse> {
+    let postdata ={ "CompSno" : this.sessionService.GetCompany().CompSno, "Item_Code" : Item_Code }; 
+    return this.dataService.HttpGet(postdata, "/getStdItemByCode");                
   } 
 
+  getRefiningReceiptItems(): Observable<TypeHttpResponse> {
+    let postdata ={ "CompSno" : this.sessionService.GetCompany().CompSno }; 
+    return this.dataService.HttpGet(postdata, "/getRefiningReceiptItems");                
+  } 
+  
 Initialize(){    
     let Item: TypeItem = {            
         ItemSno: 0,

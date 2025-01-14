@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogClose, MatDialogRef } from '@angular/material/dialog';
 import { TransactionService, TypeAssayRecord, TypePaymentModes, TypeTransaction } from '../../Services/transaction.service';
 import { CommonModule } from '@angular/common';
@@ -38,7 +38,8 @@ export class LabtestComponent {
     @Inject(MAT_DIALOG_DATA) public data: TypeTransaction,  ){
   }
 
-  
+  @ViewChild('remarks') remarks!: ElementRef;
+
   SeriesList: TypeVoucherSeries[] = [];
   ClientList: TypeClient[] = [];
   ImageSource: FileHandle[] = [];
@@ -60,6 +61,13 @@ export class LabtestComponent {
   
   SampleItem!: TypeItem;
   
+ 
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.remarks.nativeElement.focus(); // Set focus on the input field  
+    }, 500);
+    
+  }
 
   ngOnInit(){ 
         
@@ -67,12 +75,17 @@ export class LabtestComponent {
     this.data.Commision = +(+this.data.Commision).toFixed(2);
     this.data.NettAmount = +(+this.data.NettAmount).toFixed(2);
     
-    this.itService.getSampleGoldItem().subscribe(data =>{
+    this.itService.getStdItemByCode('SG').subscribe(data =>{
       this.SampleItem = JSON.parse(data.apiData)[0];
     })
 
     this.clntService.getClients(0).subscribe(data =>{
       this.ClientList = JSON.parse(data.apiData);      
+      if (this.data.Client.ClientSno !==0){
+        this.data.Client = this.ClientList.filter(clnt=>{
+          return clnt.ClientSno == this.data.Client.ClientSno;
+        })[0];
+      }
     })
     this.serService.getVoucherSeries(0,this.data.Series.VouType.VouTypeSno).subscribe(data =>{
       this.SeriesList = JSON.parse(data.apiData);
@@ -86,29 +99,42 @@ export class LabtestComponent {
     });
 
     if (this.data.Series.VouType.VouTypeSno == 26){
+
       this.repService.getAssayRecords(0).subscribe(data=>{
         this.BarRefList = JSON.parse(data.apiData);
-        if (this.data.TransSno !== 0){
-          this.BarReference = this.BarRefList[0];
+        // if (this.data.TransSno !== 0){
+        //   this.BarReference = this.BarRefList.filter(ref=>{
+        //     return ref.RecordSno == this.data.BarCodeRefSno;
+        //   })[0];
+        // }
+
+        if (this.data.BarCodeRefSno !== 0){
+          this.BarReference = this.BarRefList.filter(ref=>{
+            return ref.RecordSno == this.data.BarCodeRefSno;
+          })[0];
         }
+        
         this.BarRefList = this.BarRefList.filter(ref=>{  return ref.IssueTransSno == 0; })
       })
+
       if (this.data.TransSno !== 0){
         this.SampleGold = this.data.GridItems[0].NettWt;    
       }
+
     }
     else{
-      if (this.data.TransSno ==0){
-      this.repService.getPendingDocuments(this.globals.VTypLabTestingIssue,0).subscribe(data=>{
-        this.IssuesList = JSON.parse(data.apiData);        
-        
-      })
+
+      if (this.data.RefSno ==0){
+        this.repService.getPendingDocuments(this.globals.VTypLabTestingIssue,0).subscribe(data=>{
+          this.IssuesList = JSON.parse(data.apiData);                
+        })
       }
       else{
         this.transService.getTransactions(this.data.RefSno,0,0,0,0).subscribe(data =>{
           this.getIssueTrans(JSON.parse(data.apiData)[0]);          
         })
       }
+      
       this.RecdPurity = this.data.GridItems[0].Purity;    
     }
   }
@@ -137,7 +163,7 @@ export class LabtestComponent {
     }
     if (this.data.Series.VouType.VouTypeSno == this.globals.VTypLabTestingIssue)
     {
-      this.data.BarCodeRefSno = this.BarReference.BarCodeSno;      
+      this.data.BarCodeRefSno = this.BarReference.RecordSno;      
       this.data.GridItems = [
         {
           BarCode:    {BarCodeSno: this.BarReference.BarCodeSno, BarCode_No: this.BarReference.BarCode_No},

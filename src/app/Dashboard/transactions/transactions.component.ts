@@ -82,12 +82,14 @@ export class TransactionsComponent {
     this.transService.getTransactions(0,this.VouTypeSno, 0, this.FromDate, this.ToDate).subscribe(data=>{
       if (data.queryStatus == 1){
         this.TransList = JSON.parse(data.apiData);
-        if (this.FromDate ==0 || this.ToDate == 0){
-          this.FromDate = this.ToDate = data.ExtraData;
+        if (this.FromDate ==0 || this.ToDate == 0){          
+          let newDate = new Date();          
+          this.FromDate =  this.globals.DateToInt (new Date((newDate.getMonth() == 0 ? newDate.getFullYear() -1 :newDate.getFullYear()).toString() +  '/' + (newDate.getMonth() == 0 ? 12 : newDate.getMonth()).toString() + "/" + newDate.getDate().toString()));          
+          this.ToDate = this.globals.DateToInt (new Date());
         }
       } 
       else{
-        this.globals.ShowAlert(3,data.apiData);
+        this.globals.ShowAlert(3,data.apiData); 
       }
     }) 
   }
@@ -100,7 +102,7 @@ export class TransactionsComponent {
     this.OpenTransactionComp(Trans);      
   }
 
-  OpenTransaction(Trans: TypeTransaction){           
+  OpenTransaction(Trans: TypeTransaction){          
     
     Trans.Series        = JSON.parse(Trans.Series_Json)[0];
     Trans.Client        = JSON.parse(Trans.Client_Json)[0];
@@ -168,10 +170,10 @@ export class TransactionsComponent {
       case this.globals.VTypLabTestingIssue:
         const dialogRef2 = this.dialog.open(LabtestComponent, 
           {
-            width: '60vw',
-            maxWidth: 'none',
-            data: Trans,        
-            panelClass: "dialogMat"
+            panelClass:['rightdialogMat'],        
+            position:{"right":"0","top":"0" },              
+            maxWidth: 'none',        
+            data: Trans,                    
           });      
           dialogRef2.disableClose = true; 
           dialogRef2.afterClosed().subscribe(result => {                    
@@ -182,10 +184,10 @@ export class TransactionsComponent {
     case this.globals.VTypLabTestingReceipt:
         const dialogRef3 = this.dialog.open(LabtestComponent, 
           {
-            width: '60vw',
-            maxWidth: 'none',
-            data: Trans,        
-            panelClass: "dialogMat"
+            panelClass:['rightdialogMat'],        
+            position:{"right":"0","top":"0" },              
+            maxWidth: 'none',   
+            data: Trans,                    
           });      
           dialogRef3.disableClose = true; 
           dialogRef3.afterClosed().subscribe(result => {                    
@@ -203,6 +205,7 @@ export class TransactionsComponent {
     
     trans.Series = JSON.parse(trans.Series_Json)[0];
     trans.Client = JSON.parse(trans.Client_Json)[0];
+
     if (trans.Items_Json && trans.Items_Json !== ''){
       trans.GridItems = JSON.parse(trans.Items_Json);
     }
@@ -215,13 +218,16 @@ export class TransactionsComponent {
     else{
       trans.ImageSource =[];
     }
+
+    if (trans.RefSno !==0){
+      this.transService.getTransactions(trans.RefSno,0,0,0,0).subscribe(data=>{
+        trans.PrintReference    = JSON.parse(data.apiData)[0];
+      });
+    }
     
     if (trans.Series.Print_Style == ""){ this.globals.SnackBar("error","No Print Style applied. Apply Print Styles in Voucher Series ", 1000); return; }
       else { this.vouPrint.PrintVoucher(trans, trans.Series.Print_Style!);}
 
-    // if (trans.Series.Print_Style !== "") {
-    //   this.vouprint.Style_Loan_Pgf(trans, trans.Series.Print_Style!);
-    // }
   }
 
   handleEventFromChild(event: string){

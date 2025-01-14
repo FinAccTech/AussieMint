@@ -111,9 +111,9 @@ export class ItemGridComponent {
   }
   
 
-EditItem( item: TypeGridItem, index: number){
-     const dialogRef = this.dialog.open(AdditemComponent, 
-    {
+EditItem( item: TypeGridItem, index: number){  
+    const dialogRef = this.dialog.open(AdditemComponent, 
+    {            
       //data: item,        
       data: { "EnableBarCode": this.EnableBarCode(), "GenerateBarCode": this.GenerateBarCode(), "EnableAmountCols": this.EnableAmountCols(), "Item": item},        
       panelClass: "dialogMat"

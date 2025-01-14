@@ -40,7 +40,9 @@ export class VoucherprintService {
 
 PrintVoucher(Trans: TypeTransaction, PrintStyle: string){    
  
-    this.dataService.HttpGetPrintStyle(PrintStyle).subscribe(data=>{        
+    this.dataService.HttpGetPrintStyle(PrintStyle).subscribe(data=>{      
+        console.log(data);
+          
         let FieldSet = this.GetPrintFields(Trans);                
         let FldList = JSON.parse(data).FieldSet;        
         let Setup: TypePrintSetup = JSON.parse(data).Setup[0];        
@@ -358,25 +360,30 @@ GetHtmlFromFieldSet(FldList: [], FieldSet: TypePrintFields, LeftMargin: number, 
 
 GetPrintFields(Trans: TypeTransaction){
     let PrintFields = this.IntializePrintFields();
-    //console.log(Trans);
+    
     
     PrintFields.TransSno        =  Trans.TransSno,
     PrintFields.Trans_No        =  Trans.Trans_No;
     PrintFields.Series_Name     =  Trans.Series.Series_Name;
     PrintFields.Trans_Date      =  this.globals.IntToDateString (Trans.Trans_Date);
-    PrintFields.Due_Date        =  this.globals.IntToDateString (Trans.Due_Date);
-    PrintFields.Reference       =  Trans.RefSno.toString();
+    PrintFields.Due_Date        =  this.globals.IntToDateString (Trans.Due_Date);    
     PrintFields.Payment_Type    =  (Trans.Payment_Type == 0 ? 'Cash' : 'Credit');
     PrintFields.Remarks         =  Trans.Remarks;
     PrintFields.Print_Remarks   =  Trans.Print_Remarks;
-    PrintFields.TotQty          =  0;
-    PrintFields.TotGrossWt      =  0;
-    PrintFields.TotNettWt       =  0;
+    PrintFields.TotQty          =  Trans.TotQty;
+    PrintFields.TotGrossWt      =  Trans.TotGrossWt;
+    PrintFields.TotStoneWt      =  Trans.TotStoneWt;
+    PrintFields.TotNettWt       =  Trans.TotNettWt;
     PrintFields.TotAmount       =  Trans.TotAmount;
     PrintFields.TaxPer          =  Trans.TaxPer;
     PrintFields.TaxAmount       =  Trans.TaxAmount;
     PrintFields.RevAmount       =  Trans.RevAmount;
     PrintFields.NettAmount      =  Trans.NettAmount;
+    PrintFields.Fixed_Price     =  Trans.Fixed_Price;
+    PrintFields.Commision       =  Trans.Commision;
+    if (Trans.PrintReference_Json){
+        PrintFields.PrintReference   = JSON.parse (Trans.PrintReference_Json)[0];
+    }
 
     
     PrintFields.ClientSno               = Trans.Client.ClientSno;
@@ -445,19 +452,22 @@ GetPrintFields(Trans: TypeTransaction){
         Trans_No: "",
         Series_Name: "",
         Trans_Date: "",
-        Due_Date: "",
-        Reference: "",
+        Due_Date: "",        
+        PrintReference: [],
         Payment_Type: "",
         Remarks: "",
         Print_Remarks: "",
         TotQty: 0,
         TotGrossWt: 0,
+        TotStoneWt:0,
         TotNettWt: 0,
         TotAmount: 0,
         TaxPer: 0,
         TaxAmount: 0,
         RevAmount: 0,
         NettAmount: 0,
+        Fixed_Price: 0,
+        Commision: 0,
         ItemImages: [],
         ItemDetails: [],
 
@@ -490,19 +500,26 @@ interface TypePrintFields {
     Trans_No: string;
     Series_Name: string;
     Trans_Date: string;
-    Due_Date: string;
-    Reference: string;
+    Due_Date: string;    
+    PrintReference: any;
     Payment_Type: string;
     Remarks: string;
     Print_Remarks: string;
     TotQty: number;
     TotGrossWt: number;
+    
+    TotStoneWt: number;
+
     TotNettWt: number;
     TotAmount: number;
     TaxPer: number;
     TaxAmount: number;
     RevAmount: number;
     NettAmount: number;
+    
+    Fixed_Price: number;
+    Commision: number;
+
     ItemImages: FileHandle[];
     ItemDetails: TypeItemFields[];
 

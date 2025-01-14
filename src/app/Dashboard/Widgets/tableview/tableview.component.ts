@@ -18,7 +18,7 @@ interface PagedData{
 interface TypeTotal{
   name: string;
   value: any;
-}
+} 
 @Component({
     selector: 'app-tableview',
     standalone: true,    

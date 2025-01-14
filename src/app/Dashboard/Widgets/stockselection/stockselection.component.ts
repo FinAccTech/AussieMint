@@ -35,7 +35,9 @@ export class StockselectionComponent {
   ngOnInit(){
     this.repService.getBarCodeStock().subscribe(data=>{
       this.BarCodedList = JSON.parse(data.apiData);
-      console.log(this.BarCodedList);
+      this.BarCodedList = this.BarCodedList.filter(itm=>{
+        return itm.Balance_Wt! > 0
+      })
       
     })
   }
@@ -49,10 +51,10 @@ export class StockselectionComponent {
                     Karat: selItem.Karat!,
                     Purity: selItem.Purity!,
                     Qty: 1,
-                    GrossWt: selItem.GrossWt!,
+                    GrossWt: selItem.Balance_Wt!,
                     StoneWt: selItem.StoneWt!,
                     Wastage: selItem.Wastage!,
-                    NettWt: selItem.NettWt!,
+                    NettWt: selItem.Balance_Wt!,
                     Uom: {UomSno: selItem.UomSno!, Uom_Name: selItem.Uom_Name!, Name: selItem.Uom_Name, Details:selItem.Uom_Name},
                     Rate: selItem.Rate!,
                     Amount: selItem.Amount!,                                        

@@ -10,25 +10,39 @@
     </div>
 
     <div class="body"> 
-        <div class="docRow">
-            <div style="width: 100%;" [ngClass]="!SeriesNameValid ? 'invalidSel' : ''"> 
-                <app-selectionlist [Caption]="'Doc Series'" [DataSource]="SeriesList" [SelectedItem]="data.Series"  (newItemEvent)="getSeries($event)"></app-selectionlist>
-            </div>        
-            <div class="formGroup" [ngClass]="!DocNoValid ? 'invalidSel' : ''">
-                <input type="text" style="text-align: center;" class="formControl" readonly required [(ngModel)]="data.Trans_No"  />
-                <label for="" class="formLabel"> Doc No </label>                            
+
+            <div class="row">
+                <div class="col50">
+                    <div style="width: 100%;" [ngClass]="!SeriesNameValid ? 'invalidSel' : ''"> 
+                        <app-selectionlist [Caption]="'Doc Series'" [DataSource]="SeriesList" [SelectedItem]="data.Series"  (newItemEvent)="getSeries($event)"></app-selectionlist>
+                    </div>  
+                </div>
+                <div class="col50">
+                    <div class="formGroup" [ngClass]="!DocNoValid ? 'invalidSel' : ''">
+                        <input type="text" style="text-align: center;" class="formControl" readonly required [(ngModel)]="data.Trans_No"  />
+                        <label for="" class="formLabel"> Doc No </label>                            
+                    </div>
+                </div>
+            </div>           
+
+            
+            <div class="row" style="margin-top: 1.5rem;">
+                <div class="col50">
+                    <div class="formGroup" >                    
+                        <input type="date" class="formControl"  [ngModel]="data.Trans_Date | intToDate | date:'yyyy-MM-dd'" (blur)="data.Trans_Date = DateToInt($event) " />                    
+                        <label for="" class="formLabel"> Doc Date </label>                             
+                    </div>
+                </div>
+                <div class="col50">
+                    <div class="formGroup">                    
+                        <input type="date" class="formControl"  [ngModel]="data.Due_Date! | intToDate | date:'yyyy-MM-dd'" (blur)="data.Due_Date = DateToInt($event) " />                    
+                        <label for="" class="formLabel"> Due Date </label>                             
+                    </div>            
+                </div>
             </div>
-    
-            <div class="formGroup" >                    
-                <input type="date" class="formControl"  [ngModel]="data.Trans_Date | intToDate | date:'yyyy-MM-dd'" (blur)="data.Trans_Date = DateToInt($event) " />                    
-                <label for="" class="formLabel"> Doc Date </label>                             
-            </div>
-    
-            <div class="formGroup">                    
-                <input type="date" class="formControl"  [ngModel]="data.Due_Date! | intToDate | date:'yyyy-MM-dd'" (blur)="data.Due_Date = DateToInt($event) " />                    
-                <label for="" class="formLabel"> Due Date </label>                             
-            </div>                
-        </div>    
+            
+        
+     
     
         
         <div class="row" style="margin-top: 1.5rem;" >
@@ -120,7 +134,7 @@
                     </div>
                     <div class="col50">
                         <div class="formGroup">
-                            <input type="text" class="formControl" [(ngModel)]="data.Remarks"/>                    
+                            <input type="text" #remarks class="formControl" [(ngModel)]="data.Remarks"/>                    
                             <label for="" class="formLabel"> Remarks </label>                  
                         </div>
                     </div>

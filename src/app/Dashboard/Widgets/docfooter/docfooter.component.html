@@ -20,18 +20,20 @@
         @if (EnableAmountCols()) {
             <div class="col50">
                 <div style="display: flex; float: right; column-gap: .5rem;align-items: center;" >
-                    <div class="totChiptype2">
-                        <p class="caption">Tax per</p>
-                        <p class="value"> {{DocFooter()!.TaxPer}}  </p>
-                    </div>
-                    <div class="totChiptype2">
-                        <p class="caption">Tax Amount</p>
-                        <p class="value">{{DocFooter()!.TaxAmount}} </p>
-                    </div>
-                    <div class="totChiptype2">
-                        <p class="caption">Rev Amount</p>
-                        <p class="value">{{DocFooter()!.RevAmount}} </p>
-                    </div>
+                    @if (EnableTaxCols()){
+                        <div class="totChiptype2">
+                            <p class="caption">Tax per</p>
+                            <p class="value"> {{DocFooter()!.TaxPer}}  </p>
+                        </div>
+                        <div class="totChiptype2">
+                            <p class="caption">Tax Amount</p>
+                            <p class="value">{{DocFooter()!.TaxAmount}} </p>
+                        </div>
+                        <div class="totChiptype2">
+                            <p class="caption">Rev Amount</p>
+                            <p class="value">{{DocFooter()!.RevAmount}} </p>
+                        </div>
+                    }
                     <div class="totChiptype2">
                         <p class="caption">NettAmount</p>
                         <p class="value" style="font-size: 1.7rem;" >{{DocFooter()!.NettAmount}}</p>

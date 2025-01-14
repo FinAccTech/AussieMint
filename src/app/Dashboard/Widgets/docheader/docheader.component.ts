@@ -16,7 +16,9 @@ export interface TypeRefDetails{
   Doc_No: string;
   Doc_Date: number;
   Doc_Amount: number;
-  Doc_Weight: number;
+  TotQty: number;
+  GrossWt: number;
+  NettWt: number
   Doc_Rate: number;
   Doc_Commision: number;
 }
@@ -36,6 +38,9 @@ export class DocheaderComponent implements AfterViewInit {
   SeriesList: TypeVoucherSeries[]= [];
   EnableAmountCols = input.required(); 
   RefDetails: TypeRefDetails[] = [];
+  RefTypeStock: boolean = false;
+  ShowReceivedDetails: boolean = true;
+
   // AssayRecordList: TypeAssayRecord[] = [];
   // SelectedAssayItem!: TypeAssayRecord;
 
@@ -87,30 +92,54 @@ export class DocheaderComponent implements AfterViewInit {
     
     switch (Ref.Series.VouType.VouTypeSno) {
       case this.globals.VTypAdvancePurchase:
-        this.RefDetails.push({ DocType: this.globals.VTypAdvancePurchase, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, Doc_Weight: Ref.TotNettWt})
+        this.RefDetails.push({ DocType: this.globals.VTypAdvancePurchase, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})
         break;    
+
       case this.globals.VTypAdvanceSales:
-        this.RefDetails.push({ DocType: this.globals.VTypAdvanceSales, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, Doc_Weight: Ref.TotNettWt})
+        this.RefDetails.push({ DocType: this.globals.VTypAdvanceSales, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})
         break;    
+
       case this.globals.VTypGRN:
-        this.RefDetails.push({ DocType: this.globals.VTypGRN, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, Doc_Weight: Ref.TotNettWt})
+        this.RefDetails.push({ DocType: this.globals.VTypGRN, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})
         if (Ref.RefSno !== 0){
            this.transService.getTransactions(Ref.RefSno,0,0,0,0).subscribe(data=>{
             let advDetails = JSON.parse(data.apiData)[0];          
-            this.RefDetails.push({ DocType: this.globals.VTypAdvancePurchase, Doc_No: advDetails.Trans_No, Doc_Date: advDetails.Trans_Date, Doc_Amount: advDetails.NettAmount, Doc_Commision: advDetails.Commision, Doc_Rate: advDetails.Fixed_Price, Doc_Weight: advDetails.TotNettWt})                          
+            this.RefDetails.push({ DocType: this.globals.VTypAdvancePurchase, Doc_No: advDetails.Trans_No, Doc_Date: advDetails.Trans_Date, Doc_Amount: advDetails.NettAmount, Doc_Commision: advDetails.Commision, Doc_Rate: advDetails.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})                          
            })
         }
         break;    
+
       case this.globals.VTypDeliveryDoc:        
-        this.RefDetails.push({ DocType: this.globals.VTypDeliveryDoc, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, Doc_Weight: Ref.TotNettWt});
+        this.RefDetails.push({ DocType: this.globals.VTypDeliveryDoc, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt});
         if (Ref.RefSno !== 0){
           this.transService.getTransactions(Ref.RefSno,0,0,0,0).subscribe(data=>{
             let advDetails = JSON.parse(data.apiData)[0];                      
-            this.RefDetails.push({ DocType: this.globals.VTypAdvanceSales, Doc_No: advDetails.Trans_No, Doc_Date: advDetails.Trans_Date, Doc_Amount: advDetails.NettAmount, Doc_Commision: advDetails.Commision, Doc_Rate: advDetails.Fixed_Price, Doc_Weight: advDetails.TotNettWt});
-            
+            this.RefDetails.push({ DocType: this.globals.VTypAdvanceSales, Doc_No: advDetails.Trans_No, Doc_Date: advDetails.Trans_Date, Doc_Amount: advDetails.NettAmount, Doc_Commision: advDetails.Commision, Doc_Rate: advDetails.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt});            
           })
         }
-        break;    
+        break;   
+
+      case this.globals.VTypMeltingIssue:
+        this.RefTypeStock = true;
+        this.RefDetails.push({ DocType: this.globals.VTypMeltingIssue, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})                                
+        break; 
+
+      case this.globals.VTypRefiningIssue:
+        this.RefTypeStock = true;
+        this.ShowReceivedDetails = true;
+        this.RefDetails.push({ DocType: this.globals.VTypRefiningIssue, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})                                
+        break;
+
+      case this.globals.VTypCastingIssue:
+        this.RefTypeStock = true;
+        this.RefDetails.push({ DocType: this.globals.VTypCastingIssue, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})                                
+        break; 
+
+      case this.globals.VTypJobworkInward:
+        this.RefTypeStock = true;
+        this.RefDetails.push({ DocType: this.globals.VTypJobworkInward, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})                                
+        break; 
+
       default:
         break;
     }    

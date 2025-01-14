@@ -350,6 +350,8 @@ CREATE TABLE Area
 )
 GO
 
+
+
 CREATE TABLE Items
 (
 	ItemSno INT PRIMARY KEY IDENTITY(1,1),
@@ -361,7 +363,8 @@ CREATE TABLE Items
 	Active_Status BIT,
 	Create_Date INT,
 	UserSno INT,
-	CompSno INT
+	CompSno INT,
+  IsStd BIT
 )
 GO
 
@@ -377,7 +380,8 @@ CREATE TABLE Uom
 	Remarks VARCHAR(100),
 	Create_Date INT,
 	UserSno INT,
-	CompSno INT
+	CompSno INT,
+  IsStd BIT
 )
 GO
 

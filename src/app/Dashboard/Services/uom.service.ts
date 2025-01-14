@@ -27,6 +27,11 @@ export class UomService {
       return this.dataService.HttpPost(postdata, "/deleteUom");                
   }
 
+  getStdUomByCode(Uom_Code:string): Observable<TypeHttpResponse> {
+    let postdata ={ "CompSno" : this.sessionService.GetCompany().CompSno, "Uom_Code" : Uom_Code }; 
+    return this.dataService.HttpGet(postdata, "/getStdUomByCode");                
+  } 
+
 Initialize(){    
     let Uom: TypeUom = {            
         UomSno: 0,
