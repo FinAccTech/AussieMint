@@ -1,0 +1,62 @@
+<div [@myAnimation]="state">
+    <div class="listContainer">
+        <div class="headerCard">
+            <div class="headerLeft">     
+                <span class="bar"></span>
+                <p class="heading"> &nbsp; Weekly Consolidated -  {{VouTypeName}}</p>                    
+            </div>
+
+            <div class="headerRight rightControls" style="width: 70%;">
+                <div class="dateSection">
+                    <p>From Date</p>                
+                    <input type="date" [ngModel]="FromDate | intToDate | date:'yyyy-MM-dd'" (blur)="FromDate = DateToInt($event) " />                                   
+                    <p>To Date</p>
+                    <input type="date" [ngModel]="ToDate | intToDate | date:'yyyy-MM-dd'" (blur)="ToDate = DateToInt($event) " />                                                               
+                    <button (click)="GenerateWeeklyreport()" >
+                        Generate
+                    </button>
+                </div>
+
+                <div class="filterSection">
+                    <div class="matGroup" style="width: 100%;" >
+                        <div class="matSelect"> 
+                            <mat-select [(value)]="VouTypeSno" >                            
+                                <mat-option [value]="11">Buying Contract</mat-option>
+                                <mat-option [value]="12">RCTI</mat-option>
+                                <mat-option [value]="13">Sales Order</mat-option>                                    
+                                <mat-option [value]="14">Delivery Docs</mat-option>                                  
+                                <mat-option [value]="15">Sales Invoice</mat-option>                                                              
+                                <mat-option [value]="28">GRN</mat-option>
+                                <mat-option [value]="10">Purchase Order</mat-option>                            
+                                <mat-option [value]="13">Sales Order</mat-option>
+                            </mat-select>
+                        </div>
+                        <div class="matLabel">
+                            &nbsp;&nbsp; Document
+                        </div>
+                    </div>
+                </div>
+               
+                
+            </div>
+        </div> 
+
+        <div class="tableBody">
+
+            @defer (when TransList.length >0) {
+                <app-tableview  [DataSource]="TransList" 
+                                [FieldNames]="FieldNames"                             
+                                [TotalFields]="TotalFields" > </app-tableview>                        
+            }
+            @placeholder {
+                <p>Report list Here</p>
+            }
+            @loading {
+                <p>Loading in Progress</p>
+            } 
+            
+        </div>
+    </div>
+</div>
+
+

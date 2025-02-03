@@ -12,7 +12,12 @@ import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 
 interface PagedData{
   PageNumber: number;
-  PageData: TypeTransaction[];
+  PageData: any[];
+}
+
+interface TypeSelectedItems{
+  Item: any;
+  Selected: boolean;
 }
 
 interface TypeTotal{
@@ -33,21 +38,24 @@ export class TableviewComponent {
   
   FieldNames  = input.required<TypeFieldInfo[]>();
 
+  ArrayColsSort: any[] = [];
   @Input() EnableDateSelection: boolean = false;
   @Input() FromDate: number = 0;
   @Input() ToDate: number = 0;
   @Input() RowsPerPage: number = 5;
-
-  TotalFields = input<string[]>();
+  @Input() EnableCheckbox: boolean = false;
+  @Input() ObjSelectedItems: any[] = [];
+  
+  TotalFields = input<string[]>(); 
   Totals: number[] = [];
   TotalsArray: TypeTotal[] = [];
-
 
   RemoveSignal = input(0);
 
   DataList: any[] = [];
+  FilteredDataList: any[] = [];
   PagedDataList: PagedData[] = [];
-
+  SelectedItems: TypeSelectedItems[] = [];
 // For pagination and Selection
   
   TotalPages: number = 0;
@@ -57,11 +65,26 @@ export class TableviewComponent {
 
  constructor(private globals: GlobalsService){
   effect(() => {            
-    this.DataList     = this.DataSource();      
+    this.DataList     = this.DataSource();   
+    this.FilteredDataList = this.DataList;   
     this.DoPagination();
 
+    this.FilteredDataList.forEach(item=>{
+      this.SelectedItems.push({Item: item, Selected: false});
+    })
+
+    this.SelectedItems.map(item=>{
+     this.ObjSelectedItems.find(selItem=>{    
+        if (selItem.BarCode.BarCodeSno == item.Item.BarCodeSno){
+          item.Selected = true;
+        }    
+      })
+    })
+
+    
+    
     if (this.RemoveSignal() !== 0){        
-      this.DataList.splice(this.RemoveSignal(),1);
+      this.FilteredDataList.splice(this.RemoveSignal(),1);
     }      
   })
  }
@@ -89,18 +112,42 @@ export class TableviewComponent {
   this.actionEvent.emit({"Action":"Filter","FromDate":this.FromDate,"ToDate":this.ToDate });
  }
 
- SelectRecord(row: any){
+ SelectRecord(row: any){ 
+  if (this.EnableCheckbox) {return};
   this.actionEvent.emit( {"Action":"Select", "Data": row, });
  }
 
+ MultiSelectRecord($event: any, i: number){
+  const checkbox = $event.target as HTMLInputElement;  
+  this.SelectedItems[i].Selected = checkbox.checked;
+ }
+
+ AddMultiItems(){
+  let PushSelectedItems: any[] = [];
+  this.SelectedItems.forEach(item=>{
+    if (item.Selected){
+      PushSelectedItems.push(item);
+    }
+  })
+  this.actionEvent.emit( {"Action":"MultiSelect", "Data": PushSelectedItems, });
+ }
+
+testfilter(event: any){
+  let args = event.target.value;
+  this.FilteredDataList = this.DataList.filter(item=>{
+    return JSON.stringify(item).toLowerCase().includes(args);
+  })
+  this.DoPagination();
+}
+
  DoPagination(){  
-  this.TotalPages = Math.ceil (this.DataSource().length / this.RowsPerPage);           
+  this.TotalPages = Math.ceil (this.FilteredDataList.length / this.RowsPerPage);           
   this.PagedDataList = [];
   let newPage: TypeTransaction[] = [];
   let i = 0;
   let pageNumber = 1;
   
-  this.DataList.forEach(row=>{      
+  this.FilteredDataList.forEach(row=>{      
     if (i == this.RowsPerPage){        
       this.PagedDataList.push({PageNumber: pageNumber, PageData: newPage});
       pageNumber++;
@@ -128,7 +175,7 @@ export class TableviewComponent {
       this.Totals[a] = 0;
       for (let i= 0; i < this.PagedDataList[this.CurrentPage].PageData.length; i++ ){      
         let row = this.PagedDataList[this.CurrentPage].PageData[i];
-        let colVal = Object.entries(row).find(([key, val]) => key === fld)?.[1];     
+        let colVal: any = Object.entries(row).find(([key, val]) => key === fld)?.[1];     
         this.Totals[a] += +colVal;    }
       a++;
     })
@@ -192,5 +239,56 @@ export class TableviewComponent {
   return !isNaN(parseFloat(value)) && isFinite(value);
  }
 
+ DoSorting(column: keyof any, index: number) {  
+  if (!this.ArrayColsSort || !this.ArrayColsSort[index]) {
+    this.ArrayColsSort[index] = true;
+  }
+  else{
+    if (this.ArrayColsSort[index] == true){
+      this.ArrayColsSort[index] = false;
+    }
+    else{
+      this.ArrayColsSort[index] = true;
+    }
+  }
+  
+  let ascending: boolean = this.ArrayColsSort[index];
+
+  let sortableData = this.PagedDataList[0].PageData;
+  let totalRow = sortableData[sortableData.length-1];
+  sortableData.splice(sortableData.length-1,1);
+  
+  const sortedData = [...sortableData].sort((a, b) => {
+    if (typeof a[column] === 'string') {
+      return ascending
+        ? a[column].localeCompare(b[column] as string)
+        : b[column].localeCompare(a[column] as string);
+    }
+    return ascending ?  a[column] - b[column] : b[column] - a[column];
+  });
+  // renderTable(sortedData);
+  sortedData.push(totalRow);
+  this.PagedDataList[0].PageData = sortedData;
+}
+
+SortTable(ColName: string, index: number){
+  this.DoSorting(ColName, index);
+}
+
+// document.querySelectorAll("th[data-column]").forEach(header => {
+//   header.addEventListener("click", () => {
+//     const column = header.getAttribute("data-column") as keyof any;
+//     const isAscending = header.classList.contains("ascending");
+    
+//     // Toggle sorting direction
+//     header.classList.toggle("ascending", !isAscending);
+//     header.classList.toggle("descending", isAscending);
+    
+//     // Sort the table based on the clicked column
+//     this.DoSorting(column, !isAscending);
+//   });
+// });
  
 }
+
+

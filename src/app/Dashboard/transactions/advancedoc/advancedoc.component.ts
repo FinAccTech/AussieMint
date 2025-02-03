@@ -46,8 +46,7 @@ export class AdvancedocComponent {
   NettAmountValid: boolean = true;
   
 
-  ngOnInit(){ 
-        
+  ngOnInit(){         
     this.data.Fixed_Price = +(+this.data.Fixed_Price).toFixed(2);
     this.data.Commision = +(+this.data.Commision).toFixed(2);
     this.data.NettAmount = +(+this.data.NettAmount).toFixed(2);
@@ -55,6 +54,7 @@ export class AdvancedocComponent {
     this.clntService.getClients(0).subscribe(data =>{
       this.ClientList = JSON.parse(data.apiData);      
     })
+
     this.serService.getVoucherSeries(0,this.data.Series.VouType.VouTypeSno).subscribe(data =>{
       this.SeriesList = JSON.parse(data.apiData);
       if (this.data.TransSno == 0){
@@ -83,8 +83,7 @@ export class AdvancedocComponent {
     if (this.data.PaymentModes.length == 0){
       this.data.PaymentModes.push ({ PmSno:0, TransSno:0, "Ledger": this.PaymentModeLedgers[0], "Amount" : this.data.NettAmount, "Remarks":"", Trans_Type:1 })
     }
-    
-    
+        
     //All Xmls
     this.data.ItemDetailXML   = "<ROOT><Transaction> </Transaction> </ROOT>";
     this.data.ImageDetailXML  = this.globals.GetImageXml(this.ImageSource,this.sessionServive.GetCompany().CompSno,this.data.Series.VouType.VouTypeSno );

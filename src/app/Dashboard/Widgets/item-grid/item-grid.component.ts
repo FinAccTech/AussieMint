@@ -22,6 +22,7 @@ import { GlobalsService } from '../../../global.service';
 })
 
 export class ItemGridComponent {
+  TransSno = input.required(); //For Input  
   GridItems = input<TypeGridItem[]>(); //For Input  
   DocFooter = input<TypeDocFooter>();
   EnableBarCode = input.required();
@@ -85,27 +86,32 @@ export class ItemGridComponent {
       {
         width:"80vw",        
         maxWidth: 'none',      
-        data: {},                
+        data: this.GridItems(),                
       });      
       dialogRef.disableClose = true; 
       dialogRef.afterClosed().subscribe(result => {                  
+        
         if (result) 
         { 
-          let isExists: boolean = false;
-            this.GridItems()!.forEach(item => {
-              if (item.BarCode.BarCodeSno == result.BarCode.BarCodeSno){
-                this.globals.SnackBar("error", "Item already added in the list", 1000);                
-                isExists = true;
-                return;                
-              }
-            })
+          if (this.TransSno() == 0){
+            this.GridItems()?.splice(0, this.GridItems()?.length);          
+          }
+          result.forEach((itm: any)=>{
+            this.GridItems()!.push(itm); 
+          })
+          // let isExists: boolean = false;
+          //   this.GridItems()!.forEach(item => {
+          //     if (item.BarCode.BarCodeSno == result.BarCode.BarCodeSno){
+          //       this.globals.SnackBar("error", "Item already added in the list", 1000);                
+          //       isExists = true;
+          //       return;                
+          //     }
+          //   })
           
-            if (isExists == false){
-              console.log(result);
-              
-              this.GridItems()!.push(result);    
-              this.SetTotals();        
-            }   
+          //   if (isExists == false){
+          //     this.GridItems()!.push(result);    
+          //     this.SetTotals();        
+          //   }   
         }        
       });  
   }

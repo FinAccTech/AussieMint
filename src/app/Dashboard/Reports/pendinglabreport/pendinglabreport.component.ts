@@ -8,10 +8,12 @@ import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
 import { MatDialog } from '@angular/material/dialog';
 import { LabtestComponent } from '../../transactions/labtest/labtest.component';
+import { IntToDatePipe } from '../../../Pipes/int-to-date.pipe';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-pendinglabreport',
-  imports: [MatSelect, MatOption ],
+  imports: [MatSelect, MatOption, IntToDatePipe, CommonModule ],
   templateUrl: './pendinglabreport.component.html',
   styleUrl: './pendinglabreport.component.scss'
 })

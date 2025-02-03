@@ -52,6 +52,11 @@ export class ReportService {
       let postdata ={ "LedSno": LedSno, "FromDate" :  FromDate, "ToDate": ToDate, "CompSno" :  this.sessionService.GetCompany().CompSno }; 
       return this.dataService.HttpGet(postdata, "/getLedgerBook");                
     }
+
+    getWeeklyConsolidated(FromDate: number, ToDate: number, VouTypeSno: number ): Observable<TypeHttpResponse> {
+      let postdata ={ "FromDate": FromDate, "ToDate": ToDate,  "VouTypeSno" :  VouTypeSno, "CompSno" : this.sessionService.GetCompany().CompSno  }; 
+      return this.dataService.HttpGet(postdata, "/getWeeklyConsolidated");                
+  } 
 }
 
 export interface TypeStockReport{

@@ -22,6 +22,7 @@ import { LedgerbookComponent } from './Dashboard/Accounts/ledgerbook/ledgerbook.
 import { VougeneralsComponent } from './Dashboard/Accounts/vougenerals/vougenerals.component';
 import { PrintsetupComponent } from './Dashboard/Settings/printsetup/printsetup.component';
 import { BarCodeStockreportComponent } from './Dashboard/Reports/barcodestockreport/barcodestockreport.component';
+import { WeeklyconsolidatedComponent } from './Dashboard/Reports/weeklyconsolidated/weeklyconsolidated.component';
 
 
 export const routes: Routes = [
@@ -42,6 +43,7 @@ export const routes: Routes = [
             { path:'stockreport', component: StockreportComponent},                        
             { path:'barcodedstockreport', component: BarCodeStockreportComponent},     
             { path:'labreports', component: PendinglabreportComponent},
+            { path:'weeklyconsolidated', component: WeeklyconsolidatedComponent},
 
             { path:'ledgergroups', component: LedgergroupsComponent},
             { path:'ledgers', component: LedgersComponent},

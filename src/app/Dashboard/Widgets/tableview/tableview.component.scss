@@ -140,15 +140,27 @@
         }
 
         .footerRight{
+            width: 50%;    
             display: flex;
-            column-gap: .5rem;
-            i{
-                font-size: 2rem;
+            justify-content: flex-end;
+            column-gap: 2rem;
+            align-items: center;
+
+            p{
+                font-weight: 500;
             }
-            i:hover{
-                cursor: pointer;
-                transition: transform 0.25s 0s; 
-                transform: scale(1.5); 
+
+            .navButtons{
+                display: flex;
+                column-gap: .5rem;
+                i{
+                    font-size: 2rem;
+                }
+                i:hover{
+                    cursor: pointer;
+                    transition: transform 0.25s 0s; 
+                    transform: scale(1.5); 
+                }
             }
         }        
     }

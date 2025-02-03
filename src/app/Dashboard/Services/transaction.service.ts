@@ -28,7 +28,55 @@ export class TransactionService {
     } 
 
     saveTransaction(trans: TypeTransaction): Observable<TypeHttpResponse> {    
-        let postdata = trans;
+        //let postdata = trans;
+        console.log(trans);        
+         let postdata = {             
+            "BarCodeRefSno" :trans.BarCodeRefSno,
+            // "Client" : {"ClientSno": trans.Client.ClientSno} ,
+            "Client" : trans.Client,
+            "Client_Json" :"",
+            "Commision": trans.Commision,
+            "CompSno":trans.CompSno,
+            "Details"  :"",         
+            "Due_Date" :trans.Due_Date,           
+            "Fixed_Price" :trans.Fixed_Price,           
+            "GridItems": trans.GridItems,
+            "ImageDetailXML" : trans.ImageDetailXML,
+            "ImageSource" :  trans.ImageSource,
+            "Images_Json" : "",
+            "IsOpen" : trans.IsOpen,
+            "ItemDetailXML": trans.ItemDetailXML,
+            "Items_Json" :  "",
+            "Locked" :  trans.Locked,
+            "Name" : trans.Name,
+            "NettAmount" : trans.NettAmount,
+            // "PaymentModes" :  trans.PaymentModes,
+            "PaymentModesXML" :  trans.PaymentModesXML,
+            "PaymentModes_Json" :  "",
+            "Payment_Type" :  trans.Payment_Type,
+            "PrintReference" :  trans.PrintReference,
+            "PrintReference_Json" : "",
+            "Print_Remarks" : trans.Print_Remarks,
+            "RefSno" : trans.RefSno,
+            "Remarks":  trans.Remarks,
+            "RevAmount": trans.RevAmount,            
+            "Series" : trans.Series,
+            "Series_Json" :  "",
+            "TaxAmount" :  trans.TaxAmount,
+            "TaxPer" :  trans.TaxPer,
+            "TotAmount" : trans.TotAmount ,
+            "TotGrossWt" : trans.TotGrossWt,
+            "TotNettWt" :  trans.TotNettWt,
+            "TotPureWt" :  trans.TotPureWt,
+            "TotQty" : trans.TotQty,
+            "TotStoneWt" :  trans.TotStoneWt,
+            "TotWastage" : trans.TotWastage,
+            "TransSno" : trans.TransSno,
+            "Trans_Date" : trans.Trans_Date,
+            "Trans_No" : trans.Trans_No,
+            "UserSno" : trans.UserSno,
+            "VouSno": trans.VouSno,
+        }
         return this.dataService.HttpPost(postdata, "/saveTransaction");                
     }
 

@@ -20,7 +20,7 @@ export class GlobalsService
 {
   AppName: string = "FinAcc";
   AppLogoPath: string = "assets/images/logo.png";
-  ServerImagePath: string = "https://finaccsaas.com/AussieMint/data/";
+  ServerImagePath: string = "https://www.xauag.au/data/";
 
   constructor(private dialog: MatDialog){      
   }

@@ -36,7 +36,7 @@ export class ItemComponent {
     private itemService: ItemService,
     private grpService: IGroupService
   ) 
-  {
+  { 
     this.Item = data;          
   }
 

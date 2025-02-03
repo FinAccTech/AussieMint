@@ -6,6 +6,7 @@ select * from Assay_Records
 select * from paymentmode_Details
 
 select * from VW_ASSAY_RECORDS
+
 select * from voucher_types
 select * from VW_BARCODE_REGISTER
 select * from Items where item_code='sg'

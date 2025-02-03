@@ -48,6 +48,7 @@ Initialize(){
         Remarks: "",
       Active_Status: 0,
         Create_Date: 0,
+        Taxable: 0,
         UserSno: this.sessionService.GetUser().UserSno,
         CompSno: this.sessionService.GetCompany().CompSno,
         Name: "",
@@ -67,6 +68,7 @@ export interface TypeItem {
     Remarks?: string;
     Active_Status?: number;
     Create_Date?: number;
+    Taxable?: number,
     UserSno?: number;
     CompSno?: number;   
     Name?: string;

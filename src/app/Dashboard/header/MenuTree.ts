@@ -81,6 +81,7 @@ export const menuTree =[
             {   Caption: "Stock Report", Iconn: "", RouterLink:"stockreport" },            
             {   Caption: "Bar Coded Stock Report", Iconn: "", RouterLink:"barcodedstockreport" },     
             {   Caption: "Lab Reports", Iconn: "", RouterLink:"labreports" },            
+            {   Caption: "Weekly Consolidated", Iconn: "", RouterLink:"weeklyconsolidated" },            
         ]
     },
 

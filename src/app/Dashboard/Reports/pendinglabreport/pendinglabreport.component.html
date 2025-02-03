@@ -42,7 +42,7 @@
                         <td> {{item.BarCode_No}} </td>
                         <td> {{item.Item_Name}} </td>
                         <td> {{item.Trans_No}} </td>
-                        <td> {{item.Trans_Date }}</td>
+                        <td> {{item.Trans_Date | intToDate | date:'dd-MM-yyyy' }}</td>
                         <td> {{item.Client_Name}}</td>
                         <td>
                             @if (item.IssueTransSno == 0) {

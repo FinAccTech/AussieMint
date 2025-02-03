@@ -210,7 +210,6 @@ CREATE TABLE Item_Groups
 )
 GO
 
-
 CREATE TABLE Ledger_Groups
 (
   GrpSno INT PRIMARY KEY IDENTITY(1,1),
@@ -362,11 +361,13 @@ CREATE TABLE Items
 	Remarks VARCHAR(100),
 	Active_Status BIT,
 	Create_Date INT,
+  Taxable BIT,
 	UserSno INT,
 	CompSno INT,
   IsStd BIT
 )
 GO
+
 
 
 CREATE TABLE Uom

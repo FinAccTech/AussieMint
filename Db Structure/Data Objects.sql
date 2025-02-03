@@ -14,6 +14,7 @@ AS
   END
 GO
 
+
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='GenerateVoucherNo') BEGIN DROP FUNCTION GenerateVoucherNo END
 GO
 
@@ -950,6 +951,8 @@ End
 GO
 
 
+
+
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Sp_Items' ) BEGIN DROP PROCEDURE Sp_Items END
 GO
 
@@ -963,6 +966,7 @@ CREATE PROCEDURE Sp_Items
     @Remarks VARCHAR(100),
     @Active_Status BIT,
     @Create_Date INT,
+    @Taxable BIT,
     @UserSno INT,
     @CompSno INT,
     @RetSno INT OUTPUT
@@ -976,13 +980,13 @@ BEGIN
                 DECLARE @IsStd BIT = (SELECT IsStd FROM Items WHERE ItemSno=@ItemSno)
                 IF @IsStd = 0
                   BEGIN
-                    UPDATE Items SET Item_Code=@Item_Code,Item_Name=@Item_Name,GrpSno=@GrpSno,Require_LabTest=@Require_LabTest,Remarks=@Remarks,Active_Status=@Active_Status,Create_Date=@Create_Date,UserSno=@UserSno,CompSno=@CompSno
+                    UPDATE Items SET Item_Code=@Item_Code,Item_Name=@Item_Name,GrpSno=@GrpSno,Require_LabTest=@Require_LabTest,Remarks=@Remarks,Active_Status=@Active_Status,Create_Date=@Create_Date,Taxable=@Taxable,UserSno=@UserSno,CompSno=@CompSno
                     WHERE ItemSno=@ItemSno
                     IF @@ERROR <> 0 GOTO CloseNow
                   END
                 ELSE
                   BEGIN
-                    UPDATE Items SET Item_Name=@Item_Name,Require_LabTest=@Require_LabTest,Remarks=@Remarks,Active_Status=@Active_Status,Create_Date=@Create_Date,UserSno=@UserSno,CompSno=@CompSno
+                    UPDATE Items SET Item_Name=@Item_Name,Require_LabTest=@Require_LabTest,Remarks=@Remarks,Active_Status=@Active_Status,Create_Date=@Create_Date,Taxable=@Taxable,UserSno=@UserSno,CompSno=@CompSno
                     WHERE ItemSno=@ItemSno
                     IF @@ERROR <> 0 GOTO CloseNow
                   END
@@ -1003,8 +1007,8 @@ BEGIN
                   GoTo CloseNow
               End
 
-             INSERT INTO Items(Item_Code,Item_Name,GrpSno,Require_LabTest,Remarks,Active_Status,Create_Date,UserSno,CompSno,IsStd)
-             VALUES (@Item_Code,@Item_Name,@GrpSno,@Require_LabTest,@Remarks,@Active_Status,@Create_Date,@UserSno,@CompSno,0)
+             INSERT INTO Items(Item_Code,Item_Name,GrpSno,Require_LabTest,Remarks,Active_Status,Create_Date,Taxable,UserSno,CompSno,IsStd)
+             VALUES (@Item_Code,@Item_Name,@GrpSno,@Require_LabTest,@Remarks,@Active_Status,@Create_Date,@Taxable,@UserSno,@CompSno,0)
              IF @@ERROR <> 0 GOTO CloseNow
              SET @ItemSno = @@IDENTITY
 
@@ -1353,9 +1357,9 @@ WITH ENCRYPTION AS
 Return
     SELECT    Clnt.*, Clnt.Client_Name as Name, 'Code: '+ Clnt.Client_Code as Details,
               ISNULL(Ar.Area_Name,'') as Area_Name,
-              Profile_Image= CASE WHEN EXISTS(SELECT DetSno FROM Image_Details WHERE TransSno=Clnt.ClientSno AND Image_Grp=1 AND CompSno=@CompSno) THEN 'https://finaccsaas.com/AussieMint/data/'+(SELECT TOP 1 Image_Url FROM Image_Details WHERE TransSno=Clnt.ClientSno AND Image_Grp=1 AND CompSno=@CompSno) ELSE '' END,
+              Profile_Image= CASE WHEN EXISTS(SELECT DetSno FROM Image_Details WHERE TransSno=Clnt.ClientSno AND Image_Grp=1 AND CompSno=@CompSno) THEN 'https://www.xauag.au/data/'+(SELECT TOP 1 Image_Url FROM Image_Details WHERE TransSno=Clnt.ClientSno AND Image_Grp=1 AND CompSno=@CompSno) ELSE '' END,
                           
-              ISNULL((SELECT Img.Image_Name,'' as Image_File, Image_Url='https://finaccsaas.com/AussieMint/data/'+Img.Image_Url, '1' as SrcType, 0 as DelStatus FROM Image_Details Img WHERE TransSno = Clnt.ClientSno AND Image_Grp=1 FOR JSON PATH),'') Images_Json
+              ISNULL((SELECT Img.Image_Name,'' as Image_File, Image_Url='https://www.xauag.au/data/'+Img.Image_Url, '1' as SrcType, 0 as DelStatus FROM Image_Details Img WHERE TransSno = Clnt.ClientSno AND Image_Grp=1 FOR JSON PATH),'') Images_Json
                   
                   
     FROM      Client Clnt
@@ -2344,8 +2348,7 @@ AS
   ORDER BY    Affect_Gp Desc,Grp_Nature,hDesc
 
  GO
-
-
+ 
  
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Sp_Transactions') BEGIN DROP PROCEDURE Sp_Transactions END
 GO
@@ -2549,7 +2552,7 @@ BEGIN
 
                       DECLARE @NewBarCodeSno INT
 
-                      IF (@Stock_Type = 1) AND (@RefSno = 0 OR @RefStockType = 0)
+                      IF (@Stock_Type = 1) AND (@RefSno = 0 OR @RefStockType <> 1)
                         BEGIN
                           DECLARE @TmpQty INT = 1
                           WHILE @TmpQty <= @Qty
@@ -2739,7 +2742,7 @@ RETURN
 
                   /* CLIENT OBJECT (CLIENT JSON)------------------------------------------------------------------------*/
                   (SELECT     Clnt.*, Clnt.Client_Name as 'Name', Clnt.Client_Code as 'Details',
-                              Profile_Image= CASE WHEN EXISTS(SELECT DetSno FROM Image_Details WHERE TransSno=Clnt.ClientSno AND Image_Grp=1 AND CompSno=@CompSno) THEN 'https://finaccsaas.com/AussieMint/data/'+(SELECT TOP 1 Image_Url FROM Image_Details WHERE TransSno=Clnt.ClientSno AND Image_Grp=1 AND CompSno=@CompSno) ELSE '' END
+                              Profile_Image= CASE WHEN EXISTS(SELECT DetSno FROM Image_Details WHERE TransSno=Clnt.ClientSno AND Image_Grp=1 AND CompSno=@CompSno) THEN 'https://www.xauag.au/data/'+(SELECT TOP 1 Image_Url FROM Image_Details WHERE TransSno=Clnt.ClientSno AND Image_Grp=1 AND CompSno=@CompSno) ELSE '' END
                    FROM       Client Clnt WHERE ClientSno = Trans.ClientSno FOR JSON PATH) Client_Json,
 
                  ---------------------------------------------------------------------------------------------------
@@ -2763,7 +2766,7 @@ RETURN
                   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
              
                   /* IMAGES OBJECT (IMAGES JSON)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
-                  ISNULL((SELECT Img.Image_Name,'' as Image_File, Image_Url='https://finaccsaas.com/AussieMint/data/'+Img.Image_Url, '1' as SrcType, 0 as DelStatus FROM Image_Details Img WHERE TransSno = Trans.TransSno AND Image_Grp=2 FOR JSON PATH),'') Images_Json,                      
+                  ISNULL((SELECT Img.Image_Name,'' as Image_File, Image_Url='https://www.xauag.au/data/'+Img.Image_Url, '1' as SrcType, 0 as DelStatus FROM Image_Details Img WHERE TransSno = Trans.TransSno AND Image_Grp=2 FOR JSON PATH),'') Images_Json,                      
                   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
                   /* PRINT REFERENCE OBJECT( ONLY FOR PRINTING PURPOSE)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -3161,7 +3164,7 @@ Return
               ---------------------------------------------------------------------------------------------------
 
               /* IMAGES OBJECT (IMAGES JSON)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
-              ISNULL((SELECT Img.Image_Name,'' as Image_File, Image_Url='https://finaccsaas.com/AussieMint/data/'+Img.Image_Url, '1' as SrcType, 0 as DelStatus FROM Image_Details Img WHERE TransSno = Vou.VouSno AND Image_Grp=3 FOR JSON PATH),'') Images_Json,
+              ISNULL((SELECT Img.Image_Name,'' as Image_File, Image_Url='https://www.xauag.au/data/'+Img.Image_Url, '1' as SrcType, 0 as DelStatus FROM Image_Details Img WHERE TransSno = Vou.VouSno AND Image_Grp=3 FOR JSON PATH),'') Images_Json,
 
               Ledger_Json = (  SELECT      Led.*, Led.Led_Name as 'Name', Led.Led_Name as 'Details'
                           FROM        Ledgers Led
@@ -3182,5 +3185,25 @@ GO
 
 
 
+IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Udf_getWeeklyConsolidated') BEGIN DROP FUNCTION Udf_getWeeklyConsolidated END
+GO
+
+CREATE FUNCTION Udf_getWeeklyConsolidated(@FromDate INT, @ToDate INT, @CompSno INT)
+RETURNS Table
+WITH ENCRYPTION AS
+Return
+
+    SELECT		  [dbo].DateToInt (DATETRUNC(WEEK, [dbo].IntToDate(Trans_Date))) AS WeekStartDate,
+			          [dbo].DateToInt (DATEADD(DAY,6,DATETRUNC(WEEK, [dbo].IntToDate(Trans_Date)))) AS WeekEndDate,
+			          Trans.VouTypeSno, 
+			          COUNT(*) AS Count,
+			          SUM(Trans.NettAmount) as NettAmount
+
+    FROM		    Transactions Trans
+
+    WHERE		    (CompSno =@CompSno) AND (Trans_Date BETWEEN @FromDate AND @ToDate)
+    GROUP BY	  Trans.VouTypeSno, DATETRUNC(WEEK, [dbo].IntToDate(Trans_Date))
+    
+GO
 
 

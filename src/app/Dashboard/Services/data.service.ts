@@ -19,7 +19,7 @@ export class DelayInterceptor implements HttpInterceptor {
 @AutoUnsubscribe
 export class DataService {
 
-  baseApiURL:string = "https://finaccsaas.com/AussieMint/data/RestApi.php/app";
+  baseApiURL:string = "https://www.xauag.au/data/RestApi.php/app";
 
   constructor( private http: HttpClient) { 
     
@@ -39,9 +39,9 @@ export class DataService {
     
       let header = new HttpHeaders();
       header.set('Access-Control-Allow-Origin', '*');      
-      header.set("content-type", "text/html; charset=UTF-8");      
+           
       
-      let data = this.http.get<any>(apiURL, { params })
+      let data = this.http.post<any>(apiURL,  params )
       
         .pipe(map(datarecd => {                            
             return ( datarecd);                        
@@ -61,8 +61,7 @@ export class DataService {
     .set('data', postdata)    
     apiURL = this.baseApiURL + ApiSuffix;
     
-    let header = new HttpHeaders();
-    header.set("content-type", "charset=UTF-8");
+        
     let data = this.http.get<any>(apiURL, { params })
         .pipe(    
           map(datarecd => {                                
@@ -74,7 +73,7 @@ export class DataService {
 
   HttpGetPrintStyle(printstyle: string){    
     //this.progressService.sendUpdate("start","Loading...");
-    let data = this.http.get<any>("https://finaccsaas.com/AussieMint/PrintStyles/getPrintStyles.php?stylename="+ printstyle, { })
+    let data = this.http.get<any>("https://www.xauag.au/PrintStyles/getPrintStyles.php?stylename="+ printstyle, { })
     .pipe(map(datarecd => {                      
       //this.progressService.sendUpdate("stop","");    
         return ( datarecd);                        
@@ -93,11 +92,11 @@ HttpSavePrintStyle(StyleName: string, JsonContent: string, savetype:string)
       .set('data', postdata)
       
         
-      let apiURL = "https://finaccsaas.com/AussieMint/PrintStyles/savePrintStyle.php";
+      let apiURL = "https://www.xauag.au/PrintStyles/savePrintStyle.php";
     
       let header = new HttpHeaders();
       header.set('Access-Control-Allow-Origin', '*');      
-      header.set("content-type", "text/html; charset=UTF-8");      
+           
       // let data = this.http.post<any>(apiURL, params) ;
       let data = this.http.get<any>(apiURL, { params })
         .pipe(map(datarecd => {                      
@@ -118,11 +117,11 @@ HttpSavePrintStyle(StyleName: string, JsonContent: string, savetype:string)
       .set('data', postdata)
       
         
-      let apiURL = "https://finaccsaas.com/AussieMint/PrintStyles/getFilesList.php";
+      let apiURL = "https://www.xauag.au/PrintStyles/getFilesList.php";
     
       let header = new HttpHeaders();
       header.set('Access-Control-Allow-Origin', '*');      
-      header.set("content-type", "text/html; charset=UTF-8");      
+           
       // let data = this.http.post<any>(apiURL, params) ;
       let data = this.http.get<any>(apiURL, { params })
         .pipe(map(datarecd => {                      
