@@ -23,6 +23,7 @@ import { VougeneralsComponent } from './Dashboard/Accounts/vougenerals/vougenera
 import { PrintsetupComponent } from './Dashboard/Settings/printsetup/printsetup.component';
 import { BarCodeStockreportComponent } from './Dashboard/Reports/barcodestockreport/barcodestockreport.component';
 import { WeeklyconsolidatedComponent } from './Dashboard/Reports/weeklyconsolidated/weeklyconsolidated.component';
+import { BarcodeitemshistoryComponent } from './Dashboard/Reports/barcodeitemshistory/barcodeitemshistory.component';
 
 
 export const routes: Routes = [
@@ -44,6 +45,7 @@ export const routes: Routes = [
             { path:'barcodedstockreport', component: BarCodeStockreportComponent},     
             { path:'labreports', component: PendinglabreportComponent},
             { path:'weeklyconsolidated', component: WeeklyconsolidatedComponent},
+            { path:'barcodeditemhistory', component: BarcodeitemshistoryComponent},
 
             { path:'ledgergroups', component: LedgergroupsComponent},
             { path:'ledgers', component: LedgersComponent},

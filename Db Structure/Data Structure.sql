@@ -455,6 +455,9 @@ CREATE TABLE Transactions
   Remarks         VARCHAR(100),
   Print_Remarks   VARCHAR(100),
 
+  Ref_Amount      MONEY,
+  Doc_Balance_Amt MONEY,
+
   Locked          BIT,
   CompSno         INT,
   UserSno         INT,
@@ -462,7 +465,6 @@ CREATE TABLE Transactions
 )
 
 GO
-
 
 
 CREATE TABLE Transaction_Details

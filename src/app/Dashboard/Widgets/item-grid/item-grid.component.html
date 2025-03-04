@@ -10,6 +10,13 @@
                 <i class='bx bx-store-alt stock'  ></i>       
                 <p>Select from Inventory</p>  
             </div>
+
+            @if (VouTypeSno() == 18) {
+                <div class="actions" (click)="AddItem()" >                                    
+                    <i class='bx bx-plus edit' ></i>          
+                    <p>Add Item</p>  
+                </div>
+            }
         }
         @else {
             <div class="actions" (click)="AddItem()" >                                    
@@ -18,14 +25,14 @@
             </div>
         }
         
-    </div>
+    </div> 
 
     @if (!DirectItemEntry) {
         <div class="itemsArea" #itemDiv>
             <table class="gridTable">
                 <thead>
                     <th class="centerTd" style="width: 1%;">#</th>
-                    @if (EnableBarCode()) {
+                    @if (EnableBarCode() || VouTypeSno() == 12 ) {
                         <th class="centerTd" style="width: 3%;" >BarCode</th>
                     }
                     <th class="centerTd" style="width: 15%;" >Item</th>                    
@@ -52,17 +59,17 @@
                                 <td class="leftTd"> {{item.BarCode.BarCode_No}} </td>
                             }
                             <td class="leftTd"> {{item.Item.Item_Name}} </td>
-                            <td class="rightTd" contenteditable="" > {{item.Karat}} </td>
-                            <td class="rightTd" contenteditable=""> {{item.Purity}} </td>
-                            <td class="leftTd" contenteditable=""> {{item.Item_Desc}} </td>
-                            <td class="rightTd" contenteditable=""> {{item.Qty}} </td>
-                            <td class="rightTd" contenteditable=""> {{item.GrossWt}} </td>
-                            <td class="rightTd" contenteditable=""> {{item.StoneWt}} </td>
-                            <td class="rightTd" contenteditable=""> {{item.Wastage}} </td>
+                            <td class="rightTd"  > {{item.Karat}} </td>
+                            <td class="rightTd" > {{item.Purity}} </td>
+                            <td class="leftTd" > {{item.Item_Desc}} </td>
+                            <td class="rightTd" > {{item.Qty}} </td>
+                            <td class="rightTd" > {{item.GrossWt}} </td>
+                            <td class="rightTd" > {{item.StoneWt}} </td>
+                            <td class="rightTd" > {{item.Wastage}} </td>
                             <td class="rightTd"> {{item.NettWt}} </td>
                             <td class="leftTd"> {{item.Uom.Uom_Name}} </td>
                             @if (EnableAmountCols()) {
-                                <td class="rightTd" contenteditable=""> {{item.Rate}} </td>
+                                <td class="rightTd" > {{item.Rate}} </td>
                                 <td class="rightTd"> {{item.Amount}} </td>
                             }
                             <td class="actions centerTd" >                                    

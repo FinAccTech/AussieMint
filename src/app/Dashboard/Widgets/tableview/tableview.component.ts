@@ -45,7 +45,9 @@ export class TableviewComponent {
   @Input() RowsPerPage: number = 5;
   @Input() EnableCheckbox: boolean = false;
   @Input() ObjSelectedItems: any[] = [];
-  
+  @Input() EnablePrint: boolean = false;
+  @Input() EnableMail: boolean = false;
+
   TotalFields = input<string[]>(); 
   Totals: number[] = [];
   TotalsArray: TypeTotal[] = [];
@@ -58,7 +60,7 @@ export class TableviewComponent {
   SelectedItems: TypeSelectedItems[] = [];
 // For pagination and Selection
   
-  TotalPages: number = 0;
+  TotalPages: number = 0; 
   CurrentPage: number = 0;
 
  @Output() actionEvent = new EventEmitter<any>();
@@ -108,6 +110,10 @@ export class TableviewComponent {
   this.actionEvent.emit( {"Action":3, "Data": row, });
  }
 
+ MailRecord(row: any, i: number){
+  this.actionEvent.emit( {"Action":"Email", "Data": row, });
+ }
+
  FilterRecords(){
   this.actionEvent.emit({"Action":"Filter","FromDate":this.FromDate,"ToDate":this.ToDate });
  }
@@ -117,9 +123,20 @@ export class TableviewComponent {
   this.actionEvent.emit( {"Action":"Select", "Data": row, });
  }
 
- MultiSelectRecord($event: any, i: number){
+ MultiSelectRecord(BarCodeSno: number, $event: any){
   const checkbox = $event.target as HTMLInputElement;  
-  this.SelectedItems[i].Selected = checkbox.checked;
+  this.SelectedItems.find(item=>{
+    return item.Item.BarCodeSno == BarCodeSno;
+  })!.Selected = checkbox.checked;
+
+    
+  //this.SelectedItems[i].Selected = checkbox.checked;
+ }
+
+ GetFindStatus(BarCodeSno: number): boolean {
+  return (this.SelectedItems.find(item=>{
+    return item.Item.BarCodeSno == BarCodeSno;
+  })?.Selected)!;
  }
 
  AddMultiItems(){

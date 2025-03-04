@@ -7,16 +7,18 @@ import { FormsModule } from '@angular/forms';
   imports: [FormsModule],
   templateUrl: './docfooter.component.html',
   styleUrl: './docfooter.component.scss'
-})
+}) 
 export class DocfooterComponent {
   
   DocFooter = input<TypeDocFooter>();
-  EnableAmountCols = input.required();
-  EnableTaxCols = input.required();
-
+  EnableAmountCols  = input.required();
+  EnableTaxCols     = input.required();
+  AdvanceAmount     = input();
+  VouTypeSno = input.required();
+  
   @Output() actionEvent = new EventEmitter<any>();
   
-  ClearDocument(){
+  ClearDocument(){ 
     this.actionEvent.emit( {"Action":"Clear"});
   }
 
@@ -24,4 +26,4 @@ export class DocfooterComponent {
     this.actionEvent.emit( {"Action":"Save"});
   }
   
-}
+} 

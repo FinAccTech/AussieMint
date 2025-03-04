@@ -27,6 +27,11 @@ export class ReportService {
         let postdata ={ "VouTypeSno" :  VouTypeSno, "ClientSno" :  ClientSno, "CompSno" : this.sessionService.GetCompany().CompSno  }; 
         return this.dataService.HttpGet(postdata, "/getPendingDocuments");                
     } 
+    
+    getPendingGrins( ClientSno: number): Observable<TypeHttpResponse> {
+      let postdata ={"ClientSno" :  ClientSno, "CompSno" : this.sessionService.GetCompany().CompSno  }; 
+      return this.dataService.HttpGet(postdata, "/getPendingGrins");                
+    } 
 
     getStockReport(GrpSno: number): Observable<TypeHttpResponse> {
       let postdata ={ "GrpSno": GrpSno, "CompSno" : this.sessionService.GetCompany().CompSno  }; 
@@ -56,7 +61,17 @@ export class ReportService {
     getWeeklyConsolidated(FromDate: number, ToDate: number, VouTypeSno: number ): Observable<TypeHttpResponse> {
       let postdata ={ "FromDate": FromDate, "ToDate": ToDate,  "VouTypeSno" :  VouTypeSno, "CompSno" : this.sessionService.GetCompany().CompSno  }; 
       return this.dataService.HttpGet(postdata, "/getWeeklyConsolidated");                
-  } 
+    } 
+
+    getBarCodeHistory(BarCodeSno: number): Observable<TypeHttpResponse> {
+      let postdata ={ "BarCodeSno" :  BarCodeSno  }; 
+      return this.dataService.HttpGet(postdata, "/getBarCodeHistory");                
+    } 
+    
+    getItemGroupDetailsofTrans(TransSno: number): Observable<TypeHttpResponse> {
+      let postdata ={ "TransSno" :  TransSno  }; 
+      return this.dataService.HttpGet(postdata, "/getItemGroupDetailsofTrans");                
+    } 
 }
 
 export interface TypeStockReport{

@@ -45,7 +45,11 @@
                             <tr  [ngClass]="row[FieldNames()[0].Field_Name] == '{#Total#}' ? 'totalRow' :''" (click)="SelectRecord(row)"  >                            
 
                                 @if (EnableCheckbox){
-                                    <td> <input type="checkbox" (change)="MultiSelectRecord($event,((CurrentPage)*RowsPerPage)+$index )" [checked]="SelectedItems[((CurrentPage)*RowsPerPage)+$index].Selected"  > </td>
+                                    <td>                                        
+                                        @if (row[0]){
+                                            <input type="checkbox" (change)="MultiSelectRecord( row['BarCodeSno'], $event)" [checked]="GetFindStatus(row['BarCodeSno'])"  >                                         
+                                        }
+                                    </td>
                                     <!-- <td> <input type="checkbox" [checked]="true" > </td> -->
                                 }
                                 @for (element of FieldNames(); track $index) {                                    
@@ -61,11 +65,12 @@
                                         @case ("Actions") {
                                             @if (row[element.Field_Name] == "{#Total#}") {
                                                 <td></td>}
-                                            @else{
+                                            @else{ 
                                                 <td class="actions" >                                    
                                                     <i (click)="EditRecord(row)" class='bx bx-edit edit' ></i>
                                                     <i (click)="DeleteRecord(row,i)" class='bx bx-trash-alt delete' ></i>                                                    
-                                                    <i (click)="PrintRecord(row,i)" class='fa fa-print print'></i>
+                                                    @if (EnablePrint) { <i (click)="PrintRecord(row,i)" class='fa fa-print print'></i> }
+                                                    @if (EnableMail) { <i (click)="MailRecord(row,i)" class='bx bx-envelope mail'></i> }
                                                 </td>
                                             }
                                         }                                

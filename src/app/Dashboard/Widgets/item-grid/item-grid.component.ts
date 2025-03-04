@@ -29,7 +29,7 @@ export class ItemGridComponent {
   GenerateBarCode = input.required();
   EnableAmountCols = input.required();
   StockSelection = input.required();
-
+  VouTypeSno = input.required();
   ImageSource = input<FileHandle[]>([]); 
   
   ItemsList: TypeItem[] = [];
@@ -37,7 +37,7 @@ export class ItemGridComponent {
   DirectItemEntry: boolean = false;
 
   TotQty: number = 0;
-  TotGrossWt: number = 0;
+  TotGrossWt: number = 0; 
   TotNettWt: number = 0;
   
   @ViewChild('itemDiv') myDivRef!: ElementRef;
@@ -48,7 +48,7 @@ export class ItemGridComponent {
     })
   }
 
-  ngOnInit(){
+  ngOnInit(){        
     this.itmService.getItems(0,0).subscribe(data=>{
       this.ItemsList = JSON.parse (data.apiData);
     });
@@ -66,7 +66,7 @@ export class ItemGridComponent {
       let item: TypeGridItem = {DetSno:0, BarCode:{BarCodeSno:0, BarCode_No:"", Name:"", Details:""}, Item: this.itmService.Initialize(), Karat:0, Purity:0, Item_Desc:"", Qty:0, GrossWt:0, StoneWt:0, Wastage:0, NettWt:0, Uom: this.umService.Initialize(), Rate:0, Amount:0};
       const dialogRef = this.dialog.open(AdditemComponent, 
         {
-          data: { "EnableBarCode": this.EnableBarCode(), "GenerateBarCode": this.GenerateBarCode(), "EnableAmountCols": this.EnableAmountCols(), "Item": item},        
+          data: { "EnableBarCode":  ((this.VouTypeSno() == this.globals.VTypRefiningIssue) ? false : this.EnableBarCode()), "GenerateBarCode": this.GenerateBarCode(), "EnableAmountCols": this.EnableAmountCols(), "Item": item},        
           panelClass: "dialogMat"
         });      
         dialogRef.disableClose = true; 
@@ -93,12 +93,15 @@ export class ItemGridComponent {
         
         if (result) 
         { 
+          console.log(result);
+          
           if (this.TransSno() == 0){
             this.GridItems()?.splice(0, this.GridItems()?.length);          
           }
           result.forEach((itm: any)=>{
             this.GridItems()!.push(itm); 
           })
+          this.SetTotals();      
           // let isExists: boolean = false;
           //   this.GridItems()!.forEach(item => {
           //     if (item.BarCode.BarCodeSno == result.BarCode.BarCodeSno){
@@ -152,21 +155,24 @@ EditItem( item: TypeGridItem, index: number){
     this.TotGrossWt = 0;
     this.TotNettWt = 0;    
     this.DocFooter()!.TotalAmount =  0;
+    let TaxableAmount: number = 0;
 
     this.GridItems()!.forEach(item => {
         this.TotQty +=  +item.Qty;
-        this.TotGrossWt +=  +item.GrossWt;
-        this.TotNettWt +=  +item.NettWt;
+        this.TotGrossWt +=  +item.GrossWt * (item.Uom.Base_Qty! == 0 ? 1 : item.Uom.Base_Qty!);
+        this.TotNettWt +=  +item.NettWt * (item.Uom.Base_Qty! == 0 ? 1 : item.Uom.Base_Qty!) ;
         this.DocFooter()!.TotalAmount +=  +item.Amount;
+        if (item.Karat < 24){
+          TaxableAmount += +item.Amount;
+        }
     });
-
+       
     this.TotGrossWt = +this.TotGrossWt.toFixed(3);
     this.TotNettWt = +this.TotNettWt.toFixed(3);
     
-    this.DocFooter()!.TaxAmount = +((this.DocFooter()!.TaxPer / 100) * this.DocFooter()!.TotalAmount).toFixed(2);
+    this.DocFooter()!.TaxAmount = +((this.DocFooter()!.TaxPer / 100) * TaxableAmount).toFixed(2);
     this.DocFooter()!.RevAmount = +(this.DocFooter()!.TaxAmount).toFixed(2);
     this.DocFooter()!.NettAmount = +(this.DocFooter()!.TotalAmount).toFixed(2);
-
   }
 
   OpenImagesCreation(){

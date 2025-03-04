@@ -45,9 +45,10 @@ export class StockreportComponent {
     {Field_Name:"StoneWt", Data_Type:"number", Decimals:3 }, 
     {Field_Name:"Wastage", Data_Type:"number", Decimals:3 }, 
     {Field_Name:"NettWt", Data_Type:"number", Decimals:3 }, 
+    {Field_Name:"PureWt", Data_Type:"number", Decimals:3 }, 
   ]
 
-  TotalFields: string[] = ["Qty", "GrossWt", "StoneWt", "Wastage", "NettWt"]
+  TotalFields: string[] = ["Qty", "GrossWt", "StoneWt", "Wastage", "NettWt", "PureWt"]
   
   constructor(private globals: GlobalsService, private grpService: IGroupService,  private repService: ReportService ) {}
   state = 'void';

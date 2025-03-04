@@ -1,0 +1,26 @@
+[
+    {
+        "fldtype": "text",
+        "fldvalue": "GOLD",
+        "left": 100,
+        "top": 200,
+        "fontname": "Arial",
+        "fontsize": 12,
+        "fontbold": true,
+        "alignment": "left", 
+        "height" :100,
+        "width": 500      
+    },
+    {
+        "fldtype": "text",
+        "fldvalue": "GOLD",
+        "left": 100,
+        "top": 200,
+        "fontname": "Arial",
+        "fontsize": 12,
+        "fontbold": true,
+        "alignment": "left",
+        "height" :100,
+        "width": 500
+    }
+]

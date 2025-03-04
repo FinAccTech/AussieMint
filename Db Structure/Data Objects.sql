@@ -2372,6 +2372,10 @@ CREATE PROCEDURE Sp_Transactions
     @Commision          DECIMAL(5,2),
     @Remarks            VARCHAR(100),
     @Print_Remarks      VARCHAR(100),
+
+    @Ref_Amount      MONEY,
+    @Doc_Balance_Amt MONEY,
+
     @Locked             BIT,
     @CompSno            INT,
     @UserSno            INT,
@@ -2398,6 +2402,7 @@ BEGIN
 			  UPDATE    Transactions
                   SET Trans_No=@Trans_No,Trans_Date=@Trans_Date,VouTypeSno=@VouTypeSno,SeriesSno=@SeriesSno,Payment_Type=@Payment_Type,ClientSno=@ClientSno,Due_Date=@Due_Date,RefSno=@RefSno,BarCodeRefSno=@BarCodeRefSno,
                   TotAmount=@TotAmount,TaxPer=@TaxPer,TaxAmount=@TaxAmount,RevAmount=@RevAmount,NettAmount=@NettAmount,Fixed_Price=@Fixed_Price, Commision=@Commision,Remarks=@Remarks,Print_Remarks=@Print_Remarks,
+                  Ref_Amount=@Ref_Amount, Doc_Balance_Amt=@Doc_Balance_Amt,
                   Locked=@Locked,CompSno=@CompSno,UserSno=@UserSno,VouSno=@VouSno
         WHERE     TransSno=@TransSno
 				IF @@ERROR <> 0 GOTO CloseNow
@@ -2438,9 +2443,9 @@ BEGIN
           END
 
       	INSERT INTO Transactions  (Trans_No,Trans_Date,VouTypeSno,SeriesSno,Payment_Type,ClientSno,Due_Date,RefSno,BarCodeRefSno,TotAmount,TaxPer,TaxAmount,RevAmount,NettAmount,Fixed_Price,Commision,Remarks,
-                                    Print_Remarks,Locked,CompSno,UserSno,VouSno)
+                                    Ref_Amount,Doc_Balance_Amt, Print_Remarks,Locked,CompSno,UserSno,VouSno)
         VALUES                    (@Trans_No,@Trans_Date,@VouTypeSno,@SeriesSno,@Payment_Type,@ClientSno,@Due_Date,@RefSno,@BarCodeRefSno,@TotAmount,@TaxPer,@TaxAmount,@RevAmount,@NettAmount,@Fixed_Price,@Commision,@Remarks,
-                                    @Print_Remarks,@Locked,@CompSno,@UserSno,@VouSno)
+                                    @Ref_Amount,@Doc_Balance_Amt,@Print_Remarks,@Locked,@CompSno,@UserSno,@VouSno)
 
 				IF @@ERROR <> 0 GOTO CloseNow								
 				SET @TransSno = @@IDENTITY
@@ -2523,12 +2528,27 @@ BEGIN
                           SET @RecdPurity = @Purity
 
                         END
-
-
+                        
                       INSERT INTO Transaction_Details(TransSno,BarCodeSno, ItemSno, Item_Desc, UomSno, Karat, Purity, Qty, GrossWt, StoneWt, Wastage, NettWt, PureWt, Rate, Amount) 
                       VALUES (@TransSno,@BarCodeSno, @ItemSno, @Item_Desc, @UomSno, @Karat, @Purity, @Qty, @GrossWt, @StoneWt, @Wastage, @NettWt, @PureWt, @Rate, @Amount)
                       IF @@Error <> 0 GOTO CloseNow
                       SET @DetSno = @@IDENTITY
+
+                      /* IF THIS DOCUMENT IS RCTI THEN UPDATE THE RATE AND AMOUNT OF THE BARCODED ITEM OF GRIN ----------------------*/
+
+                      IF @VouTypeSno = 12
+                        BEGIN
+                          IF @RefSno <> 0
+                            BEGIN
+                              UPDATE Transaction_Details SET Rate=@Rate, Amount=@Amount WHERE TransSno=@RefSno AND  DetSno = (SELECT DetSno FROM Barcoded_Items WHERE BarCodeSno=@BarCodeSno)
+                              IF @@Error <> 0 GOTO CloseNow
+                            END
+                          DECLARE @GrnTransSno INT
+                          SELECT @GrnTransSno=TransSno FROM Barcoded_Items WHERE BarCodeSno=@BarCodeSno
+                        END
+
+                      /* ------------------------------------------------------------------------------------------------------------*/
+
 
                       DECLARE @Require_LabTest BIT = 0
                       
@@ -2556,7 +2576,8 @@ BEGIN
                         BEGIN
                           DECLARE @TmpQty INT = 1
                           WHILE @TmpQty <= @Qty
-                            BEGIN                        
+                            BEGIN
+                            
                               INSERT INTO Barcoded_Items(TransSno, DetSno, ItemSno, BarCode_No)
                               VALUES (@TransSno, @DetSno, @ItemSno,@Trans_No+'/'+CAST(@TmpQty+@LastQty AS varchar))
                               IF @@Error <> 0 GOTO CloseNow
@@ -2694,6 +2715,7 @@ END
 GO
 
 
+
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='VW_TRANSACTIONS') BEGIN DROP VIEW VW_TRANSACTIONS END
 GO
 
@@ -2703,8 +2725,15 @@ AS
     SELECT      Trans.TransSno, Trans.Trans_No, Trans.Trans_Date, CAST([dbo].IntToDate(Trans.Trans_Date) as VARCHAR)  as Trans_DateStr, Trans.VouTypeSno, VTyp.VouType_Name, VTyp.Stock_Type, VTyp.Cash_Type,
                 Trans.SeriesSno, Ser.Series_Name, Trans.Payment_Type, Trans.BarCodeRefSno,
                 Trans.ClientSno, Clnt.Client_Name, Clnt.Client_Cat,
-                Trans.Due_Date, Trans.RefSno, ISNULL(SUM(Det.Qty),0) as TotQty, ISNULL(SUM(Det.GrossWt),0) as TotGrossWt, ISNULL(SUM(Det.StoneWt),0) as TotStoneWt, ISNULL(SUM(Det.Wastage),0) as TotWastage, ISNULL(SUM(Det.NettWt),0) as TotNettWt,
-                ISNULL(SUM(Det.PureWt),0) as TotPureWt, Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount, Trans.Fixed_Price, Trans.Commision, Trans.Remarks, Trans.Print_Remarks,
+                Trans.Due_Date, Trans.RefSno, ISNULL(SUM(Det.Qty),0) as TotQty, Trans.Ref_Amount, Trans.Doc_Balance_Amt,
+
+                ISNULL(SUM(Det.GrossWt * (CASE WHEN Um.Base_Qty=0 THEN 1 ELSE Um.Base_Qty END)),0) as TotGrossWt,
+                ISNULL(SUM(Det.StoneWt * (CASE WHEN Um.Base_Qty=0 THEN 1 ELSE Um.Base_Qty END)),0) as TotStoneWt,
+                ISNULL(SUM(Det.Wastage * (CASE WHEN Um.Base_Qty=0 THEN 1 ELSE Um.Base_Qty END)),0) as TotWastage,
+                ISNULL(SUM(Det.NettWt  * (CASE WHEN Um.Base_Qty=0 THEN 1 ELSE Um.Base_Qty END)),0)  as TotNettWt,
+                ISNULL(SUM(Det.PureWt * (CASE WHEN Um.Base_Qty=0 THEN 1 ELSE Um.Base_Qty END)),0)  as TotPureWt,
+
+                Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount, Trans.Fixed_Price, Trans.Commision, Trans.Remarks, Trans.Print_Remarks,
                 Trans.Locked, Trans.CompSno,Trans.UserSno, Trans.VouSno,
                 Pending_Status = CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno=Trans.TransSno) THEN 1 ELSE 0 END
 
@@ -2713,19 +2742,19 @@ AS
                 INNER JOIN Voucher_Series Ser           ON Ser.SeriesSno = Trans.SeriesSno
                 INNER JOIN Client Clnt                  ON Clnt.ClientSno = Trans.ClientSno
                 LEFT OUTER JOIN Transaction_Details Det ON Det.TransSno = Trans.TransSno
+                LEFT OUTER JOIN Uom Um                 ON Um.UomSno = Det.UomSno
 
     GROUP BY    Trans.TransSno, Trans.Trans_No, Trans.Trans_Date, Trans.VouTypeSno, VTyp.VouType_Name, VTyp.Stock_Type, VTyp.Cash_Type,
                 Trans.SeriesSno, Ser.Series_Name,
                 Trans.ClientSno, Clnt.Client_Name, Clnt.Client_Cat,
                 Trans.Due_Date, Trans.RefSno,                
                 Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount,Trans.Remarks, Trans.Fixed_Price, Trans.Commision, Trans.Print_Remarks, Trans.Locked, Trans.CompSno,Trans.Payment_Type, Trans.BarCodeRefSno,  
-                Trans.UserSno, Trans.VouSno  
+                Trans.UserSno, Trans.VouSno,  Trans.Ref_Amount, Trans.Doc_Balance_Amt
 GO
 
 
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Udf_getTransactions') BEGIN DROP FUNCTION Udf_getTransactions END
 GO
-
 
 CREATE FUNCTION Udf_getTransactions(@TransSno INT,@VouTypeSno INT, @SeriesSno INT, @CompSno INT)
 RETURNS Table
@@ -2754,7 +2783,7 @@ RETURN
                   (SELECT     Det.DetSno, Det.TransSno, Det.BarCodeSno, Det.ItemSno, Det.Item_Desc, Det.UomSno, Det.Karat, Det.Purity, Det.Qty, Det.GrossWt, Det.StoneWt, Det.Wastage, Det.NettWt,
                               Det.PureWt, Det.Rate, Det.Amount,
                               It.ItemSno as 'Item.ItemSno', It.Item_Name as 'Item.Item_Name', It.Item_Name as 'Item.Name', 'Code:' + It.Item_Code as 'Item.Details',
-                              Um.UomSno as 'Uom.UomSno', Um.Uom_Name as 'Uom.Uom_Name', Um.Uom_Name as 'Uom.Name', 'Code:' + Um.Uom_Code as 'Uom.Details',
+                              Um.UomSno as 'Uom.UomSno', Um.Uom_Name as 'Uom.Uom_Name', Um.Uom_Name as 'Uom.Name', 'Code:' + Um.Uom_Code as 'Uom.Details', Um.Base_Qty as 'Uom.Base_Qty',
                               ISNULL(Bar.BarCodeSno,0) as 'BarCode.BarCodeSno', ISNULL(Bar.BarCode_No,'') as 'BarCode.BarCode_No', ISNULL(Bar.BarCode_No,'') as 'BarCode.Name', + ISNULL(Bar.BarCode_No,'') as 'BarCode.Details'
 
                   FROM        Transaction_Details Det                    
@@ -2771,14 +2800,14 @@ RETURN
 
                   /* PRINT REFERENCE OBJECT( ONLY FOR PRINTING PURPOSE)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
                   ISNULL((SELECT TransSno Trans_No, Trans_Date, Fixed_Price, Commision, TotNettWt, NettAmount FROM VW_TRANSACTIONS WHERE TransSno = Trans.RefSno FOR JSON PATH),'') as PrintReference_Json
-                  ----------------------------------------------------------------------------------------------------------------------------------------------------------*/
-                  
+                  ----------------------------------------------------------------------------------------------------------------------------------------------------------*/                  
 
       FROM        VW_TRANSACTIONS Trans                  
 
       WHERE       (Trans.TransSno=@TransSno OR @TransSno=0) AND (Trans.VouTypeSno=@VouTypeSno OR @VouTypeSno=0) AND (Trans.SeriesSno=@SeriesSno OR @SeriesSno=0) AND (Trans.CompSno=@CompSno)
+      
 
-      GO
+GO
 
 
 
@@ -2857,8 +2886,11 @@ WITH ENCRYPTION AS
 				    OutWastage	= CASE WHEN (VTyp.Stock_Type = 2 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 1 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.Wastage ELSE Det.Wastage*Um.Base_Qty END)	ELSE 0 END,
 
 				    InNettWt	  = CASE WHEN (VTyp.Stock_Type = 1 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 2 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.NettWt ELSE Det.NettWt*Um.Base_Qty   END)		ELSE 0 END,
-				    OutNettWt	  = CASE WHEN (VTyp.Stock_Type = 2 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 1 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.NettWt ELSE Det.NettWt*Um.Base_Qty   END)		ELSE 0 END			
+				    OutNettWt	  = CASE WHEN (VTyp.Stock_Type = 2 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 1 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.NettWt ELSE Det.NettWt*Um.Base_Qty   END)		ELSE 0 END,
 
+            InPureWt	  = CASE WHEN (VTyp.Stock_Type = 1 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 2 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.PureWt ELSE Det.PureWt*Um.Base_Qty   END)		ELSE 0 END,
+				    OutPureWt	  = CASE WHEN (VTyp.Stock_Type = 2 AND (Trans.RefSno=0 OR RefVTyp.Stock_Type = 0 OR RefVTyp.Stock_Type= 1 )) THEN (CASE WHEN Um.Base_Qty=0 THEN Det.PureWt ELSE Det.PureWt*Um.Base_Qty   END)		ELSE 0 END
+            
 	FROM		Transaction_Details Det
 				  INNER JOIN Items It ON It.ItemSno=Det.ItemSno
 				  INNER JOIN Item_Groups Grp ON Grp.GrpSno = It.GrpSno
@@ -2874,6 +2906,7 @@ WITH ENCRYPTION AS
 GO
 
 
+
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Udf_getStockReport') BEGIN DROP FUNCTION Udf_getStockReport END
 GO
 
@@ -2887,7 +2920,9 @@ RETURN
 			      GrossWt = SUM(InGrossWt)	- SUM(OutGrossWt),
 			      StoneWt	= SUM(InStoneWt)	- SUM(OutStoneWt),
 			      Wastage = SUM(InWastage)	- SUM(OutWastage),
-			      NettWt	= SUM(InNettWt)		- SUM(OutNettWT)
+			      NettWt	= SUM(InNettWt)		- SUM(OutNettWT),
+            PureWt	= SUM(InPureWt)		- SUM(OutPureWT)
+
   FROM		  VW_STOCK_REGISTER  
   WHERE		  (GrpSno = @GrpSno) AND (CompSno=@CompSno) 
   GROUP BY	ItemSno, Item_Name, Karat, Purity, UomSno, Uom_Name
@@ -2903,12 +2938,12 @@ CREATE VIEW VW_BARCODE_REGISTER
 WITH ENCRYPTION AS
 
   SELECT    Trans.TransSno, VTyp.VouType_Name, Trans.Trans_No, Trans.Trans_Date, Det.DetSno, Det.ItemSno, It.Item_Name, Det.Item_Desc, Bar.BarCodeSno, Bar.BarCode_No, Det.Karat, Det.Purity,
-            Det.UomSno, Um.Uom_Name,
+            Det.UomSno, Um.Uom_Name, Um.Base_Qty,
             GrossWt       = CAST(Det.GrossWt / Det.Qty AS DECIMAL(8,3)),
             StoneWt       = CAST(Det.StoneWt / Det.Qty AS DECIMAL(8,3)),
             Wastage       = CAST(Det.Wastage / Det.Qty AS DECIMAL(8,3)),
 			      NettWt        = CAST(Det.NettWt / Det.Qty AS DECIMAL(8,3)),
-            PureWt        = CAST(Det.NettWt*(Det.Purity/100)AS DECIMAL(8,3)),
+            PureWt        = CAST((Det.NettWt / Det.Qty) *(Det.Purity/100)AS DECIMAL(8,3)),
             Det.Rate, Amount = CAST(Det.Amount / Det.Qty AS DECIMAL(10,2)),
 
             Issued_Wt     = ( SELECT    ISNULL(SUM(NettWt),0)
@@ -2917,7 +2952,7 @@ WITH ENCRYPTION AS
                                         INNER JOIN Voucher_Types Vt On Vt.VouTypeSno = Tr.VouTypeSno
                               WHERE     BarCodeSno=Bar.BarCodeSno AND Vt.Stock_Type = 2),
 
-            Balance_Wt    = Det.NettWt - ( SELECT    ISNULL(SUM(NettWt),0)
+            Balance_Wt    = (Det.NettWt/Det.Qty) - ( SELECT    ISNULL(SUM(NettWt),0)
                               FROM      Transaction_Details Dt
                                         INNER JOIN Transactions Tr ON Tr.TransSno=Dt.TransSno
                                         INNER JOIN Voucher_Types Vt On Vt.VouTypeSno = Tr.VouTypeSno
@@ -2947,6 +2982,7 @@ RETURN
   WHERE     (CompSno=@CompSno) --AND Stock_Status=0
 
 GO
+
 
 
 
@@ -3206,4 +3242,121 @@ Return
     
 GO
 
+IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE NAME='Udf_getBarCodeHistory') BEGIN DROP FUNCTION Udf_getBarCodeHistory END
+GO
+CREATE FUNCTION Udf_getBarCodeHistory(@BarCodeSno INT)
+RETURNS TABLE
+WITH ENCRYPTION AS
+RETURN
 
+SELECT		Trans.TransSno, VTyp.VouType_Name, Trans.Trans_No, Trans.Trans_Date, Pty.Client_Name,
+          Det.ItemSno, It.Item_Name, Det.Item_Desc, Um.Uom_Name, Det.Karat, Det.Purity, Det.GrossWt, Det.NettWt, Det.PureWt, Det.Rate, Det.Amount
+          
+FROM		  BarCoded_Items Bat
+			    INNER JOIN Transaction_Details Det ON Det.DetSno = Bat.DetSno
+          INNER JOIN Items It ON It.ItemSno = Det.ItemSno
+          INNER JOIN Uom Um ON Um.UomSno = Det.UomSno
+			    INNER JOIN Transactions Trans ON Trans.TransSno = Det.TransSno
+			    INNER JOIN Client Pty ON Pty.ClientSno = Trans.ClientSno
+          INNER JOIN Voucher_Types VTyp ON VTyp.VouTypeSno = Trans.VouTypeSno
+
+WHERE		  Bat.BarCodeSno = @BarCodeSno 
+
+UNION ALL	
+
+SELECT		Trans.TransSno, VTyp.VouType_Name, Trans.Trans_No, Trans.Trans_Date, Pty.Client_Name,
+          Det.ItemSno, It.Item_Name, Det.Item_Desc, Um.Uom_Name, Det.Karat, Det.Purity, Det.GrossWt, Det.NettWt, Det.PureWt, Det.Rate, Det.Amount
+FROM		  Transaction_Details Det
+          INNER JOIN Items It ON It.ItemSno = Det.ItemSno
+          INNER JOIN Uom Um ON Um.UomSno = Det.UomSno
+			    INNER JOIN BarCoded_Items Bat ON Bat.BarCodeSno = Det.BarCodeSno
+			    INNER JOIN Transactions Trans ON Trans.TransSno = Det.TransSno
+			    INNER JOIN Client Pty ON Pty.ClientSno = Trans.ClientSno
+          INNER JOIN Voucher_Types VTyp ON VTyp.VouTypeSno = Trans.VouTypeSno
+WHERE		  Det.BarCodeSno=@BarCodeSno
+
+GO
+
+
+
+IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE NAME='Udf_getGRINItemswithBarCode') BEGIN DROP FUNCTION Udf_getGRINItemswithBarCode END
+GO
+
+CREATE FUNCTION Udf_getGRINItemswithBarCode(@TransSno INT)
+RETURNS TABLE
+WITH ENCRYPTION AS
+RETURN
+
+  SELECT          (SELECT     Det.DetSno, Det.TransSno, Det.BarCodeSno, Det.ItemSno, Det.Item_Desc, Det.UomSno, Det.Karat, Det.Purity, Det.Qty, Det.GrossWt, Det.StoneWt, Det.Wastage, Det.NettWt,
+                              Det.PureWt, Det.Rate, Det.Amount,
+                              It.ItemSno as 'Item.ItemSno', It.Item_Name as 'Item.Item_Name', It.Item_Name as 'Item.Name', 'Code:' + It.Item_Code as 'Item.Details',
+                              Um.UomSno as 'Uom.UomSno', Um.Uom_Name as 'Uom.Uom_Name', Um.Uom_Name as 'Uom.Name', 'Code:' + Um.Uom_Code as 'Uom.Details', Um.Base_Qty as 'Uom.Base_Qty',
+                              ISNULL(Bar.BarCodeSno,0) as 'BarCode.BarCodeSno', ISNULL(Bar.BarCode_No,'') as 'BarCode.BarCode_No', ISNULL(Bar.BarCode_No,'') as 'BarCode.Name', + ISNULL(Bar.BarCode_No,'') as 'BarCode.Details'
+
+                  FROM        Transaction_Details Det                    
+                              INNER JOIN Items It On It.ItemSno=Det.ItemSno
+                              INNER JOIN Uom Um ON Um.UomSno = Det.UomSno
+                              LEFT OUTER JOIN Barcoded_Items Bar ON Bar.BarCodeSno = Det.BarCodeSno
+                              
+                  WHERE       Det.TransSno = @TransSno FOR JSON PATH) Items_Json
+
+GO
+
+
+
+IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE NAME='Udf_getPendingGrins') BEGIN DROP FUNCTION Udf_getPendingGrins END
+GO
+
+CREATE FUNCTION Udf_getPendingGrins(@ClientSno INT, @CompSno INT)
+RETURNS TABLE
+WITH ENCRYPTION AS
+RETURN
+
+
+SELECT      Trans.*, Trans.Trans_No  as 'Name', 'Date:' + CAST([dbo].IntToDate(Trans.Trans_Date) as VARCHAR)  as 'Details',
+                  /* SERIES OBJECT  (SERIES JSON)------------------------------------------------------------------------------------------------------------------------------------*/
+                  (SELECT Ser.*, Ser.Series_Name as 'Name', Ser.Series_Name as 'Details', VTyp.VouTypeSno as 'VouType.VouTypeSno', VTyp.VouType_Name as 'VouType.VouType_Name',
+                          VTyp.Cash_Type as 'VouType.Cash_Type', VTyp.Stock_Type as 'VouType.Stock_Type'
+                   FROM   Voucher_Series Ser
+                          INNER JOIN Voucher_Types VTyp ON VTyp.VouTypeSno = Ser.VouTypeSno
+                   WHERE  SeriesSno = Trans.SeriesSno FOR JSON PATH) Series_Json,
+                  ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  /* CLIENT OBJECT (CLIENT JSON)------------------------------------------------------------------------*/
+                  (SELECT     Clnt.*, Clnt.Client_Name as 'Name', Clnt.Client_Code as 'Details',
+                              Profile_Image= CASE WHEN EXISTS(SELECT DetSno FROM Image_Details WHERE TransSno=Clnt.ClientSno AND Image_Grp=1 AND CompSno=@CompSno) THEN 'https://www.xauag.au/data/'+(SELECT TOP 1 Image_Url FROM Image_Details WHERE TransSno=Clnt.ClientSno AND Image_Grp=1 AND CompSno=@CompSno) ELSE '' END
+                   FROM       Client Clnt WHERE ClientSno = Trans.ClientSno FOR JSON PATH) Client_Json,
+
+                 ---------------------------------------------------------------------------------------------------
+                 /* PAYMENT MODE JSON ---------------------------------- */
+                  (SELECT Pm.*, Led.LedSno as 'Ledger.LedSno', Led.Led_Name as 'Ledger.Name', Led.Led_Name as 'Ledger.Details'  FROM PaymentMode_Details Pm INNER JOIN Ledgers Led ON Led.LedSno = Pm.LedSno WHERE TransSno = Trans.TransSno AND Trans_Type=1 FOR JSON PATH) PaymentModes_Json,
+                 ---------------------------------------------------------------------------------------------------
+                 
+                  /* ITEMS OBJECT (ITEMS JSON)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+                  (SELECT     Det.DetSno, Det.TransSno, Det.BarCodeSno, Det.ItemSno, Det.Item_Desc, Det.UomSno, Det.Karat, Det.Purity, Det.Qty, Det.GrossWt, Det.StoneWt, Det.Wastage, Det.NettWt,
+                              Det.PureWt, Det.Rate, Det.Amount,
+                              It.ItemSno as 'Item.ItemSno', It.Item_Name as 'Item.Item_Name', It.Item_Name as 'Item.Name', 'Code:' + It.Item_Code as 'Item.Details',
+                              Um.UomSno as 'Uom.UomSno', Um.Uom_Name as 'Uom.Uom_Name', Um.Uom_Name as 'Uom.Name', 'Code:' + Um.Uom_Code as 'Uom.Details', Um.Base_Qty as 'Uom.Base_Qty',
+                              ISNULL(Bar.BarCodeSno,0) as 'BarCode.BarCodeSno', ISNULL(Bar.BarCode_No,'') as 'BarCode.BarCode_No', ISNULL(Bar.BarCode_No,'') as 'BarCode.Name', + ISNULL(Bar.BarCode_No,'') as 'BarCode.Details'
+
+                  FROM        Transaction_Details Det                    
+                              INNER JOIN Items It On It.ItemSno=Det.ItemSno
+                              INNER JOIN Uom Um ON Um.UomSno = Det.UomSno
+                              INNER JOIN Barcoded_Items Bar ON Bar.DetSno = Det.DetSno
+                              
+                  WHERE       Det.TransSno = Trans.TransSno FOR JSON PATH) Items_Json,
+                  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+             
+                  /* IMAGES OBJECT (IMAGES JSON)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+                  ISNULL((SELECT Img.Image_Name,'' as Image_File, Image_Url='https://www.xauag.au/data/'+Img.Image_Url, '1' as SrcType, 0 as DelStatus FROM Image_Details Img WHERE TransSno = Trans.TransSno AND Image_Grp=2 FOR JSON PATH),'') Images_Json,                      
+                  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                  /* PRINT REFERENCE OBJECT( ONLY FOR PRINTING PURPOSE)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+                  ISNULL((SELECT TransSno Trans_No, Trans_Date, Fixed_Price, Commision, TotNettWt, NettAmount FROM VW_TRANSACTIONS WHERE TransSno = Trans.RefSno FOR JSON PATH),'') as PrintReference_Json
+                  ----------------------------------------------------------------------------------------------------------------------------------------------------------*/                  
+
+      FROM        VW_TRANSACTIONS Trans                  
+
+      WHERE       (Trans.VouTypeSno=28) AND (Trans.CompSno=@CompSno) AND (Trans.Pending_Status=0)
+
+    GO

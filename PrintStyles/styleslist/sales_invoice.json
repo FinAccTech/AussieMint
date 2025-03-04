@@ -1,0 +1,886 @@
+{
+"Setup" : [
+      {
+              "PrintCopy" : 0,
+         "CopyLeftMargin":0,
+         "CopyTopMargin":0
+      }],
+
+"FieldSet" :
+[
+
+      
+      {
+          "fldtype": "pathimage",
+          "fldcat": "main",
+          "left": 0,
+          "top": 0,          
+          "height" :150,
+          "width": 1010,
+          "fldvalue": "https://www.finaccsaas.com/AussieMint/data/PrintImages/header.png"
+      },
+   {
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Sales Invoice",
+        "left": 430,
+        "top": 150,
+        "fontname": "Arial",
+        "fontweight": 1000,
+        "fontsize": 25        
+    },
+
+  
+      {
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Sales Invoice No:",
+        "left": 20,
+        "top": 170,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+      {
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Trans_No",
+        "left": 200,
+        "top": 170,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+    
+
+     {
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Sales Invoice Date:",
+        "left": 700,
+        "top": 170,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+     
+
+      {
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Trans_Date",
+        "left": 890,
+        "top": 170,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+    
+      {
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Name",
+        "left": 20,
+        "top": 190,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+ {
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Client_Name",
+        "left": 150,
+        "top": 190,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+ {
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Date of Birth",
+        "left": 700,
+        "top": 190,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+ {
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Client_Dob",
+        "left": 830,
+        "top": 190,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+
+  {
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Address",
+        "left": 20,
+        "top": 210,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+  {
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Client_Address",
+        "left": 150,
+        "top": 210,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+ {
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Suburb",
+        "left": 20,
+        "top": 230,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    }, 
+
+ {
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Client_Suburb",
+        "left": 150,
+        "top": 230,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "State",
+        "left": 20,
+        "top": 250,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Client_State",
+        "left": 150,
+        "top": 250,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    }, 
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Postal Code",
+        "left": 20,
+        "top": 270,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+ {
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Client_Post_Code",
+        "left": 150,
+        "top": 270,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Phone",
+        "left": 20,
+        "top": 290,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Client_Mobile",
+        "left": 150,
+        "top": 290,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Email",
+        "left": 20,
+        "top": 310,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Client_Email",
+        "left": 150,
+        "top": 310,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "GST Number",
+        "left": 700,
+        "top": 210,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Client_Gst_No",
+        "left": 830,
+        "top": 210,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "ID Number",
+        "left": 700,
+        "top": 230,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Client_Id_Number",
+        "left":830,
+        "top": 230,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Expiry Date",
+        "left": 700,
+        "top": 250,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Client_Expiry_Date",
+        "left": 830,
+        "top":250,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    }, 
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Print Remarks:",
+        "left": 20,
+        "top": 335,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 18        
+    },
+    
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Print_Remarks",
+        "left": 160,
+        "top": 335,
+        "fontname": "Arial",
+        "fontweight": 400,
+        "fontsize": 17        
+    },
+
+{
+          "fldtype": "box",
+          "fldcat": "main",
+          "left": 25,
+          "top": 370,
+          "forecolor":"#ddd",
+          "height" :400,
+          "width": 1000
+      },
+
+{
+          "fldtype": "hline",
+          "fldcat": "main",
+          "left": 25,
+          "top": 440,
+          "forecolor":"#ddd",
+          "height" :1,
+          "width": 1000
+      },
+
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Batch No",
+        "left":40,
+        "top": 395,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Item",
+        "left": 190,
+        "top": 395,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "DESCRIPTION",
+        "left": 365,
+        "top": 395,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Purity",
+        "left": 550,
+        "top": 395,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Gross",
+        "left": 630,
+        "top": 390,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Wt",
+        "left": 650,
+        "top": 410,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Stone",
+        "left": 710,
+        "top": 395,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Net Wt",
+        "left": 780,
+        "top": 395,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Price /",
+        "left": 865,
+        "top": 390,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Gram",
+        "left": 865,
+        "top": 410,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "TOTAL",
+        "left": 940,
+        "top": 395,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+
+{
+          "fldtype": "vline",
+          "fldcat": "main",
+          "left": 150,
+          "top": 370,
+          "forecolor":"#ddd",
+          "height" :400,
+          "width": 1
+      },
+
+
+{
+          "fldtype": "vline",
+          "fldcat": "main",
+          "left": 295,
+          "top": 370,
+          "forecolor":"#ddd",
+          "height" :400,
+          "width": 1
+      },
+
+{
+          "fldtype": "vline",
+          "fldcat": "main",
+          "left": 540,
+          "top": 370,
+          "forecolor":"#ddd",
+          "height" :400,
+          "width": 1
+      },
+
+{
+          "fldtype": "vline",
+          "fldcat": "main",
+          "left": 610,
+          "top": 370,
+          "forecolor":"#ddd",
+          "height" :400,
+          "width": 1
+      },
+
+{
+          "fldtype": "vline",
+          "fldcat": "main",
+          "left": 700,
+          "top": 370,
+          "forecolor":"#ddd",
+          "height" :400,
+          "width": 1
+      },
+
+{
+          "fldtype": "vline",
+          "fldcat": "main",
+          "left": 770,
+          "top": 370,
+          "forecolor":"#ddd",
+          "height" :400,
+          "width": 1
+      },
+
+
+{
+          "fldtype": "vline",
+          "fldcat": "main",
+          "left": 850,
+          "top": 370,
+          "forecolor":"#ddd",
+          "height" :400,
+          "width": 1
+      },
+
+{
+          "fldtype": "vline",
+          "fldcat": "main",
+          "left": 930,
+          "top": 370,
+          "forecolor":"#ddd",
+          "height" :400,
+          "width": 1
+      },
+
+{
+        "fldtype": "field",
+        "fldcat": "sub",
+        "fldvalue": "BarCode_Name",
+        "left": 35,
+        "top": 445,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16       
+    },
+
+
+{
+        "fldtype": "field",
+        "fldcat": "sub",
+        "fldvalue": "Item_Name",
+        "left": 160,
+        "top": 445,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16       
+    },
+
+
+
+{
+        "fldtype": "field",
+        "fldcat": "sub",
+        "fldvalue": "Item_Desc",
+        "left": 325,
+        "top": 445,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    }, 
+
+{
+        "fldtype": "field",
+        "fldcat": "sub",
+        "fldvalue": "Purity",
+        "left": 550,
+        "top": 445,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    }, 
+
+{
+        "fldtype": "field",
+        "fldcat": "sub",
+        "fldvalue": "Gross_Wt",
+        "left": 637,
+        "top": 445,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    }, 
+
+{
+        "fldtype": "field",
+        "fldcat": "sub",
+        "fldvalue": "Stone_Wt",
+        "left": 730,
+        "top": 445,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    }, 
+
+{
+        "fldtype": "field",
+        "fldcat": "sub",
+        "fldvalue": "Nett_Wt",
+        "left": 785,
+        "top": 445,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    }, 
+
+{
+        "fldtype": "field",
+        "fldcat": "sub",
+        "fldvalue": "Rate",
+        "left": 865,
+        "top": 445,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    }, 
+
+{
+        "fldtype": "field",
+        "fldcat": "sub",
+        "fldvalue": "Amount",
+        "left": 940,
+        "top": 445,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    }, 
+
+{
+          "fldtype": "box",
+          "fldcat": "main",
+          "left": 25,
+          "top": 790,
+          "forecolor":"#ddd",
+          "height" :100,
+          "width": 1000
+      },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Gross Wt",
+        "left": 54,
+        "top": 800,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Stone Wt",
+        "left": 230,
+        "top": 800,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Net Wt",
+        "left": 400,
+        "top": 800,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "GST",
+        "left": 550,
+        "top": 800,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Reverse GST",
+        "left": 660,
+        "top": 800,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Net Amt",
+        "left": 865,
+        "top": 800,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "TotGrossWt",
+        "left": 70,
+        "top": 830,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    },
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "TotStoneWt",
+        "left": 235,
+        "top": 830,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    },
+
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "TotNettWt",
+        "left": 400,
+        "top": 830,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    },
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "TaxAmount",
+        "left": 530,
+        "top": 830,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    },
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "RevAmount",
+        "left": 680,
+        "top": 830,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    },
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "NettAmount",
+        "left": 850,
+        "top": 830,
+        "fontname": "Arial",
+        "fontweight": 500,
+        "fontsize": 16        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Payment Type:",
+        "left": 55,
+        "top": 860,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Payment Type:",
+        "left": 55,
+        "top": 860,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "field",
+        "fldcat": "main",
+        "fldvalue": "Payment_Type",
+        "left":190,
+        "top":860,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Sign:__________________________",
+        "left": 55,
+        "top": 1150,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+{
+        "fldtype": "text",
+        "fldcat": "main",
+        "fldvalue": "Date:__________________________",
+        "left": 700,
+        "top": 1150,
+        "fontname": "Arial",
+        "fontweight": 600,
+        "fontsize": 17        
+    },
+
+ {
+          "fldtype": "pathimage",
+          "fldcat": "main",
+          "left": 0,
+          "top": 1200,          
+          "height" :300,
+          "width": 1020,
+          "fldvalue": "https://www.finaccsaas.com/AussieMint/data/PrintImages/footer.PNG"
+      }
+
+
+
+]
+}

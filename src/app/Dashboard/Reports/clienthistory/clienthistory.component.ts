@@ -17,7 +17,7 @@ export class ClienthistoryComponent {
   ClientsList: TypeClient[] = [];
   SelectedClient!: TypeClient;
   TransList: TypeTransaction[] = [];
-  
+   
   FieldNames: TypeFieldInfo[] = [
     {Field_Name:"#", Data_Type:"string" }, 
     {Field_Name:"Trans_No", Data_Type:"string" }, 

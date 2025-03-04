@@ -31,6 +31,7 @@ export interface TypeBarCode{
     Item_Desc?      : string;
     UomSno?         : number;
     Uom_Name?       : string;
+    Base_Qty?       : number;
     Karat?          : number;
     Purity?         : number;
     GrossWt?        : number;
@@ -45,4 +46,23 @@ export interface TypeBarCode{
     CompSno?        : number;
     Name?            : string;
     Details?         : string;
+}
+
+export interface TypeBarCodeHistory{
+    TransSno: number;
+    VouType_Name: string;
+    Trans_No: string;
+    Trans_Date: number;
+    Client_Name: string;
+    ItemSno: number;
+    Item_Name: string;
+    Item_Desc: string;
+    Uom_Name: string;
+    Karat: number;
+    Purity: number;
+    GrossWt: number;
+    NettWt: number;
+    PureWt: number;
+    Rate: number
+    Amount: number
 }

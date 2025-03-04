@@ -60,7 +60,7 @@ export class WebcamComponent  implements AfterViewInit {
     this.captures.push(this.canvas.nativeElement.toDataURL("image/png"));
 
     const fileHandle: FileHandle ={ 
-      Image_Name: "WebCam" + (+this.TransImages.length+1 ),
+      Image_Name: "WebCam" + (+this.TransImages.length+1)+ ".jpeg",
       Image_File: this.canvas.nativeElement.toDataURL("image/png"), 
       Image_Url: "",
       SrcType:0,

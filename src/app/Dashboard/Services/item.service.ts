@@ -38,6 +38,11 @@ export class ItemService {
     return this.dataService.HttpGet(postdata, "/getRefiningReceiptItems");                
   } 
   
+  getBarCodedItems(): Observable<TypeHttpResponse> {
+    let postdata ={ "CompSno" : this.sessionService.GetCompany().CompSno }; 
+    return this.dataService.HttpGet(postdata, "/getBarCodedItems");                
+  } 
+
 Initialize(){    
     let Item: TypeItem = {            
         ItemSno: 0,

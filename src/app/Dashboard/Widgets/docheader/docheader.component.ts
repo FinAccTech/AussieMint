@@ -10,6 +10,7 @@ import { PaymodesComponent } from '../paymodes/paymodes.component';
 import { MatDialog } from '@angular/material/dialog';
 import { TypeDocFooter } from '../../../Types/TypeDocFooter';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { ReportService } from '../../Services/reports.service';
 
 export interface TypeRefDetails{
   DocType: number;
@@ -35,22 +36,25 @@ export class DocheaderComponent implements AfterViewInit {
   
   DocHeader = input<TypeDocHeader>(); //For Input
   DocFooter = input.required<TypeDocFooter>(); //For Input
-  SeriesList: TypeVoucherSeries[]= [];
-  EnableAmountCols = input.required(); 
+  SeriesList: TypeVoucherSeries[]= [];  
+  EnablePaymentCols = input.required(); 
   RefDetails: TypeRefDetails[] = [];
-  RefTypeStock: boolean = false;
-  ShowReceivedDetails: boolean = true;
+  RefTypeStock: boolean = false;  
+  ShowReceivedDetails: boolean = true; 
+  ExpectedMetalDetails: any[] = [];
 
   // AssayRecordList: TypeAssayRecord[] = [];
   // SelectedAssayItem!: TypeAssayRecord;
 
   @Output() actionEvent = new EventEmitter<any>();
 
-  constructor(private transService: TransactionService, private serService: VoucherSeriesService, 
+  constructor(private transService: TransactionService, private serService: VoucherSeriesService, private repService: ReportService,
     private globals: GlobalsService, private dialog: MatDialog){    
     effect(() =>{      
       this.serService.getVoucherSeries(0, this.DocHeader()!.Series.VouType.VouTypeSno ).subscribe(data=>{
         this.SeriesList = JSON.parse(data.apiData);          
+        // console.log(this.DocHeader());
+        
         if (this.DocHeader()!.TransSno == 0){
           this.getSeries(this.SeriesList[0]);      
           this.DocHeader()!.Trans_Date  = this.globals.DateToInt (new Date());
@@ -93,6 +97,7 @@ export class DocheaderComponent implements AfterViewInit {
     switch (Ref.Series.VouType.VouTypeSno) {
       case this.globals.VTypAdvancePurchase:
         this.RefDetails.push({ DocType: this.globals.VTypAdvancePurchase, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})
+        this.DocHeader()!.AdvanceAmount = Ref.NettAmount;
         break;    
 
       case this.globals.VTypAdvanceSales:
@@ -105,6 +110,7 @@ export class DocheaderComponent implements AfterViewInit {
            this.transService.getTransactions(Ref.RefSno,0,0,0,0).subscribe(data=>{
             let advDetails = JSON.parse(data.apiData)[0];          
             this.RefDetails.push({ DocType: this.globals.VTypAdvancePurchase, Doc_No: advDetails.Trans_No, Doc_Date: advDetails.Trans_Date, Doc_Amount: advDetails.NettAmount, Doc_Commision: advDetails.Commision, Doc_Rate: advDetails.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})                          
+            this.DocHeader()!.AdvanceAmount = advDetails.NettAmount;
            })
         }
         break;    
@@ -127,12 +133,15 @@ export class DocheaderComponent implements AfterViewInit {
       case this.globals.VTypRefiningIssue:
         this.RefTypeStock = true;
         this.ShowReceivedDetails = true;
-        this.RefDetails.push({ DocType: this.globals.VTypRefiningIssue, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})                                
+        this.RefDetails.push({ DocType: this.globals.VTypRefiningIssue, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.Ref_Amount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})                                
+        this.repService.getItemGroupDetailsofTrans(Ref.TransSno).subscribe(data=>{          
+          this.ExpectedMetalDetails = JSON.parse(data.apiData);
+        })
         break;
 
       case this.globals.VTypCastingIssue:
         this.RefTypeStock = true;
-        this.RefDetails.push({ DocType: this.globals.VTypCastingIssue, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})                                
+        this.RefDetails.push({ DocType: this.globals.VTypCastingIssue, Doc_No: Ref.Trans_No, Doc_Date: Ref.Trans_Date, Doc_Amount: Ref.NettAmount, Doc_Commision: Ref.Commision, Doc_Rate: Ref.Fixed_Price, TotQty: Ref.TotQty, GrossWt: Ref.TotGrossWt, NettWt: Ref.TotNettWt})                                        
         break; 
 
       case this.globals.VTypJobworkInward:

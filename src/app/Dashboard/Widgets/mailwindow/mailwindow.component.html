@@ -1,0 +1,37 @@
+<div class="modalForm stockModal">
+    <div class="header">
+        <div class="headerLeft">
+            <span class="bar"></span>
+            <p> &nbsp; Email  Document(s)</p>
+        </div>
+        <div class="headerRight">
+            <p mat-dialog-close="" >&times;</p>
+        </div>
+    </div> 
+
+    <div class="body"> 
+        <div class="row" style="display: flex; align-items: center;" >
+            <div class="col70">
+                <div class="formGroup">
+                    <input type="text" class="formControl" [(ngModel)]="ClientEmail"/>                    
+                    <label for="" class="formLabel"> Email </label>    
+                    @if (InvalidEmail) {
+                        <span style="color: red; font-size: .8rem; position: absolute; right: 5px; bottom: 0; "> * Invalid Email </span>              
+                    }
+                </div>
+            </div>
+
+            <div class="col30" style="text-align: center;" >
+                <button (click)="SendEmail()" class="btnOutlined"><i class='bx bx-mail-send' ></i> Send Email</button>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 2rem; padding: 1rem;" >
+            <div class="col100" style="display: flex; align-items: center; column-gap: 1.2rem;" >
+                <input type="checkbox" id="advanDoc" >
+                <label for="advanDoc">Advance Document</label>
+            </div>
+        </div>
+        
+    </div>
+</div>

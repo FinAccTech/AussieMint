@@ -115,8 +115,7 @@ HttpSavePrintStyle(StyleName: string, JsonContent: string, savetype:string)
     
       let params = new HttpParams()
       .set('data', postdata)
-      
-        
+              
       let apiURL = "https://www.xauag.au/PrintStyles/getFilesList.php";
     
       let header = new HttpHeaders();

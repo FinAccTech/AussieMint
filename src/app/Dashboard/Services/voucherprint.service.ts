@@ -41,8 +41,6 @@ export class VoucherprintService {
 PrintVoucher(Trans: TypeTransaction, PrintStyle: string){    
  
     this.dataService.HttpGetPrintStyle(PrintStyle).subscribe(data=>{      
-        console.log(data);
-          
         let FieldSet = this.GetPrintFields(Trans);                
         let FldList = JSON.parse(data).FieldSet;        
         let Setup: TypePrintSetup = JSON.parse(data).Setup[0];        
@@ -52,12 +50,17 @@ PrintVoucher(Trans: TypeTransaction, PrintStyle: string){
         StrHtml += this.GetHtmlFromFieldSet(FldList, FieldSet,0,0, false);
 
         
+        
+        
         if (Setup.PrintCopy == 1){            
              StrHtml += this.GetHtmlFromFieldSet(FldList, FieldSet,Setup.CopyLeftMargin,Setup.CopyTopMargin, true);            
         }
 
 
         StrHtml += '</div>';    
+
+        
+        
 
         let popupWin;    
         popupWin = window.open();
@@ -86,6 +89,7 @@ GetHtmlFromFieldSet(FldList: [], FieldSet: TypePrintFields, LeftMargin: number, 
     let StrHtml = ``;
     FldList.forEach((fld: any) => {    
 
+                
         if ((IsCopy == true && (!fld.AvoidCopy || fld.AvoidCopy ==0))  || (IsCopy == false && (!fld.AvoidMain || fld.AvoidMain == 0) ))
         {                
             switch (fld.fldcat) {
@@ -396,6 +400,7 @@ GetPrintFields(Trans: TypeTransaction){
     PrintFields.Client_Mobile           = Trans.Client.Mobile;
     PrintFields.Client_Sex              = Trans.Client.Sex == 0 ? 'Male' : 'Female' ;
     PrintFields.Client_Dob              = this.globals.IntToDateString(Trans.Client.Dob);
+    
     PrintFields.Client_Issue_Date       = this.globals.IntToDateString(Trans.Client.Issue_Date);
     PrintFields.Client_Expiry_Date      = this.globals.IntToDateString(Trans.Client.Expiry_Date);
     PrintFields.Client_Id_Number        = Trans.Client.Id_Number;
@@ -407,8 +412,7 @@ GetPrintFields(Trans: TypeTransaction){
 
     if (Trans.Items_Json && Trans.Items_Json !==''){
         let itemList = JSON.parse(Trans.Items_Json);
-        console.log(itemList);
-        
+                
         itemList.forEach((it:any)=>{
             PrintFields.ItemDetails.push({BarCodeSno: it.BarCodeSno,
                 BarCode_Name: it.BarCode.BarCode_Name,

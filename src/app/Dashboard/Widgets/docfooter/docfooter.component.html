@@ -20,6 +20,9 @@
         @if (EnableAmountCols()) {
             <div class="col50">
                 <div style="display: flex; float: right; column-gap: .5rem;align-items: center;" >
+                    @if (VouTypeSno() == 12) {
+                        <span style="font-size: 1.2rem; font-weight: bold;" >Balance Amount:</span> <span style="font-size: 1.2rem; font-weight: bold; color: red;"> {{DocFooter()!.NettAmount - +AdvanceAmount()! }} </span>
+                    }
                     @if (EnableTaxCols()){
                         <div class="totChiptype2">
                             <p class="caption">Tax per</p>
@@ -33,11 +36,13 @@
                             <p class="caption">Rev Amount</p>
                             <p class="value">{{DocFooter()!.RevAmount}} </p>
                         </div>
-                    }
+                       
                     <div class="totChiptype2">
                         <p class="caption">NettAmount</p>
                         <p class="value" style="font-size: 1.7rem;" >{{DocFooter()!.NettAmount}}</p>
                     </div>
+                    }
+                
                 </div>            
             </div>
         }

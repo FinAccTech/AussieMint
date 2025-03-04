@@ -5,5 +5,6 @@ export interface TypeDocFooter{
     TaxPer: number;
     TaxAmount: number;
     RevAmount: number;
-    NettAmount: number
+    NettAmount: number;
+    AdvanceAmount: number;    
 }

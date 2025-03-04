@@ -10,10 +10,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { LabtestComponent } from '../../transactions/labtest/labtest.component';
 import { IntToDatePipe } from '../../../Pipes/int-to-date.pipe';
 import { CommonModule } from '@angular/common';
+import { SorttablePipe } from '../../../Pipes/sorttable.pipe';
 
 @Component({
   selector: 'app-pendinglabreport',
-  imports: [MatSelect, MatOption, IntToDatePipe, CommonModule ],
+  imports: [MatSelect, MatOption, IntToDatePipe, CommonModule, SorttablePipe ],
   templateUrl: './pendinglabreport.component.html',
   styleUrl: './pendinglabreport.component.scss'
 })
@@ -38,6 +39,9 @@ export class PendinglabreportComponent {
 
   TotalFields: string[] = ["NettAmount"]
   
+  sortColumn: string = '';
+  sortOrder: boolean = true; // true = ascending, false = descending
+
   constructor(private globals: GlobalsService, private dialog: MatDialog, private transService: TransactionService, private repService: ReportService ) {}
   state = 'void';
    
@@ -51,6 +55,7 @@ export class PendinglabreportComponent {
   LoadPendingReport(){        
     this.repService.getAssayRecords(0).subscribe(data =>{
       this.ReportList = JSON.parse(data.apiData);
+      this.ReportList.sort((a,b)=> b.Trans_Date - a.Trans_Date);
       this.FilteredList = this.ReportList;      
       this.FilterPendingReport()
     })    
@@ -99,4 +104,33 @@ export class PendinglabreportComponent {
         this.LoadPendingReport();                           
       }); 
   }
+
+  toggleSort(column: string) {
+    if (this.sortColumn === column) {
+      this.sortOrder = !this.sortOrder;
+    } else {
+      this.sortColumn = column;
+      this.sortOrder = true;
+    }
+  }
+
+  // SortTable(column: string) {
+  //   if (this.SortColumn === column) {
+  //     this.SortOrder = !this.SortOrder;
+  //   } else {
+  //     this.SortOrder = true;
+  //     this.SortColumn = column;
+  //   }
+
+  //   this.FilteredList.sort((a, b) => {
+  //     let valA = a.
+  //     let valB = b[column];
+
+  //     if (typeof valA === 'string') {
+  //       return this.SortOrder ? valA.localeCompare(valB) : valB.localeCompare(valA);
+  //     } else {
+  //       return this.SortOrder ? valA - valB : valB - valA;
+  //     }
+  //   });
+  // }
 }

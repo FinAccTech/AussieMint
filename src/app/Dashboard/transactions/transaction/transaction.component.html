@@ -7,16 +7,13 @@
         </div>
 
         <div class="doc">
-            <app-docheader [DocHeader]="DocHeader" [DocFooter]="DocFooter" [EnableAmountCols]="EnableAmountCols" (actionEvent)="handleActionFromChild($event)"   />
+            <app-docheader [DocHeader]="DocHeader" [DocFooter]="DocFooter" [EnablePaymentCols]="EnablePaymentCols" (actionEvent)="handleActionFromChild($event)"   />
         </div>    
         
-      
-
         <div class="header">
-            <app-titleheader [Title]="VouTypeName" (actionEvent)="handleActionFromChild($event)" />                    
+            <app-titleheader [Title]="VouTypeName" (actionEvent)="handleActionFromChild($event)" />                                
         </div>
          
-        
         
         <div class="item">
             <app-item-grid  [TransSno]="DocHeader.TransSno"
@@ -27,11 +24,12 @@
                             [EnableAmountCols]="EnableAmountCols"
                             [StockSelection] = "StockSelection"
                             [GenerateBarCode]="GenerateBarCode"
+                            [VouTypeSno]="DocHeader.Series.VouType.VouTypeSno"
                             />
         </div> 
 
         <div class="footer">
-            <app-docfooter [DocFooter]="DocFooter" [EnableAmountCols]="EnableAmountCols" [EnableTaxCols]="EnableTaxCols"  (actionEvent)="handleActionFromChild($event)"  />    
+            <app-docfooter [DocFooter]="DocFooter" [AdvanceAmount]="DocHeader.AdvanceAmount" [VouTypeSno]="DocHeader.Series.VouType.VouTypeSno" [EnableAmountCols]="EnableAmountCols" [EnableTaxCols]="EnableTaxCols"  (actionEvent)="handleActionFromChild($event)"  />    
         </div>       
 
     </div>

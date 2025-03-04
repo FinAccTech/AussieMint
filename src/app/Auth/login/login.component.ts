@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { UserService } from '../../Dashboard/Services/user.service';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../session-storage.service';
+import { GlobalsService } from '../../global.service';
 
 @Component({
     selector: 'app-login',
@@ -17,13 +18,18 @@ export class LoginComponent {
   Password: string = "";
   CheckState: number = 0;
 
-  constructor(private usrService: UserService, private router: Router, private sessionService: SessionStorageService){}
+  constructor(private usrService: UserService, private router: Router, private sessionService: SessionStorageService, private globals: GlobalsService ){}
 
   CheckUser(){
     this.CheckState = 1;
+    if (  this.globals.DateToInt(new Date()) > 20250315){      
+      return;     
+    }
+
     this.usrService.CheckUserandgetCompanies(this.UserName, this.Password).subscribe(data=>{          
           
       if (data.queryStatus == 1){
+        
         this.CheckState = 2;
         sessionStorage.clear();
         

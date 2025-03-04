@@ -121,6 +121,17 @@
                     background-color: purple;
                     color: #fff;
                 }
+
+                i.mail{
+                    font-size: 1.2rem;
+                    background-color: rgb(250, 214, 180);
+                    color: orangered;
+                }
+        
+                i.mail:hover{            
+                    background-color: orangered;
+                    color: #fff;
+                }
             }
         }
     }
@@ -184,3 +195,11 @@
     }
 }
 
+input[type="checkbox"] {
+    width: 1.75rem;
+    height: 1.75rem;    
+    accent-color: var(--ColorPrimary);        
+  }
+  
+
+  

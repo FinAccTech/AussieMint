@@ -71,7 +71,7 @@ export class AdvancedocComponent {
     if (!this.data.Series.SeriesSno || this.data.Series.SeriesSno == 0){ this.SeriesNameValid = false; this.globals.SnackBar("error", "Invalid Series details",1000); return false; }
     if (!this.data.Trans_No || this.data.Trans_No == ''){ this.DocNoValid = false; this.globals.SnackBar("error", "Invalid Document Number",1000); return false; }
     if (!this.data.Client.ClientSno || this.data.Client.ClientSno == 0){ this.ClientNameValid = false; this.globals.SnackBar("error", "Invalid Client details",1000); return false; }
-    if (!this.data.NettAmount || this.data.NettAmount == 0){ this.NettAmountValid = false; this.globals.SnackBar("error", "Invalid Nett Amount",1000); return false; }
+  //  if (!this.data.NettAmount || this.data.NettAmount == 0){ this.NettAmountValid = false; this.globals.SnackBar("error", "Invalid Nett Amount",1000); return false; }
 
     return true;
    }

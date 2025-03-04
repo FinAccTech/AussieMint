@@ -24,21 +24,21 @@
 
 
         <div class="row">
-            <div class="col50">
-                <!-- @if (DocHeader()?.Series?.VouType?.VouTypeSno !== 26) { -->
-                    <div>            
+            <div class="col50" style="display: flex; column-gap: 1rem;">                
+                    <div [ngClass]="DocHeader()!.TransSno !==0 ? 'disabledDiv' : ''"  style="width: 50%;" >            
                         <app-selectionlist [Caption]="'Reference'" [DataSource]="DocHeader()!.RefList" [SelectedItem]="DocHeader()!.Reference"  (newItemEvent)="getReference($event)" ></app-selectionlist>
                     </div>        
-                <!-- } -->
-                <!-- @if (DocHeader()?.Series?.VouType?.VouTypeSno == 26) { -->
-                    <!-- <div>            
-                        <app-selectionlist [Caption]="'Testing Item'" [DataSource]="DocHeader()!.BarRefList" [SelectedItem]="DocHeader()!.BarReference"  (newItemEvent)="getAssayItem($event)" ></app-selectionlist>
-                    </div>        -->
-                <!-- } -->
+                
+                    @if (DocHeader()!.Series.VouType.VouTypeSno == 18) {
+                        <div class="formGroup" style="width: 50%;">                    
+                            <input type="number" class="formControl" [(ngModel)]="DocHeader()!.Ref_Amount"/>                    
+                            <label for="" class="formLabel"> Amount </label>                             
+                        </div>    
+                    }
             </div>
 
             <div class="col50">
-                @if (EnableAmountCols()) {
+                @if (EnablePaymentCols()) {
                     <div class="row">
                         <div class="col50">
                             <div class="matGroup">
@@ -122,5 +122,34 @@
             }   
         </div>
     </div>
-    
+
+    @if (ExpectedMetalDetails && ExpectedMetalDetails.length > 0) {
+        @if (DocHeader()!.Series.VouType.VouTypeSno == 19) {
+            <div style="display: flex; align-items: center; column-gap: 1rem;">
+                <span style="font-weight: bold; color: green;">Expected Metal Details </span>
+                <i style="font-size: 1.5rem; color: var(--ColorPrimary);" class='bx bxs-hand-down'></i>
+            </div>
+            
+            <table>
+                <thead> 
+                    <th>Metal</th>
+                    <th>Qty</th>
+                    <th>GrossWt</th>
+                    <th>NettWt</th>
+                    <th>PureWt</th>                
+                </thead>
+                @for (item of ExpectedMetalDetails; track $index) {
+                    <tr>
+                        <td> {{item.Grp_Name}} </td>                    
+                        <td> {{item.Qty}} </td>
+                        <td> {{item.GrossWt}} </td>
+                        <td> {{item.NettWt}} </td>
+                        <td> {{item.PureWt}} </td>                        
+                    </tr>
+                }
+                
+            </table>
+        }
+    }
+
 </div>

@@ -10,6 +10,7 @@ import { AdvancedocComponent } from './advancedoc/advancedoc.component';
 import { TypeFieldInfo } from '../../Types/TypeFieldInfo';
 import { VoucherprintService } from '../Services/voucherprint.service';
 import { LabtestComponent } from './labtest/labtest.component';
+import { MailwindowComponent } from '../Widgets/mailwindow/mailwindow.component';
 
 @Component({
   selector: 'app-transactions',
@@ -71,22 +72,20 @@ export class TransactionsComponent {
       { 
         this.EntryMode= false;
         this.VouTypeSno =  +(params['voutypesno']);     
-        this.VouTypeName = this.globals.GetVouTypeName(this.VouTypeSno);     
-        this.FromDate = 0;
-        this.ToDate = 0;
+        this.VouTypeName = this.globals.GetVouTypeName(this.VouTypeSno);                     
+        
+        let newDate = new Date();          
+        this.FromDate =  this.globals.DateToInt (new Date((newDate.getMonth() == 0 ? newDate.getFullYear() -1 :newDate.getFullYear()).toString() +  '/' + (newDate.getMonth() == 0 ? 12 : newDate.getMonth()).toString() + "/" + newDate.getDate().toString()));          
+        this.ToDate = this.globals.DateToInt (new Date());
+        
         this.LoadTransactionList();        
       });  
-  }
+  } 
 
   LoadTransactionList(){
     this.transService.getTransactions(0,this.VouTypeSno, 0, this.FromDate, this.ToDate).subscribe(data=>{
       if (data.queryStatus == 1){
-        this.TransList = JSON.parse(data.apiData);
-        if (this.FromDate ==0 || this.ToDate == 0){          
-          let newDate = new Date();          
-          this.FromDate =  this.globals.DateToInt (new Date((newDate.getMonth() == 0 ? newDate.getFullYear() -1 :newDate.getFullYear()).toString() +  '/' + (newDate.getMonth() == 0 ? 12 : newDate.getMonth()).toString() + "/" + newDate.getDate().toString()));          
-          this.ToDate = this.globals.DateToInt (new Date());
-        }
+        this.TransList = JSON.parse(data.apiData);      
       } 
       else{
         this.globals.ShowAlert(3,data.apiData); 
@@ -201,8 +200,7 @@ export class TransactionsComponent {
     }  
   }
 
-  PrintTransaction(trans: TypeTransaction){            
-    
+  PrintTransaction(trans: TypeTransaction){                
     trans.Series = JSON.parse(trans.Series_Json)[0];
     trans.Client = JSON.parse(trans.Client_Json)[0];
 
@@ -229,6 +227,21 @@ export class TransactionsComponent {
       else { this.vouPrint.PrintVoucher(trans, trans.Series.Print_Style!);}
 
   }
+
+  MailTransactions(trans: TypeTransaction){
+    const dialogRef = this.dialog.open(MailwindowComponent, 
+          {
+            width: '30vw',
+            maxWidth: 'none',
+            data: trans,        
+            panelClass: "dialogMat"
+          });      
+          dialogRef.disableClose = true; 
+          dialogRef.afterClosed().subscribe(result => {        
+                       
+          });       
+  }
+
 
   handleEventFromChild(event: string){
     if (event =="iexit"){
@@ -276,6 +289,9 @@ export class TransactionsComponent {
         this.FromDate = $event.FromDate;
         this.ToDate = $event.ToDate;
         this.LoadTransactionList();
+        break;
+      case "Email":
+        this.MailTransactions($event.Data);
         break;
     }
 

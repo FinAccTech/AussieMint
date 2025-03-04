@@ -29,7 +29,7 @@ export class TransactionService {
 
     saveTransaction(trans: TypeTransaction): Observable<TypeHttpResponse> {    
         //let postdata = trans;
-        console.log(trans);        
+        
          let postdata = {             
             "BarCodeRefSno" :trans.BarCodeRefSno,
             // "Client" : {"ClientSno": trans.Client.ClientSno} ,
@@ -50,13 +50,15 @@ export class TransactionService {
             "Locked" :  trans.Locked,
             "Name" : trans.Name,
             "NettAmount" : trans.NettAmount,
-            // "PaymentModes" :  trans.PaymentModes,
+            "PaymentModes" :  trans.PaymentModes,
             "PaymentModesXML" :  trans.PaymentModesXML,
             "PaymentModes_Json" :  "",
             "Payment_Type" :  trans.Payment_Type,
             "PrintReference" :  trans.PrintReference,
             "PrintReference_Json" : "",
             "Print_Remarks" : trans.Print_Remarks,
+            "Ref_Amount": trans.Ref_Amount,
+            "Doc_Balance_Amt": trans.Doc_Balance_Amt,
             "RefSno" : trans.RefSno,
             "Remarks":  trans.Remarks,
             "RevAmount": trans.RevAmount,            
@@ -90,6 +92,10 @@ export class TransactionService {
         return this.dataService.HttpGet(postdata, "/getVoucherNumber");                
     }
 
+    mailDocument(TransSno: number, Email: string): Observable<TypeHttpResponse>{
+        let postdata ={ "TransSno" :  TransSno, "Email": Email}; 
+        return this.dataService.HttpGet(postdata, "/mailDocument");     
+    }
 
     InitializeTransaction () { 
     let Transaction: TypeTransaction = {
@@ -118,6 +124,9 @@ export class TransactionService {
         Remarks:            "",
         Print_Remarks:      "",
     
+        Ref_Amount:         0,
+        Doc_Balance_Amt:    0,
+
         TotQty:             0,
         TotGrossWt:         0,
         TotStoneWt:         0,
@@ -162,14 +171,16 @@ InitializeDocHeader(){
         BarReference:   this.InitializeAssayRecord(),
         BarRefList:     [],
         PaymentModes:   [],
+        Ref_Amount:     0,
         Payment_Type:   0,
         Client:         this.clntService.Initialize(),
+        AdvanceAmount:  0
     }
     return Doc
 }
 
 InitializeDocFooter(){
-    let docfooter: TypeDocFooter = {Remarks:"", Print_Remarks: "", TotalAmount:0, TaxPer:10, TaxAmount:0, RevAmount:0, NettAmount:0}
+    let docfooter: TypeDocFooter = {Remarks:"", Print_Remarks: "", TotalAmount:0, TaxPer:10, TaxAmount:0, RevAmount:0, NettAmount:0, AdvanceAmount:0}
     return docfooter;
 }
 
@@ -228,8 +239,10 @@ export  interface TypeDocHeader{
     BarReference:       TypeAssayRecord;
     BarRefList:         TypeAssayRecord[];
     PaymentModes:       TypePaymentModes[];
+    Ref_Amount:         number;
     Payment_Type:       number;
     Client:             TypeClient;
+    AdvanceAmount:      number;
 }
 
 
@@ -267,6 +280,9 @@ export interface TypeTransaction{
     Remarks:            string,
     Print_Remarks:      string,
   
+    Ref_Amount:         number,
+    Doc_Balance_Amt:    number,
+
     TotQty:             number,
     TotGrossWt:         number,
     TotStoneWt:         number,

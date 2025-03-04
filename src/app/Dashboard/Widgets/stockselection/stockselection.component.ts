@@ -24,10 +24,12 @@ export class StockselectionComponent {
     {Field_Name:"Trans_Date", Data_Type:"date" }, 
     {Field_Name:"Item_Name", Data_Type:"string" }, 
     {Field_Name:"Item_Desc", Data_Type:"string" }, 
-    {Field_Name:"BarCode_No", Data_Type:"string" }, 
+    {Field_Name:"BarCode_No", Data_Type:"string" },     
     {Field_Name:"NettWt", Data_Type:"number", Decimals:3 }, 
+    {Field_Name:"PureWt", Data_Type:"number", Decimals:3 }, 
     {Field_Name:"Issued_Wt", Data_Type:"number", Decimals:3 }, 
     {Field_Name:"Balance_Wt", Data_Type:"number", Decimals:3 }, 
+    
   ]
 
   TotalFields: string[] = ["NettWt", "Issued_Wt", "Balance_Wt"];
@@ -55,7 +57,7 @@ export class StockselectionComponent {
                     StoneWt: selItem.StoneWt!,
                     Wastage: selItem.Wastage!,
                     NettWt: selItem.Balance_Wt!,
-                    Uom: {UomSno: selItem.UomSno!, Uom_Name: selItem.Uom_Name!, Name: selItem.Uom_Name, Details:selItem.Uom_Name},
+                    Uom: {UomSno: selItem.UomSno!, Uom_Name: selItem.Uom_Name!, Name: selItem.Uom_Name, Details:selItem.Uom_Name, Base_Qty:selItem.Base_Qty},
                     Rate: selItem.Rate!,
                     Amount: selItem.Amount!,                                        
                   }
@@ -71,8 +73,6 @@ export class StockselectionComponent {
     }
     else if ($event.Action == "MultiSelect"){
       let item: TypeGridItem[] = [];
-
-      console.log($event.Data);
       
       $event.Data.forEach((selitm: any)=>{
         let itm = selitm.Item;
@@ -89,7 +89,7 @@ export class StockselectionComponent {
                     StoneWt: itm.StoneWt!,
                     Wastage: itm.Wastage!,
                     NettWt: itm.Balance_Wt!,
-                    Uom: {UomSno: itm.UomSno!, Uom_Name: itm.Uom_Name!, Name: itm.Uom_Name, Details:itm.Uom_Name},
+                    Uom: {UomSno: itm.UomSno!, Uom_Name: itm.Uom_Name!, Name: itm.Uom_Name, Details:itm.Uom_Name, Base_Qty:itm.Base_Qty},
                     Rate: itm.Rate!,
                     Amount: itm.Amount!,                                        
                   }

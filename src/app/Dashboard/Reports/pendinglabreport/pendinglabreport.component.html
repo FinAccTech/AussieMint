@@ -27,16 +27,17 @@
             <table>
                 <thead>
                     <th>#</th>
-                    <th>BarCode No</th>
-                    <th>Item Name</th>
-                    <th>Trans No</th>
-                    <th>Trans Date</th>
-                    <th>Client Name</th>
-                    <th>Lab Issue No</th>
-                    <th>Lab Receipt No</th>
+                    <th (click)="toggleSort('BarCode_No')">         BarCode No {{sortOrder == true ? '↑' : '↓'}}        </th>
+                    <th (click)="toggleSort('Item_Name')">          Item Name {{sortOrder == true ? '↑' : '↓'}}         </th>
+                    <th (click)="toggleSort('Trans_No')">           Trans No {{sortOrder == true ? '↑' : '↓'}}          </th>
+                    <th (click)="toggleSort('Trans_Date')">         Trans Date {{sortOrder == true ? '↑' : '↓'}}        </th>
+                    <th (click)="toggleSort('Client_Name')">        Client Name {{sortOrder == true ? '↑' : '↓'}}       </th>
+                    <th (click)="toggleSort('IssueTrans_No')">      Lab Issue No {{sortOrder == true ? '↑' : '↓'}}      </th>
+                    <th (click)="toggleSort('ReceiptTrans_No')">    Lab Receipt No {{sortOrder == true ? '↑' : '↓'}}    </th>
                 </thead>
+
                 <tbody>
-                    @for (item of FilteredList; track $index) {
+                    @for (item of FilteredList | sorttable: sortColumn: sortOrder; track $index) {
                     <tr>
                         <td> {{$index+1}} </td>
                         <td> {{item.BarCode_No}} </td>
@@ -50,8 +51,7 @@
                             }
                             @else {
                                 {{item.IssueTrans_No}}
-                            }
-                            
+                            }                            
                         </td>
                         <td>
                             @if (item.ReceiptTransSno == 0 && (item.IssueTransSno !== 0)) {

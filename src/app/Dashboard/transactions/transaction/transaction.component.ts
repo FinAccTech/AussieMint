@@ -17,11 +17,12 @@ import { ReportService } from '../../Services/reports.service';
 import { LedgerService, TypeLedger } from '../../Services/ledger.service';
 import { ItemService, TypeItem } from '../../Services/item.service';
 import { UomService } from '../../Services/uom.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({ 
   selector: 'app-transaction',
   standalone: true,
-  imports: [TitleheaderComponent, DocheaderComponent, ClientcardComponent, ItemGridComponent, DocfooterComponent],
+  imports: [TitleheaderComponent, DocheaderComponent, ClientcardComponent, ItemGridComponent, DocfooterComponent, FormsModule],
   templateUrl: './transaction.component.html',
   styleUrl: './transaction.component.scss',
   animations: [
@@ -52,8 +53,9 @@ export class TransactionComponent {
 
   EnableTaxCols:      boolean   = false;
   EnableAmountCols:   boolean   = false;
+  EnablePaymentCols:  boolean   = false;
   StockSelection:     boolean   = false;
-  EnableBarCode:      boolean   = false;
+  EnableBarCode:      boolean   = false; 
   GenerateBarCode:    boolean   = false;
   NeedMoreInfo:       boolean   = true;
   PaymentModeLedgers: TypeLedger[] = [];
@@ -76,18 +78,15 @@ export class TransactionComponent {
     this.DocFooter        = transService.InitializeDocFooter();
   }
 
-  ngOnInit(){     
+  ngOnInit(){             
     setTimeout(() => { 
       this.state = '*';
     }, 0);   
-
     this.SetChildProperties();
-
     this.VouTypeName = this.globals.GetVouTypeName(this.ChildTransaction.Series.VouType.VouTypeSno);    
     this.ledService.getPaymentModes().subscribe(data=>{
       this.PaymentModeLedgers = JSON.parse(data.apiData);
-    });
-    
+    });    
     this.LoadDocument();    
   }
 
@@ -115,8 +114,7 @@ export class TransactionComponent {
             this.ClearDocument(true);     
             if (Object.keys($event.Trans).length === 0) { return; }
             this.LoadRefDocument($event.Trans);   
-            break;
-        
+            break;        
           case this.globals.VTypRCTI:
             this.ClearDocument(true);     
             if (Object.keys($event.Trans).length === 0) { return; }
@@ -141,9 +139,6 @@ export class TransactionComponent {
       case "BarReference":
         this.ClearDocument(true);
         if (Object.keys($event.Trans).length === 0) { return; }
-        //this.LoadRefDocument($event.Trans);
-        console.log($event);
-        
         break;
     }    
   }
@@ -170,6 +165,7 @@ export class TransactionComponent {
     this.ChildTransaction.Due_Date      = this.DocHeader.Due_Date!;
     this.ChildTransaction.RefSno        = this.DocHeader.Reference.TransSno;
     this.ChildTransaction.BarCodeRefSno = this.DocHeader.BarReference.RecordSno;
+    this.ChildTransaction.Ref_Amount    = this.DocHeader.Ref_Amount;
 
     if (this.DocHeader.PaymentModes.length == 0){
       this.DocHeader.PaymentModes.push ({ PmSno:0, TransSno:0, Ledger: this.PaymentModeLedgers[0], Amount : this.DocFooter.NettAmount, Remarks:"", Trans_Type:1 })
@@ -189,6 +185,8 @@ export class TransactionComponent {
     this.ChildTransaction.TaxAmount       = this.DocFooter.TaxAmount;
     this.ChildTransaction.RevAmount       = this.DocFooter.RevAmount;
     this.ChildTransaction.NettAmount      = this.DocFooter.NettAmount;
+
+    this.ChildTransaction.Doc_Balance_Amt = this.DocFooter.NettAmount - this.DocHeader.AdvanceAmount;
 
     this.ChildTransaction.ImageSource     = this.ImageSource;
     //All Xmls
@@ -216,6 +214,7 @@ export class TransactionComponent {
     this.DocHeader.Trans_Date     = this.ChildTransaction.Trans_Date;
     this.DocHeader.Due_Date       = this.ChildTransaction.Due_Date;
     this.DocHeader.Payment_Type   = this.ChildTransaction.Payment_Type;
+    this.DocHeader.Ref_Amount     = this.ChildTransaction.Ref_Amount;
 
     if ( (this.ChildTransaction.TransSno !== 0) && (this.ChildTransaction.RefSno !==0)){
       this.transService.getTransactions(this.ChildTransaction.RefSno,0,0,0,0).subscribe(data=>{
@@ -245,9 +244,12 @@ export class TransactionComponent {
     this.DocFooter.TaxAmount      = this.ChildTransaction.TaxAmount;
     this.DocFooter.RevAmount      = this.ChildTransaction.RevAmount;
     this.DocFooter.NettAmount     = this.ChildTransaction.NettAmount;    
+
+    this.DocFooter.AdvanceAmount  = this.ChildTransaction.NettAmount - this.ChildTransaction.Doc_Balance_Amt;    
   }
 
-  LoadRefDocument(Trans: TypeTransaction){        
+  LoadRefDocument(Trans: TypeTransaction){       
+         
     Trans.Client = JSON.parse(Trans.Client_Json)[0];
     Trans.GridItems = JSON.parse(Trans.Items_Json);
     if (Trans.Images_Json){
@@ -261,6 +263,8 @@ export class TransactionComponent {
     this.SelectedClient           =  this.ChildTransaction.Client  = Trans.Client;
 
     //For Item Grid Component Fields
+    console.log(Trans.GridItems);
+    
     if (Trans.GridItems){
       this.GridItems                = this.ChildTransaction.GridItems = Trans.GridItems;
     }
@@ -392,6 +396,7 @@ export class TransactionComponent {
     switch (this.ChildTransaction.Series.VouType.VouTypeSno) {
       case this.globals.VTypPurchaseOrder:
         this.EnableAmountCols= true;
+        this.EnablePaymentCols = true;
         this.EnableBarCode = false;
         this.StockSelection = false;
         // this.repService.getPendingDocuments(this.globals.VTypAdvancePurchase).subscribe(data => {
@@ -401,7 +406,7 @@ export class TransactionComponent {
 
       case this.globals.VTypGRN:        
         this.EnableBarCode = false;
-        this.StockSelection = false;
+        this.StockSelection = false;        
         // this.repService.getPendingDocuments(this.globals.VTypPurchaseOrder).subscribe(data => {
         //   this.DocHeader.RefList = JSON.parse (data.apiData);
         // })
@@ -409,6 +414,7 @@ export class TransactionComponent {
 
       case this.globals.VTypBuyingContract:
         this.EnableAmountCols= true;
+        this.EnablePaymentCols = true;
         this.EnableBarCode = false;
         this.GenerateBarCode  = true;
         this.StockSelection = false;
@@ -419,6 +425,7 @@ export class TransactionComponent {
 
       case this.globals.VTypRCTI:
         this.EnableAmountCols= true;
+        this.EnablePaymentCols = true;
         this.EnableBarCode = false;
         this.GenerateBarCode  = true;
         this.StockSelection = false;
@@ -430,6 +437,7 @@ export class TransactionComponent {
 
       case this.globals.VTypSalesOrder:
         this.EnableAmountCols= true;
+        this.EnablePaymentCols = true;
         this.EnableBarCode = true;
         this.StockSelection = false;
         // this.repService.getPendingDocuments(this.globals.VTypAdvanceSales).subscribe(data => {
@@ -447,6 +455,7 @@ export class TransactionComponent {
         break;
       case this.globals.VTypSalesInvoice:
         this.EnableAmountCols= true;
+        this.EnablePaymentCols = true;
         this.EnableBarCode = true;
         this.StockSelection = true;
         this.EnableTaxCols = true;
@@ -456,13 +465,13 @@ export class TransactionComponent {
       break;
 
       case this.globals.VTypMeltingIssue:
-        this.EnableAmountCols= false;
+        this.EnableAmountCols= true;        
         this.EnableBarCode = true;
         this.StockSelection = true;
         break;
 
       case this.globals.VTypMeltingReceipt:
-        this.EnableAmountCols= false;
+        this.EnableAmountCols= true;
         this.EnableBarCode = false;
         this.GenerateBarCode  = true;
         this.StockSelection = false;
@@ -472,13 +481,13 @@ export class TransactionComponent {
       break;
 
       case this.globals.VTypRefiningIssue:
-        this.EnableAmountCols= false;
-        this.EnableBarCode = true;
+        this.EnableAmountCols= true;
+        this.EnableBarCode = true; 
         this.StockSelection = true;
         break;
 
       case this.globals.VTypRefiningReceipt:
-        this.EnableAmountCols= false;
+        this.EnableAmountCols= true;
         this.EnableBarCode = false;
         this.GenerateBarCode  = true;
         this.StockSelection = false;
@@ -504,13 +513,13 @@ export class TransactionComponent {
       break;
 
       case this.globals.VTypJobworkInward:
-        this.EnableAmountCols= false;
+        this.EnableAmountCols= true;
         this.EnableBarCode = false;
         this.StockSelection = false;
       break;
 
       case this.globals.VTypJobworkDelivery:
-        this.EnableAmountCols= false;
+        this.EnableAmountCols= true;
         this.EnableBarCode = false;
         this.StockSelection = true;
         // this.repService.getPendingDocuments(this.globals.VTypJobworkInward).subscribe(data => {
@@ -551,8 +560,7 @@ export class TransactionComponent {
       case this.globals.VTypBuyingContract:
         this.DocHeader.RefList = [];
         this.repService.getPendingDocuments(this.globals.VTypGRN, ClientSno).subscribe(data => {                      
-            let pdList = JSON.parse (data.apiData);
-            console.log(pdList);
+            let pdList = JSON.parse (data.apiData);            
             
             this.repService.getPendingDocuments(this.globals.VTypAdvancePurchase, ClientSno).subscribe(data => {              
                 let adplist = JSON.parse (data.apiData);              
@@ -563,8 +571,9 @@ export class TransactionComponent {
 
       case this.globals.VTypRCTI:
         this.DocHeader.RefList = [];
-        this.repService.getPendingDocuments(this.globals.VTypGRN, ClientSno).subscribe(data => {                  
+        this.repService.getPendingGrins(ClientSno).subscribe(data => {                  
           let pdList = JSON.parse (data.apiData);
+          
           this.repService.getPendingDocuments(this.globals.VTypAdvancePurchase, ClientSno).subscribe(data => {              
               let adplist = JSON.parse (data.apiData);              
               this.DocHeader.RefList = [...pdList, ...adplist];              

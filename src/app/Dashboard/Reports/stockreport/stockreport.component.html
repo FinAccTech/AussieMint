@@ -20,7 +20,9 @@
             @defer (when StockList.length >0) {
                 <app-tableview  [DataSource]="StockList" 
                                 [FieldNames]="FieldNames"                             
-                                [TotalFields]="TotalFields" > </app-tableview>                        
+                                [TotalFields]="TotalFields"
+                                [RowsPerPage] = "25"
+                                > </app-tableview>                        
             }
             @placeholder {
                 <p>Report list Here</p>

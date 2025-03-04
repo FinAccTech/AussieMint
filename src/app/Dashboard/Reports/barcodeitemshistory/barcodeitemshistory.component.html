@@ -1,0 +1,37 @@
+<div [@myAnimation]="state">
+    <div class="listContainer">
+        <div class="headerCard">
+            <div class="headerLeft">     
+                <span class="bar"></span>
+                <p class="heading"> &nbsp; BarCode Items History</p>                    
+            </div>
+
+            <div class="headerRight" style="width: 30%;">
+                <div class="row">
+                    <div class="col100">
+                        <app-selectionlist [Caption]="'BarCode'" [DataSource]="BarCodesList" [SelectedItem]="SelectedBarCode"  (newItemEvent)="getBarCode($event)"></app-selectionlist>
+                    </div>
+                </div>
+                
+            </div>
+        </div> 
+
+        <div class="tableBody">
+
+            @defer (when RepList.length >0) {
+                <app-tableview  [DataSource]="RepList" 
+                                [FieldNames]="FieldNames"                             
+                                [TotalFields]="TotalFields" > </app-tableview>                        
+            }
+            @placeholder {
+                <p>Report list Here</p>
+            }
+            @loading {
+                <p>Loading in Progress</p>
+            } 
+            
+        </div>
+    </div>
+</div>
+
+
