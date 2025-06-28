@@ -72,6 +72,13 @@ export class ReportService {
       let postdata ={ "TransSno" :  TransSno  }; 
       return this.dataService.HttpGet(postdata, "/getItemGroupDetailsofTrans");                
     } 
+
+    getBarCodesofTransaction(TransSno: number): Observable<TypeHttpResponse> {
+      let postdata ={ "TransSno" :  TransSno  }; 
+      return this.dataService.HttpGet(postdata, "/getBarCodesofTransaction");                
+    } 
+
+    
 }
 
 export interface TypeStockReport{

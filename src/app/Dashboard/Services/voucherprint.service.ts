@@ -40,8 +40,9 @@ export class VoucherprintService {
 
 PrintVoucher(Trans: TypeTransaction, PrintStyle: string){    
  
-    this.dataService.HttpGetPrintStyle(PrintStyle).subscribe(data=>{      
-        let FieldSet = this.GetPrintFields(Trans);                
+    this.dataService.HttpGetPrintStyle(PrintStyle).subscribe(data=>{       
+        let FieldSet = this.GetPrintFields(Trans);       
+                         
         let FldList = JSON.parse(data).FieldSet;        
         let Setup: TypePrintSetup = JSON.parse(data).Setup[0];        
         
@@ -50,17 +51,12 @@ PrintVoucher(Trans: TypeTransaction, PrintStyle: string){
         StrHtml += this.GetHtmlFromFieldSet(FldList, FieldSet,0,0, false);
 
         
-        
-        
         if (Setup.PrintCopy == 1){            
              StrHtml += this.GetHtmlFromFieldSet(FldList, FieldSet,Setup.CopyLeftMargin,Setup.CopyTopMargin, true);            
         }
 
 
         StrHtml += '</div>';    
-
-        
-        
 
         let popupWin;    
         popupWin = window.open();
@@ -362,8 +358,10 @@ GetHtmlFromFieldSet(FldList: [], FieldSet: TypePrintFields, LeftMargin: number, 
     return StrHtml;
 }
 
-GetPrintFields(Trans: TypeTransaction){
+GetPrintFields(Trans: TypeTransaction){    
     let PrintFields = this.IntializePrintFields();
+    
+    console.log(Trans.Items_Json);
     
     
     PrintFields.TransSno        =  Trans.TransSno,
@@ -385,6 +383,7 @@ GetPrintFields(Trans: TypeTransaction){
     PrintFields.NettAmount      =  Trans.NettAmount;
     PrintFields.Fixed_Price     =  Trans.Fixed_Price;
     PrintFields.Commision       =  Trans.Commision;
+
     if (Trans.PrintReference_Json){
         PrintFields.PrintReference   = JSON.parse (Trans.PrintReference_Json)[0];
     }
@@ -415,7 +414,7 @@ GetPrintFields(Trans: TypeTransaction){
                 
         itemList.forEach((it:any)=>{
             PrintFields.ItemDetails.push({BarCodeSno: it.BarCodeSno,
-                BarCode_Name: it.BarCode.BarCode_Name,
+                BarCode_Name: it.BarCode.BarCode_No,
                 ItemSno: it.Item.ItemSno,
                 Item_Name: it.Item.Item_Name,
                 Item_Desc: it.Item_Desc,
@@ -429,7 +428,9 @@ GetPrintFields(Trans: TypeTransaction){
                 UomSno: it.Uom.UomSno,
                 Uom_Name: it.Uom.Uom_Name,
                 Rate: it.Rate,
-                Amount: it.Amount });            
+                Amount: it.Amount,
+                BarSelf_No: it.BarSelf_No
+             });            
         })                
     }
 
@@ -446,6 +447,9 @@ GetPrintFields(Trans: TypeTransaction){
             PrintFields.Client_Images.push(img);
         })
     }
+    
+    PrintFields.UserName = this.sessionService.GetUser().UserName!;
+    console.log(PrintFields);
     
     return PrintFields;
    }
@@ -494,6 +498,8 @@ GetPrintFields(Trans: TypeTransaction){
         Client_Remarks: "",
         Client_Profile_Image: "",
         Client_Images: [],
+
+        UserName: "",
     }
     return PrintFields
    }
@@ -546,6 +552,8 @@ interface TypePrintFields {
     Client_Remarks: string;    
     Client_Profile_Image: string;
     Client_Images: FileHandle[];
+
+    UserName: string;
 }
 
 interface TypeItemFields {
@@ -565,6 +573,7 @@ interface TypeItemFields {
     Uom_Name: string;
     Rate: number;
     Amount: number;    
+    BarSelf_No: string;
 }
 
 interface TypePrintSetup{

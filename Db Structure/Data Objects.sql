@@ -2535,7 +2535,7 @@ BEGIN
                       SET @DetSno = @@IDENTITY
 
                       /* IF THIS DOCUMENT IS RCTI THEN UPDATE THE RATE AND AMOUNT OF THE BARCODED ITEM OF GRIN ----------------------*/
-
+                      
                       IF @VouTypeSno = 12
                         BEGIN
                           IF @RefSno <> 0
@@ -2581,8 +2581,11 @@ BEGIN
                               INSERT INTO Barcoded_Items(TransSno, DetSno, ItemSno, BarCode_No)
                               VALUES (@TransSno, @DetSno, @ItemSno,@Trans_No+'/'+CAST(@TmpQty+@LastQty AS varchar))
                               IF @@Error <> 0 GOTO CloseNow
-
                               SET @NewBarCodeSno=@@IDENTITY
+
+                              /* THIS IS TO UPDATE THE NEWLY CREATED BARCODED ITEM FOR THE ITEM INSERTED (SELF) */
+                              UPDATE Transaction_Details SET BarSelfSno=@NewBarCodeSno WHERE DetSno=@DetSno
+                              
                               IF @Require_LabTest = 1
                               BEGIN
                                 INSERT INTO Assay_Records(BarCodeSno) VALUES (@NewBarCodeSno)
@@ -2784,12 +2787,14 @@ RETURN
                               Det.PureWt, Det.Rate, Det.Amount,
                               It.ItemSno as 'Item.ItemSno', It.Item_Name as 'Item.Item_Name', It.Item_Name as 'Item.Name', 'Code:' + It.Item_Code as 'Item.Details',
                               Um.UomSno as 'Uom.UomSno', Um.Uom_Name as 'Uom.Uom_Name', Um.Uom_Name as 'Uom.Name', 'Code:' + Um.Uom_Code as 'Uom.Details', Um.Base_Qty as 'Uom.Base_Qty',
-                              ISNULL(Bar.BarCodeSno,0) as 'BarCode.BarCodeSno', ISNULL(Bar.BarCode_No,'') as 'BarCode.BarCode_No', ISNULL(Bar.BarCode_No,'') as 'BarCode.Name', + ISNULL(Bar.BarCode_No,'') as 'BarCode.Details'
+                              ISNULL(Bar.BarCodeSno,0) as 'BarCode.BarCodeSno', ISNULL(Bar.BarCode_No,'') as 'BarCode.BarCode_No', ISNULL(Bar.BarCode_No,'') as 'BarCode.Name', + ISNULL(Bar.BarCode_No,'') as 'BarCode.Details',
+                              ISNULL(BarSelf.BarCode_No,'') as BarSelf_No
 
                   FROM        Transaction_Details Det                    
                               INNER JOIN Items It On It.ItemSno=Det.ItemSno
                               INNER JOIN Uom Um ON Um.UomSno = Det.UomSno
                               LEFT OUTER JOIN Barcoded_Items Bar ON Bar.BarCodeSno = Det.BarCodeSno
+                              LEFT OUTER JOIN Barcoded_Items BarSelf ON BarSelf.BarCodeSno = Det.BarSelfSno
                               
                   WHERE       Det.TransSno = Trans.TransSno FOR JSON PATH) Items_Json,
                   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

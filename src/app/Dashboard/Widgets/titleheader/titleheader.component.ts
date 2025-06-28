@@ -18,7 +18,7 @@ export class TitleheaderComponent {
   @Output() actionEvent = new EventEmitter<any>();
 
   GoBack(){
-    this.location.back();
+    this.location.back(); 
   }
 
   ClearDocument(){

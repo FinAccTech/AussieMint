@@ -409,7 +409,7 @@ CREATE TABLE Client
 	Gst_Number VARCHAR(50),
 	Director_Name VARCHAR(50),
 	Remarks VARCHAR(100),
-   DECIMAL(5,2),
+  Commision DECIMAL(5,2),
 	AreaSno INT,
   LedSno INT,
 	Blocked BIT,
@@ -417,6 +417,8 @@ CREATE TABLE Client
 	CompSno INT
 )
 GO
+
+select * from client
 
 CREATE TABLE  Image_Details
 (
@@ -484,7 +486,8 @@ CREATE TABLE Transaction_Details
   NettWt        DECIMAL(8,2),
   PureWt        DECIMAL(8,2),
   Rate          MONEY,
-  Amount        MONEY  
+  Amount        MONEY,
+  BarSelfSno    INT
 )
 GO
 

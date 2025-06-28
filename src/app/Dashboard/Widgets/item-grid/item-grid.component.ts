@@ -22,7 +22,7 @@ import { GlobalsService } from '../../../global.service';
 })
 
 export class ItemGridComponent {
-  TransSno = input.required(); //For Input  
+  TransSno = input.required(); //For Input   
   GridItems = input<TypeGridItem[]>(); //For Input  
   DocFooter = input<TypeDocFooter>();
   EnableBarCode = input.required();
@@ -167,6 +167,8 @@ EditItem( item: TypeGridItem, index: number){
         }
     });
        
+    this.DocFooter()!.TotalAmount =  +this.DocFooter()!.TotalAmount.toFixed(2);
+
     this.TotGrossWt = +this.TotGrossWt.toFixed(3);
     this.TotNettWt = +this.TotNettWt.toFixed(3);
     

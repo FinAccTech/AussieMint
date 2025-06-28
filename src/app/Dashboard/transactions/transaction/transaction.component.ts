@@ -18,6 +18,8 @@ import { LedgerService, TypeLedger } from '../../Services/ledger.service';
 import { ItemService, TypeItem } from '../../Services/item.service';
 import { UomService } from '../../Services/uom.service';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { PrintbarcodeComponent } from '../../Widgets/printbarcode/printbarcode.component';
 
 @Component({ 
   selector: 'app-transaction',
@@ -71,7 +73,8 @@ export class TransactionComponent {
     private repService:     ReportService,
     private ledService:     LedgerService,
     private iteService: ItemService,
-    private umService: UomService
+    private umService: UomService,
+    private dialog: MatDialog,
   ){
     this.DocHeader        = transService.InitializeDocHeader();  
     this.SelectedClient   = clntService.Initialize();                
@@ -139,6 +142,9 @@ export class TransactionComponent {
       case "BarReference":
         this.ClearDocument(true);
         if (Object.keys($event.Trans).length === 0) { return; }
+        break;
+      case "PrintBarCode":
+        this.PrintBarCode();
         break;
     }    
   }
@@ -414,7 +420,7 @@ export class TransactionComponent {
 
       case this.globals.VTypBuyingContract:
         this.EnableAmountCols= true;
-        this.EnablePaymentCols = true;
+        this.EnablePaymentCols = true; 
         this.EnableBarCode = false;
         this.GenerateBarCode  = true;
         this.StockSelection = false;
@@ -504,7 +510,7 @@ export class TransactionComponent {
 
       case this.globals.VTypCastingReceipt:
         this.EnableAmountCols= false;
-        this.EnableBarCode = true;
+        this.EnableBarCode = false;
         this.GenerateBarCode  = true;
         this.StockSelection = false;
         // this.repService.getPendingDocuments(this.globals.VTypCastingIssue).subscribe(data => {
@@ -629,4 +635,19 @@ export class TransactionComponent {
 
     }
    }
+
+  PrintBarCode(){
+      const dialogRef = this.dialog.open(PrintbarcodeComponent, 
+            {
+              width: '30vw',
+              maxWidth: 'none',
+              data: "",        
+              panelClass: "dialogMat"
+            });      
+            dialogRef.disableClose = true; 
+            dialogRef.afterClosed().subscribe(result => {        
+                        
+            });       
+    }
+
 }

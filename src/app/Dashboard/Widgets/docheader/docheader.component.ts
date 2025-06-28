@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TypeDocFooter } from '../../../Types/TypeDocFooter';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { ReportService } from '../../Services/reports.service';
+import { PrintbarcodeComponent } from '../printbarcode/printbarcode.component';
 
 export interface TypeRefDetails{
   DocType: number;
@@ -41,7 +42,7 @@ export class DocheaderComponent implements AfterViewInit {
   RefDetails: TypeRefDetails[] = [];
   RefTypeStock: boolean = false;  
   ShowReceivedDetails: boolean = true; 
-  ExpectedMetalDetails: any[] = [];
+  ExpectedMetalDetails: any[] = []; 
 
   // AssayRecordList: TypeAssayRecord[] = [];
   // SelectedAssayItem!: TypeAssayRecord;
@@ -181,6 +182,21 @@ export class DocheaderComponent implements AfterViewInit {
           }        
         }      
       }); 
+  }
+  
+  PrintBarCode(){
+    if (this.DocHeader()!.TransSno == 0){ return; }
+    const dialogRef = this.dialog.open(PrintbarcodeComponent, 
+          {
+            width: '30vw',
+            maxWidth: 'none',
+            data: this.DocHeader()?.TransSno,        
+            panelClass: "dialogMat"
+          });      
+          dialogRef.disableClose = true; 
+          dialogRef.afterClosed().subscribe(result => {        
+                      
+          });       
   }
   
 
