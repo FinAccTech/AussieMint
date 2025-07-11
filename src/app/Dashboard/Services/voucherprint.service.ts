@@ -355,16 +355,51 @@ GetHtmlFromFieldSet(FldList: [], FieldSet: TypePrintFields, LeftMargin: number, 
             }           
         }
       });
+
+        // StrHtml += '<div style="page-break-before:always">';
+
+    //   if (FieldSet.VouTypeSno == this.globals.VTypBuyingContract || FieldSet.VouTypeSno == this.globals.VTypRCTI)
+    //   {        
+
+        StrHtml += '    <div  style="position:absolute;left:' + LeftMargin + '; top:' + TopMargin + ';"> ';
+        
+        if (FieldSet.Client_Images){
+        FieldSet.Client_Images.forEach(img=>{
+            StrHtml += '    <img src="' + img.Image_Url + '" height="300" width="300" />' ;      
+        })
+        }
+
+        StrHtml += '        <br>';
+        StrHtml += '        <br>';
+
+        StrHtml += '         <p style="font-weight: 500" > Items Sold </p>';
+
+        StrHtml += '         <div style="display: flex; align-items:center; flex-wrap: wrap; column-gap:10px">';  
+            
+          if (FieldSet.ItemImages){
+            FieldSet.ItemImages.forEach(img=>{
+              StrHtml += '      <img src="' + img.Image_Url + '" height="300" width="300" />' ;      
+            })
+          }
+          StrHtml += '        </div>'; 
+          // StrHtml += ' <div>';  
+
+          // StrHtml += ' </div>';  
+           
+          StrHtml += '	  </div> ';
+          StrHtml += '</div> ';
+       
+    //   }
+    console.log(StrHtml);
+    
     return StrHtml;
 }
 
 GetPrintFields(Trans: TypeTransaction){    
     let PrintFields = this.IntializePrintFields();
     
-    console.log(Trans.Items_Json);
-    
-    
     PrintFields.TransSno        =  Trans.TransSno,
+    PrintFields.VouTypeSno      =  Trans.Series.VouType.VouTypeSno,
     PrintFields.Trans_No        =  Trans.Trans_No;
     PrintFields.Series_Name     =  Trans.Series.Series_Name;
     PrintFields.Trans_Date      =  this.globals.IntToDateString (Trans.Trans_Date);
@@ -408,6 +443,8 @@ GetPrintFields(Trans: TypeTransaction){
     PrintFields.Client_Gst_No           = Trans.Client.Gst_Number;
     PrintFields.Client_Remarks          = Trans.Client.Remarks;
     PrintFields.Client_Profile_Image    = Trans.Client.Profile_Image;
+
+    
 
     if (Trans.Items_Json && Trans.Items_Json !==''){
         let itemList = JSON.parse(Trans.Items_Json);
@@ -457,6 +494,7 @@ GetPrintFields(Trans: TypeTransaction){
    IntializePrintFields(){
     let PrintFields: TypePrintFields = {
         TransSno: 0,
+        VouTypeSno:0,
         Trans_No: "",
         Series_Name: "",
         Trans_Date: "",
@@ -507,6 +545,7 @@ GetPrintFields(Trans: TypeTransaction){
 
 interface TypePrintFields {
     TransSno: number;
+    VouTypeSno: number;
     Trans_No: string;
     Series_Name: string;
     Trans_Date: string;

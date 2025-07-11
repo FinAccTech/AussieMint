@@ -41,7 +41,7 @@ export class PrintbarcodeComponent {
       let StrHtml = "";
         this.PrintableItems.forEach(item=>{
           if (item.Selected == true){
-            StrHtml += '<p style="font-family : IDAutomationHC39M Free Version"> ' + item.BarCode + ' </p> ';
+            StrHtml += '<p style="font-family : IDAutomationHC39M Free Version"> *' + item.BarCode + '* </p> ';
           }
         });
         console.log(StrHtml);

@@ -82,6 +82,7 @@ export class TransactionComponent {
   }
 
   ngOnInit(){             
+    
     setTimeout(() => { 
       this.state = '*';
     }, 0);   
@@ -163,6 +164,13 @@ export class TransactionComponent {
   }
 
   SaveDocument(){    
+    if (this.ChildTransaction.TransSno !== 0){
+      if(this.sessionService.GetUser().User_Type !==1 ){
+        this.globals.SnackBar("error","You are not authorized for this Operation",1500)
+        return;
+      }
+    }
+
     if (this.ValidateInputs() == false){ return; }
     this.ChildTransaction.Series        = this.DocHeader.Series;
     this.ChildTransaction.Trans_No      = this.DocHeader.Trans_No;

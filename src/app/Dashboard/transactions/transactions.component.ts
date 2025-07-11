@@ -11,6 +11,7 @@ import { TypeFieldInfo } from '../../Types/TypeFieldInfo';
 import { VoucherprintService } from '../Services/voucherprint.service';
 import { LabtestComponent } from './labtest/labtest.component';
 import { MailwindowComponent } from '../Widgets/mailwindow/mailwindow.component';
+import { SessionStorageService } from '../../session-storage.service';
 
 @Component({
   selector: 'app-transactions',
@@ -46,7 +47,9 @@ export class TransactionsComponent {
   TotalFields: string[] = ["TotNettWt", "NettAmount"]
   RemoveSignal: number = 0;
 
-  constructor(private route: ActivatedRoute, private dialog: MatDialog, private globals: GlobalsService, private transService: TransactionService, private vouPrint: VoucherprintService){
+  constructor(private route: ActivatedRoute, private dialog: MatDialog, private globals: GlobalsService, 
+    private sessionService: SessionStorageService,
+    private transService: TransactionService, private vouPrint: VoucherprintService){
     
   }
  
@@ -275,6 +278,10 @@ export class TransactionsComponent {
         this.OpenTransaction($event.Data);  
         break;
       case 2:
+        if(this.sessionService.GetUser().User_Type !==1 ){
+          this.globals.SnackBar("error","You are not authorized for this Operation",1500)
+          return;
+        }
         this.globals.QuestionAlert("Are you sure you want to delete this Transaction").subscribe(data=>{
           if (data == 1){
             this.DeleteTransaction($event.Data,$event.Index);
