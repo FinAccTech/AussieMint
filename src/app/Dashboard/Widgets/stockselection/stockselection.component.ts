@@ -39,8 +39,7 @@ export class StockselectionComponent {
       this.BarCodedList = JSON.parse(data.apiData);
       this.BarCodedList = this.BarCodedList.filter(itm=>{
         return itm.Balance_Wt! > 0 
-      })
-      
+      })      
     })
   }
 

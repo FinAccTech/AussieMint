@@ -1,5 +1,5 @@
 import { Component, computed, effect, ElementRef, EventEmitter, Input, input, Output, Signal, ViewChild } from '@angular/core';
-import { TypeGridItem } from '../../../Types/TypeGridItem';
+import { TypeBarCode, TypeGridItem } from '../../../Types/TypeGridItem';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ItemService, TypeItem } from '../../Services/item.service';
@@ -12,6 +12,8 @@ import { FileHandle } from '../../../Types/file-handle';
 import { TypeDocFooter } from '../../../Types/TypeDocFooter';
 import { StockselectionComponent } from '../stockselection/stockselection.component';
 import { GlobalsService } from '../../../global.service';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { ReportService } from '../../Services/reports.service';
 
 @Component({
   selector: 'app-item-grid',
@@ -22,6 +24,8 @@ import { GlobalsService } from '../../../global.service';
 })
 
 export class ItemGridComponent {
+  private searchSubject = new Subject<number>();
+  
   TransSno = input.required(); //For Input   
   GridItems = input<TypeGridItem[]>(); //For Input  
   DocFooter = input<TypeDocFooter>();
@@ -39,16 +43,63 @@ export class ItemGridComponent {
   TotQty: number = 0;
   TotGrossWt: number = 0; 
   TotNettWt: number = 0;
-  
+
+  BarCodedList: TypeBarCode[] = [];
+  BarCode: string = "";
+
   @ViewChild('itemDiv') myDivRef!: ElementRef;
 
-  constructor(private itmService: ItemService, private umService: UomService, private dialog: MatDialog, private globals: GlobalsService) {
+  constructor(private itmService: ItemService, private umService: UomService, private dialog: MatDialog, private globals: GlobalsService, private repService: ReportService) {
+     this.searchSubject
+        .pipe( 
+          debounceTime(300), // Wait 300ms after user stops typing
+          distinctUntilChanged() // Only emit if the value is different from the last
+        )
+        .subscribe((searchText) => {                  
+          if (searchText < 1) { this.BarCode= ""; return;}
+          
+          let item: any = this.BarCodedList.find(itm => (itm.BarCode_No === this.BarCode) )
+          
+          if(item){          
+            let itemExists: boolean = this.GridItems()!.some(it => it.BarCode.BarCode_No === item.BarCode_No);
+            if (itemExists == false){
+              this.GridItems()!.push(
+                      {BarCode:{"BarCodeSno": item.BarCodeSno, BarCode_No: item.BarCode_No, Name: item.BarCode_No!, Details: item.BarCode_No!}, 
+                        DetSno: item.DetSno!,
+                        Item:{ItemSno: item.ItemSno!, Item_Name:item.Item_Name!, Name:item.Item_Name!, Details:item.Item_Name! },
+                        Item_Desc: item.Item_Desc!,
+                        Karat: item.Karat!,
+                        Purity: item.Purity!,
+                        Qty: 1,
+                        GrossWt: item.Balance_Wt!,
+                        StoneWt: item.StoneWt!,
+                        Wastage: item.Wastage!,
+                        NettWt: item.Balance_Wt!,
+                        Uom: {UomSno: item.UomSno!, Uom_Name: item.Uom_Name!, Name: item.Uom_Name, Details:item.Uom_Name, Base_Qty:item.Base_Qty},
+                        Rate: item.Rate!,
+                        Amount: item.Amount!,                                        
+                      }
+              ); 
+            }
+          }
+          item = null;
+          // Add your search logic here
+          this.BarCode = "";
+        });
+
     effect(()=>{                  
       this.SetTotals();                  
     })
   }
 
   ngOnInit(){        
+    this.repService.getBarCodeStock().subscribe(data=>{
+      this.BarCodedList = JSON.parse(data.apiData);
+      this.BarCodedList = this.BarCodedList.filter(itm=>{
+        return itm.Balance_Wt! > 0 
+      })      
+    })
+
     this.itmService.getItems(0,0).subscribe(data=>{
       this.ItemsList = JSON.parse (data.apiData);
     });
@@ -93,8 +144,6 @@ export class ItemGridComponent {
         
         if (result) 
         { 
-          console.log(result);
-          
           if (this.TransSno() == 0){
             this.GridItems()?.splice(0, this.GridItems()?.length);          
           }
@@ -202,6 +251,9 @@ EditItem( item: TypeGridItem, index: number){
       }); 
   }
 
-
+  onSearchByBarCode(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchSubject.next(+input.value);    
+  }
 
 }

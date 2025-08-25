@@ -585,7 +585,8 @@ export class TransactionComponent {
 
       case this.globals.VTypRCTI:
         this.DocHeader.RefList = [];
-        this.repService.getPendingGrins(ClientSno).subscribe(data => {                  
+        this.repService.getPendingDocuments(this.globals.VTypGRN, ClientSno).subscribe(data => {                  
+                    
           let pdList = JSON.parse (data.apiData);
           
           this.repService.getPendingDocuments(this.globals.VTypAdvancePurchase, ClientSno).subscribe(data => {              

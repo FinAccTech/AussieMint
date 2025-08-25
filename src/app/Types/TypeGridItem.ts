@@ -1,7 +1,7 @@
 import { TypeItem } from "../Dashboard/Services/item.service";
 import { TypeUom } from "../Dashboard/Services/uom.service";
 
-export interface TypeGridItem{
+export interface TypeGridItem{    
     BarCode:    TypeBarCode;    
     DetSno:     number;
     Item:       TypeItem;    

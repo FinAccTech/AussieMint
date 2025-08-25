@@ -2,20 +2,30 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogClose, MatDialogRef } from '@angular/material/dialog';
 import { ReportService } from '../../Services/reports.service';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
+import { FormsModule } from '@angular/forms';
+import { NumberInputDirective } from '../../Directives/NumberInput';
+import { TransactionService } from '../../Services/transaction.service';
 
 @AutoUnsubscribe
 @Component({
   selector: 'app-printbarcode',
-  imports: [MatDialogClose],
+  imports: [MatDialogClose, FormsModule, NumberInputDirective],
   templateUrl: './printbarcode.component.html',
   styleUrl: './printbarcode.component.scss'
 })
 
 export class PrintbarcodeComponent {
 
+  FontSize: number = 0;
+  MarginLeft: number = 0;
+  MarginTop: number = 0;
+  AllItemsSelected: boolean = false;
+
+
   constructor(
       public dialogRef: MatDialogRef<PrintbarcodeComponent>,
       private repService: ReportService,
+      private transService: TransactionService,
       @Inject(MAT_DIALOG_DATA) public data: number,                
     )  {}
 
@@ -28,6 +38,14 @@ export class PrintbarcodeComponent {
           JSON.parse (data.apiData).forEach((bar:any)=>{
             this.PrintableItems.push({"Selected": false,"BarCode": bar.BarCode_No })
           })          
+
+          this.transService.getBarCodeSettings().subscribe(data=>{
+            const Settings = JSON.parse(data.apiData)[0];
+            this.FontSize = +Settings.Font_Size;
+            this.MarginLeft = +Settings.Margin_Left;
+            this.MarginTop = +Settings.Margin_Top;
+          })
+            
         })
       }
     }
@@ -36,12 +54,34 @@ export class PrintbarcodeComponent {
       this.PrintableItems[index].Selected  = $event.target.checked;
     }
 
+    SelectAllItems(){
+      if (this.AllItemsSelected){      
+        this.AllItemsSelected = false;  
+        this.PrintableItems.forEach(item=>{
+          item.Selected = false;
+        });
+      }
+      else{
+        this.AllItemsSelected = true;
+        this.PrintableItems.forEach(item=>{
+          item.Selected = true;
+        });
+      }
+    }
+
+    SaveSettings(){
+      this.transService.UpdateBarCodeSettings(this.FontSize, this.MarginLeft, this.MarginTop).subscribe(data=>{        
+      });
+    }
+
     PrintBarCodes(){
-      console.log(this.PrintableItems);
+      
       let StrHtml = "";
         this.PrintableItems.forEach(item=>{
           if (item.Selected == true){
-            StrHtml += '<p style="font-family : IDAutomationHC39M Free Version"> *' + item.BarCode + '* </p> ';
+            StrHtml += '<div style="width: 100%; display: flex;align-items: center; justify-content: center;">';
+              StrHtml += '<p style="font-family : IDAutomationHC39M Free Version; font-size:'+ this.FontSize + 'px; margin-left:' + this.MarginLeft  + 'px; margin-top:'+  this.MarginTop + 'px;"> *' + item.BarCode + '* </p> ';
+            StrHtml += '</div>'
           }
         });
         console.log(StrHtml);

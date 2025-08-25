@@ -8,9 +8,10 @@
         @if (StockSelection()) {
             <div class="actions" (click)="SelectfromInventory()">                                    
                 <i class='bx bx-store-alt stock'  ></i>       
-                <p>Select from Inventory</p>  
+                <p>Select from Inventory</p>                  
             </div>
-
+            <input type="text" class="formControlreadonly" (input)="onSearchByBarCode($event)" NumberInput [(ngModel)]="BarCode" required NumberInput MaxValue=0  />
+            
             @if (VouTypeSno() == 18) {
                 <div class="actions" (click)="AddItem()" >                                    
                     <i class='bx bx-plus edit' ></i>          

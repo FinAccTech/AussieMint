@@ -87,6 +87,17 @@ export class TransactionService {
         return this.dataService.HttpPost(postdata, "/deleteTransaction");                
     }
 
+    
+    getBarCodeSettings(): Observable<TypeHttpResponse> {
+        let postdata ={ }; 
+        return this.dataService.HttpGet(postdata, "/getBarCodeSettings");                
+    }
+
+    UpdateBarCodeSettings(Font_Size: number, Margin_Left: number, Margin_Top: number): Observable<TypeHttpResponse> {
+        let postdata ={ "Font_Size" :  Font_Size, "Margin_Left" :  Margin_Left, "Margin_Top" :  Margin_Top, }; 
+        return this.dataService.HttpPost(postdata, "/UpdateBarCodeSettings");                
+    }
+
     getVoucherNumber(SeriesSno: number): Observable<TypeHttpResponse> {
         let postdata ={ "SeriesSno" :  SeriesSno}; 
         return this.dataService.HttpGet(postdata, "/getVoucherNumber");                
@@ -153,6 +164,7 @@ export class TransactionService {
         PaymentModesXML:    "",
         ImageSource:        [],
 
+        PaymentModesInLine: "",
         Name:               "",
         Details:            "",
       }
@@ -308,6 +320,7 @@ export interface TypeTransaction{
     PaymentModesXML:    string;
     ImageSource:        FileHandle[];
 
+    PaymentModesInLine: string;
     Name:               string;
     Details:            string;
 }

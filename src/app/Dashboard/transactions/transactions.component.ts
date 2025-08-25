@@ -203,7 +203,8 @@ export class TransactionsComponent {
     }  
   }
 
-  PrintTransaction(trans: TypeTransaction){                
+  PrintTransaction(trans: TypeTransaction){           
+        
     trans.Series = JSON.parse(trans.Series_Json)[0];
     trans.Client = JSON.parse(trans.Client_Json)[0];
 

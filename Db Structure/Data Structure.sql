@@ -518,3 +518,16 @@ CREATE TABLE Assay_Records
   RecordSno         INT PRIMARY KEY IDENTITY(1,1),
   BarCodeSno        INT    
 )
+GO
+
+
+CREATE TABLE BarCode_Settings
+(
+  Font_Size   SMALLINT,
+  Margin_Left SMALLINT,
+  Margin_Top  SMALLINT
+)
+GO
+
+INSERT INTO BarCode_Settings VALUES (12,0,0)
+GO

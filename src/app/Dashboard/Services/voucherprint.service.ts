@@ -81,11 +81,8 @@ PrintVoucher(Trans: TypeTransaction, PrintStyle: string){
    }
 
 GetHtmlFromFieldSet(FldList: [], FieldSet: TypePrintFields, LeftMargin: number, TopMargin: number, IsCopy: boolean): string{
-
     let StrHtml = ``;
     FldList.forEach((fld: any) => {    
-
-                
         if ((IsCopy == true && (!fld.AvoidCopy || fld.AvoidCopy ==0))  || (IsCopy == false && (!fld.AvoidMain || fld.AvoidMain == 0) ))
         {                
             switch (fld.fldcat) {
@@ -153,13 +150,31 @@ GetHtmlFromFieldSet(FldList: [], FieldSet: TypePrintFields, LeftMargin: number, 
                 break;
     
                 case "image":
-                    StrHtml += `
-                    <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ (TopMargin + +fld.top) + `px; width:` + fld.width + `px; height:`+ fld.height + `px;">
-                        <img style="width:100%; height:100%" src=" ` + Object.entries(FieldSet).find(([key, val]) => key === fld.fldvalue)?.[1]  + `" />
-                    </div>
-                    `;    
+                    if ((Object.entries(FieldSet).find(([key, val]) => key === fld.fldvalue)?.[1]).length > 0){                    
+                        StrHtml += `
+                        <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ (TopMargin + +fld.top) + `px; width:` + fld.width + `px; height:`+ fld.height + `px;">
+                            <img style="width:100%; height:100%" src=" ` + Object.entries(FieldSet).find(([key, val]) => key === fld.fldvalue)?.[1]  + `" />
+                        </div>
+                        `;    
+                    }
                 break;
                 
+                case "itemimages":
+                    let loopCountLeft = 0;
+                    let loopCountTop = 0;
+                                        
+                    FieldSet.ItemImages.forEach(img=>{
+                        StrHtml += `
+                        <div style="position:absolute;left:`+ (LeftMargin + +fld.left + loopCountLeft) + `px; top:`+ (TopMargin + +fld.top) + `px; width:` + fld.width + `px; height:`+ fld.height + `px;">
+                            <img style="width:100%; height:100%" src=" ` + img.Image_Url  + `" />
+                        </div>
+                        `;           
+                        loopCountLeft += fld.width+50;
+                        //loopCountTop += fld.top+50;
+                    })
+                    
+                break;
+
                 case "pathimage":
                     StrHtml += `
                     <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ (TopMargin + +fld.top) + `px; width:` + fld.width + `px; height:`+ fld.height + `px;"; >
@@ -355,43 +370,7 @@ GetHtmlFromFieldSet(FldList: [], FieldSet: TypePrintFields, LeftMargin: number, 
             }           
         }
       });
-
-        // StrHtml += '<div style="page-break-before:always">';
-
-    //   if (FieldSet.VouTypeSno == this.globals.VTypBuyingContract || FieldSet.VouTypeSno == this.globals.VTypRCTI)
-    //   {        
-
-        StrHtml += '    <div  style="position:absolute;left:' + LeftMargin + '; top:' + TopMargin + ';"> ';
-        
-        if (FieldSet.Client_Images){
-        FieldSet.Client_Images.forEach(img=>{
-            StrHtml += '    <img src="' + img.Image_Url + '" height="300" width="300" />' ;      
-        })
-        }
-
-        StrHtml += '        <br>';
-        StrHtml += '        <br>';
-
-        StrHtml += '         <p style="font-weight: 500" > Items Sold </p>';
-
-        StrHtml += '         <div style="display: flex; align-items:center; flex-wrap: wrap; column-gap:10px">';  
-            
-          if (FieldSet.ItemImages){
-            FieldSet.ItemImages.forEach(img=>{
-              StrHtml += '      <img src="' + img.Image_Url + '" height="300" width="300" />' ;      
-            })
-          }
-          StrHtml += '        </div>'; 
-          // StrHtml += ' <div>';  
-
-          // StrHtml += ' </div>';  
-           
-          StrHtml += '	  </div> ';
-          StrHtml += '</div> ';
        
-    //   }
-    console.log(StrHtml);
-    
     return StrHtml;
 }
 
@@ -418,6 +397,7 @@ GetPrintFields(Trans: TypeTransaction){
     PrintFields.NettAmount      =  Trans.NettAmount;
     PrintFields.Fixed_Price     =  Trans.Fixed_Price;
     PrintFields.Commision       =  Trans.Commision;
+    PrintFields.PaymentModesInLine = Trans.PaymentModesInLine;
 
     if (Trans.PrintReference_Json){
         PrintFields.PrintReference   = JSON.parse (Trans.PrintReference_Json)[0];
@@ -486,7 +466,6 @@ GetPrintFields(Trans: TypeTransaction){
     }
     
     PrintFields.UserName = this.sessionService.GetUser().UserName!;
-    console.log(PrintFields);
     
     return PrintFields;
    }
@@ -514,6 +493,8 @@ GetPrintFields(Trans: TypeTransaction){
         NettAmount: 0,
         Fixed_Price: 0,
         Commision: 0,
+        PaymentModesInLine: "",
+
         ItemImages: [],
         ItemDetails: [],
 
@@ -568,6 +549,8 @@ interface TypePrintFields {
     
     Fixed_Price: number;
     Commision: number;
+
+    PaymentModesInLine: string;
 
     ItemImages: FileHandle[];
     ItemDetails: TypeItemFields[];

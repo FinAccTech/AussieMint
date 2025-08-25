@@ -43,11 +43,11 @@ CREATE FUNCTION [dbo].[GenerateVoucherNo](@SeriesSno INT)
                 SET @Current_No=@Current_No+1
             END
 
-             SET @NewValue = @Current_No
+              SET @NewValue = CAST(RIGHT(CAST(YEAR(GETDATE()) AS VARCHAR(4)), 2) AS VARCHAR) + CAST(@Current_No AS VARCHAR)
              SET @NewValue = RTrim(@Prefix) + Rtrim(@Newvalue) + RTrim(@Suffix)
               IF @Width <> 0
                  BEGIN
-                     SET @NewValue = RTrim(@Prefix) + Right('000000000000000000' + Cast(@Current_No AS VARCHAR),@Width)
+                     SET @NewValue = RTrim(@Prefix) + Right('000000000000000000' + Cast(@NewValue AS VARCHAR),(@Width+2))
                      SET @NewValue=  Rtrim(@Newvalue) + RTrim(@Suffix)
                  END
               RETURN  @NewValue
@@ -2782,6 +2782,12 @@ RETURN
                   (SELECT Pm.*, Led.LedSno as 'Ledger.LedSno', Led.Led_Name as 'Ledger.Name', Led.Led_Name as 'Ledger.Details'  FROM PaymentMode_Details Pm INNER JOIN Ledgers Led ON Led.LedSno = Pm.LedSno WHERE TransSno = Trans.TransSno AND Trans_Type=1 FOR JSON PATH) PaymentModes_Json,
                  ---------------------------------------------------------------------------------------------------
                  
+                 STUFF(( SELECT   (','+ Led.Led_Name + ':' + CAST(Pm.Amount AS VARCHAR))
+                    FROM     PaymentMode_Details Pm
+                             INNER JOIN Ledgers Led on Led.LedSno = Pm.LedSno
+                    Where    Pm.TransSno = Trans.TransSno
+                    FOR XML PATH('')), 1, 1, '') as PaymentModesInLine,
+
                   /* ITEMS OBJECT (ITEMS JSON)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
                   (SELECT     Det.DetSno, Det.TransSno, Det.BarCodeSno, Det.ItemSno, Det.Item_Desc, Det.UomSno, Det.Karat, Det.Purity, Det.Qty, Det.GrossWt, Det.StoneWt, Det.Wastage, Det.NettWt,
                               Det.PureWt, Det.Rate, Det.Amount,

@@ -54,7 +54,6 @@ export class DocheaderComponent implements AfterViewInit {
     effect(() =>{      
       this.serService.getVoucherSeries(0, this.DocHeader()!.Series.VouType.VouTypeSno ).subscribe(data=>{
         this.SeriesList = JSON.parse(data.apiData);          
-        // console.log(this.DocHeader());
         
         if (this.DocHeader()!.TransSno == 0){
           this.getSeries(this.SeriesList[0]);      
