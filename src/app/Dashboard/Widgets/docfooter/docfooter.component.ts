@@ -1,10 +1,11 @@
 import { Component, effect, EventEmitter, input, Output } from '@angular/core';
 import { TypeDocFooter } from '../../../Types/TypeDocFooter';
 import { FormsModule } from '@angular/forms';
+import { NumberInputDirective } from "../../Directives/NumberInput";
 
 @Component({
   selector: 'app-docfooter',
-  imports: [FormsModule],
+  imports: [FormsModule, NumberInputDirective],
   templateUrl: './docfooter.component.html',
   styleUrl: './docfooter.component.scss'
 }) 
@@ -26,4 +27,7 @@ export class DocfooterComponent {
     this.actionEvent.emit( {"Action":"Save"});
   }
   
+  SetNettPrice(){
+    this.DocFooter()!.NettPrice  = this.DocFooter()!.SpotPrice - (this.DocFooter()!.SpotPrice * (this.DocFooter()!.BuyBackPrice / 100));
+  }
 } 

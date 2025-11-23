@@ -1,0 +1,36 @@
+<div class="modalForm">
+    <div style="display: flex; width: 100%; align-items: center; justify-content: space-between;" >
+        <p style="font-size: 1.5rem;">Item Details of  {{data.Trans_No}}  </p>
+        <p matDialogClose="" style="font-size: 2rem; font-weight: bold; cursor: pointer; " >&times;</p>
+    </div>
+    
+    <table class="gridTable" >
+        <thead>
+            <th>Item</th>
+            <th>Karat</th>
+            <th>Purity</th>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>NettWt</th>
+            <th>Uom</th>
+            <th>Rate</th>
+            <th>Amount</th>
+        </thead>
+
+        <tbody>
+            @for (item of data.GridItems; track $index) {
+                <tr>
+                    <td> {{item.Item.Item_Name}} </td>
+                    <td> {{item.Karat}} </td>
+                    <td> {{item.Purity}} </td>
+                    <td> {{item.Item_Desc}} </td>
+                    <td> {{item.Qty}} </td>
+                    <td> {{item.NettWt}} </td>
+                    <td> {{item.Uom.Uom_Name}} </td>
+                    <td> {{item.Rate}} </td>
+                    <td> {{item.Amount}} </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

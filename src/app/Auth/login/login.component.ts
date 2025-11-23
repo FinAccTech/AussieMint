@@ -22,7 +22,8 @@ export class LoginComponent {
 
   CheckUser(){
     this.CheckState = 1;
-    if (  this.globals.DateToInt(new Date()) > 20250915){      
+    
+    if (  this.globals.DateToInt(new Date()) > 20261112){      
       return;     
     }
 

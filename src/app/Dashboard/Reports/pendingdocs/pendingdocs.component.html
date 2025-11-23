@@ -10,11 +10,11 @@
                 <div class="matGroup" style="width: 100%;" >
                     <div class="matSelect"> 
                         <mat-select [(value)]="VouTypeSno" (selectionChange)="LoadPendingReport()" >
-                            <mat-option [value]="24">Pending Advance - Purchase</mat-option>
-                            <mat-option [value]="25">Pending Advance - Sales</mat-option>
+                            <mat-option [value]="24">Pending Purchase Order</mat-option>
+                            <mat-option [value]="25">Pending Sales Order</mat-option>
                             <mat-option [value]="28">Pending GRN</mat-option>
-                            <mat-option [value]="10">Pending Purchase Order</mat-option>
-                            <mat-option [value]="13">Pending Sales Order</mat-option>                                    
+                            <!-- <mat-option [value]="10">Pending Purchase Order</mat-option>
+                            <mat-option [value]="13">Pending Sales Order</mat-option>                                     -->
                             <mat-option [value]="14">Pending Delivery Docs</mat-option>                                    
                             <mat-option [value]="16">Pending Melting Issue</mat-option>                                    
                             <mat-option [value]="18">Pending Refining Issue</mat-option>                                    

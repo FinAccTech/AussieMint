@@ -42,19 +42,32 @@ PrintVoucher(Trans: TypeTransaction, PrintStyle: string){
  
     this.dataService.HttpGetPrintStyle(PrintStyle).subscribe(data=>{       
         let FieldSet = this.GetPrintFields(Trans);       
-                         
+        
         let FldList = JSON.parse(data).FieldSet;        
         let Setup: TypePrintSetup = JSON.parse(data).Setup[0];        
         
         let StrHtml = '<div style="position:relative; width:100%; height:100%"; padding:0; margin:0; box-sizing: border-box;>';
-    
-        StrHtml += this.GetHtmlFromFieldSet(FldList, FieldSet,0,0, false);
 
-        
-        if (Setup.PrintCopy == 1){            
-             StrHtml += this.GetHtmlFromFieldSet(FldList, FieldSet,Setup.CopyLeftMargin,Setup.CopyTopMargin, true);            
+        // const ItemLinesCount = Setup.ItemLinesCount;
+        const ItemLinesCount = 15;
+
+        const ItemsLength = FieldSet.ItemDetails.length;
+        let PrintedItems    = 0;
+        let topmargin       = 0;
+
+        while (PrintedItems < ItemsLength) {                        
+            StrHtml += '<div class="print-page">';
+            StrHtml += this.GetHtmlFromFieldSet(FldList, FieldSet, 0, topmargin, false, ItemLinesCount);          
+            StrHtml += '</div>';     
+
+            PrintedItems = PrintedItems + ItemLinesCount;
+            topmargin = topmargin + 1500;
+            FieldSet.ItemDetails.splice(0, ItemLinesCount);
         }
 
+        if (Setup.PrintCopy == 1){            
+             StrHtml += this.GetHtmlFromFieldSet(FldList, FieldSet,Setup.CopyLeftMargin,Setup.CopyTopMargin, true,ItemLinesCount);            
+        }
 
         StrHtml += '</div>';    
 
@@ -67,7 +80,30 @@ PrintVoucher(Trans: TypeTransaction, PrintStyle: string){
                     <style> 
                     
                         @media print {
-                            .pagebreak { page-break-before: always; } /* page-break-after works, as well */
+                            .pagebreak { 
+                                display: block;
+                                width: 100%;
+                                height: 1px; 
+                                break-before: page;
+                                page-break-before: always; 
+                            } /* page-break-after works, as well */
+
+                               .print-page {
+                                    page-break-after: always;   /* or break-after: page */
+                                    margin: 0;
+                                    padding: 0;
+                                    position: relative;         /* resets absolute positioning */
+                                }
+
+                                /* Don’t push the last one onto a blank page */
+                                .print-page:last-child {
+                                    page-break-after: auto;
+                                }
+
+                                /* Reset child margins (solves your “sub items high top margin” issue) */
+                                .print-page > *:first-child {
+                                    margin-top: 0 !important;
+                                }
                         }
 
                     </style>
@@ -80,9 +116,12 @@ PrintVoucher(Trans: TypeTransaction, PrintStyle: string){
 
    }
 
-GetHtmlFromFieldSet(FldList: [], FieldSet: TypePrintFields, LeftMargin: number, TopMargin: number, IsCopy: boolean): string{
+GetHtmlFromFieldSet(FldList: [], FieldSet: TypePrintFields, LeftMargin: number, TopMargin: number, IsCopy: boolean, ItemsLength: number): string{
     let StrHtml = ``;
+    
+    
     FldList.forEach((fld: any) => {    
+        
         if ((IsCopy == true && (!fld.AvoidCopy || fld.AvoidCopy ==0))  || (IsCopy == false && (!fld.AvoidMain || fld.AvoidMain == 0) ))
         {                
             switch (fld.fldcat) {
@@ -211,79 +250,81 @@ GetHtmlFromFieldSet(FldList: [], FieldSet: TypePrintFields, LeftMargin: number, 
 
                 fld.top = +fld.top + TopMargin;
 
-                
-                
+                let itemCount = 0;
                 FieldSet.ItemDetails.forEach(item=>{                
-                    fld.top = +fld.top + fld.fontsize;        
-                    sno++;
-                    
-                    switch (fld.fldtype) {    
-                        
-                        case "Sno":
-                            StrHtml += `
-                            <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+  +fld.top + `px; font-family:` + fld.fontname + `; font-size:`+ fld.fontsize + `px; font-weight:`+ fld.fontweight + `; color:`+ fld.forecolor + `;  " >
-                                ` + sno  + `
-                            </div>
-                            `;    
-                        break;
-
-                        case "text":
-                            StrHtml += `
-                            <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+  +fld.top + `px; font-family:` + fld.fontname + `; font-size:`+ fld.fontsize + `px; font-weight:`+ fld.fontweight + `; color:`+ fld.forecolor + `;  " >
-                                ` + fld.fldvalue  + `
-                            </div>
-                            `;    
-                        break;
-                
-                        case "field":
-                            let Emptyspace  = 0;
-                            let StrEmptySpace: string = '';
-                            if ((fld.alignment) && (fld.alignment == "right")){
-                                Emptyspace = fldMaxLength - Object.entries(item).find(([key, val]) => key === fld.fldvalue)?.[1].length;                                
-                                                                
-                                for (let i=0; i<=Emptyspace*2; i++){
-                                    StrEmptySpace += '&nbsp;';
-                                }
-                            }                            
+                    if (itemCount <= ItemsLength){
+                        fld.top = +fld.top + fld.fontsize;        
+                        sno++;                        
+                        switch (fld.fldtype) {    
                             
+                            case "Sno":
+                                StrHtml += `
+                                <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+  +fld.top + `px; font-family:` + fld.fontname + `; font-size:`+ fld.fontsize + `px; font-weight:`+ fld.fontweight + `; color:`+ fld.forecolor + `;  " >
+                                    ` + sno  + `
+                                </div>
+                                `;    
+                            break;
+
+                            case "text":
+                                StrHtml += `
+                                <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+  +fld.top + `px; font-family:` + fld.fontname + `; font-size:`+ fld.fontsize + `px; font-weight:`+ fld.fontweight + `; color:`+ fld.forecolor + `;  " >
+                                    ` + fld.fldvalue  + `
+                                </div>
+                                `;    
+                            break;
+                    
+                            case "field":
+                                let Emptyspace  = 0;
+                                let StrEmptySpace: string = '';
+                                if ((fld.alignment) && (fld.alignment == "right")){
+                                    Emptyspace = fldMaxLength - Object.entries(item).find(([key, val]) => key === fld.fldvalue)?.[1].length;                                
+                                                                    
+                                    for (let i=0; i<=Emptyspace*2; i++){
+                                        StrEmptySpace += '&nbsp;';
+                                    }
+                                }                            
+                                
+                                StrHtml += `
+                                <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ +fld.top + `px; font-family:` + fld.fontname + `; font-size:`+ fld.fontsize + `px; font-weight:`+ fld.fontweight + `; color:`+ fld.forecolor + `; text-align:right " >
+                                    ` + StrEmptySpace + Object.entries(item).find(([key, val]) => key === fld.fldvalue)?.[1]  + `
+                                </div>
+                                `;    
+                            break;
+                    
+                            case "box":
                             StrHtml += `
-                            <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ +fld.top + `px; font-family:` + fld.fontname + `; font-size:`+ fld.fontsize + `px; font-weight:`+ fld.fontweight + `; color:`+ fld.forecolor + `; text-align:right " >
-                                ` + StrEmptySpace + Object.entries(item).find(([key, val]) => key === fld.fldvalue)?.[1]  + `
-                            </div>
-                            `;    
-                        break;
+                                <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ +fld.top + `px; width:` + fld.width + `px; height:`+ fld.height + `px; border:1px solid "`+ fld.forecolor +`; >                
+                                </div>
+                                `;    
+                            break;
+                            
+                            case "hline":
+                                StrHtml += `
+                                <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ +fld.top + `px; width:` + fld.width + `px; height:`+ fld.height + `px; border-top:1px solid "`+ fld.forecolor +`; >                
+                                </div>
+                                `;    
+                                break;
                 
-                        case "box":
-                        StrHtml += `
-                            <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ +fld.top + `px; width:` + fld.width + `px; height:`+ fld.height + `px; border:1px solid "`+ fld.forecolor +`; >                
-                            </div>
-                            `;    
-                        break;
-                        
-                        case "hline":
+                            case "vline":
                             StrHtml += `
-                            <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ +fld.top + `px; width:` + fld.width + `px; height:`+ fld.height + `px; border-top:1px solid "`+ fld.forecolor +`; >                
+                            <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ +fld.top + `px; width:` + fld.width + `px; height:`+ fld.height + `px; border-left:1px solid "`+ fld.forecolor +`; >                
                             </div>
                             `;    
                             break;
-            
-                        case "vline":
-                        StrHtml += `
-                        <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ +fld.top + `px; width:` + fld.width + `px; height:`+ fld.height + `px; border-left:1px solid "`+ fld.forecolor +`; >                
-                        </div>
-                        `;    
-                        break;
-            
-                        case "image":
-                        StrHtml += `
-                        <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ +fld.top + `px; width:` + fld.width + `px; height:`+ fld.height + `px; ">
-                            <img style="width:100%; height:100%" src=" ` + fld.fldvalue + `" />
-                        </div>
-                        `;    
-                        break;
-                    }            
+                
+                            case "image":
+                            StrHtml += `
+                            <div style="position:absolute;left:`+ (LeftMargin + +fld.left) + `px; top:`+ +fld.top + `px; width:` + fld.width + `px; height:`+ fld.height + `px; ">
+                                <img style="width:100%; height:100%" src=" ` + fld.fldvalue + `" />
+                            </div>
+                            `;    
+                            break;
+                        }            
+                    }
                     
+                    itemCount++;
                 });
+                fld.top = 450;
                 break;
             
             case "compinfo":
@@ -395,6 +436,15 @@ GetPrintFields(Trans: TypeTransaction){
     PrintFields.TaxAmount       =  Trans.TaxAmount;
     PrintFields.RevAmount       =  Trans.RevAmount;
     PrintFields.NettAmount      =  Trans.NettAmount;
+
+    PrintFields.Ref_No      =  Trans.Ref_No;
+    PrintFields.Ref_VTyp      =  Trans.Ref_VTyp;
+    PrintFields.RefInfo      =  Trans.Ref_No=='' ? '' : '(' + Trans.Ref_VTyp + ": " + Trans.Ref_No + ')';
+
+    PrintFields.SpotPrice      =  Trans.SpotPrice;
+    PrintFields.BuyBackPrice      =  Trans.BuyBackPrice;
+    PrintFields.NettPrice      =  Trans.NettPrice;
+
     PrintFields.Fixed_Price     =  Trans.Fixed_Price;
     PrintFields.Commision       =  Trans.Commision;
     PrintFields.PaymentModesInLine = Trans.PaymentModesInLine;
@@ -491,6 +541,15 @@ GetPrintFields(Trans: TypeTransaction){
         TaxAmount: 0,
         RevAmount: 0,
         NettAmount: 0,
+
+        Ref_No: "",
+        Ref_VTyp: "",
+        RefInfo: "",
+
+        SpotPrice: 0,
+        BuyBackPrice: 0,
+        NettPrice: 0,
+
         Fixed_Price: 0,
         Commision: 0,
         PaymentModesInLine: "",
@@ -546,6 +605,14 @@ interface TypePrintFields {
     TaxAmount: number;
     RevAmount: number;
     NettAmount: number;
+
+    Ref_No: string;
+    Ref_VTyp: string;
+    RefInfo: string;
+
+    SpotPrice: number;
+    BuyBackPrice: number;
+    NettPrice: number;
     
     Fixed_Price: number;
     Commision: number;
@@ -606,4 +673,5 @@ interface TypePrintSetup{
     PrintCopy: number;
     CopyLeftMargin: number;
     CopyTopMargin: number;    
+    ItemLinesCount: number;
 }

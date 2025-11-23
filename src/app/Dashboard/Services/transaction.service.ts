@@ -50,6 +50,11 @@ export class TransactionService {
             "Locked" :  trans.Locked,
             "Name" : trans.Name,
             "NettAmount" : trans.NettAmount,
+
+            "SpotPrice" : trans.SpotPrice,
+            "BuyBackPrice" : trans.BuyBackPrice,
+            "NettPrice" : trans.NettPrice,
+
             "PaymentModes" :  trans.PaymentModes,
             "PaymentModesXML" :  trans.PaymentModesXML,
             "PaymentModes_Json" :  "",
@@ -129,6 +134,13 @@ export class TransactionService {
         RevAmount:          0,
         NettAmount:         0,
     
+        Ref_No:             "",
+        Ref_VTyp:           "",
+
+        SpotPrice:          0,
+        BuyBackPrice:       0,
+        NettPrice:          0,
+
         Fixed_Price:        0,
         Commision:          0,
 
@@ -186,13 +198,15 @@ InitializeDocHeader(){
         Ref_Amount:     0,
         Payment_Type:   0,
         Client:         this.clntService.Initialize(),
-        AdvanceAmount:  0
+        AdvanceAmount:  0,
+        Fixed_Price:    0,
+        Commision:      0,
     }
     return Doc
 }
 
 InitializeDocFooter(){
-    let docfooter: TypeDocFooter = {Remarks:"", Print_Remarks: "", TotalAmount:0, TaxPer:10, TaxAmount:0, RevAmount:0, NettAmount:0, AdvanceAmount:0}
+    let docfooter: TypeDocFooter = {Remarks:"", Print_Remarks: "", TotalAmount:0, TaxPer:10, TaxAmount:0, RevAmount:0, NettAmount:0, AdvanceAmount:0, SpotPrice:0, BuyBackPrice:0, NettPrice:0}
     return docfooter;
 }
 
@@ -255,6 +269,8 @@ export  interface TypeDocHeader{
     Payment_Type:       number;
     Client:             TypeClient;
     AdvanceAmount:      number;
+    Fixed_Price:        number;
+    Commision:          number;
 }
 
 
@@ -287,6 +303,12 @@ export interface TypeTransaction{
     RevAmount:          number,
     NettAmount:         number,
   
+    Ref_No:             string,
+    Ref_VTyp:           string,
+    SpotPrice:          number,
+    BuyBackPrice:       number,
+    NettPrice:          number,
+
     Fixed_Price:        number,
     Commision:          number,
     Remarks:            string,

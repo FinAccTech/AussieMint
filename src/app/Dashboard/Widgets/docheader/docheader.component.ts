@@ -12,6 +12,8 @@ import { TypeDocFooter } from '../../../Types/TypeDocFooter';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { ReportService } from '../../Services/reports.service';
 import { PrintbarcodeComponent } from '../printbarcode/printbarcode.component';
+import { TypeClient } from '../../Services/client.service';
+import { RefitemsComponent } from '../refitems/refitems.component';
 
 export interface TypeRefDetails{
   DocType: number;
@@ -36,7 +38,7 @@ export interface TypeRefDetails{
 export class DocheaderComponent implements AfterViewInit {
   
   DocHeader = input<TypeDocHeader>(); //For Input
-  DocFooter = input.required<TypeDocFooter>(); //For Input
+  DocFooter = input.required<TypeDocFooter>(); //For Input  
   SeriesList: TypeVoucherSeries[]= [];  
   EnablePaymentCols = input.required(); 
   RefDetails: TypeRefDetails[] = [];
@@ -52,6 +54,7 @@ export class DocheaderComponent implements AfterViewInit {
   constructor(private transService: TransactionService, private serService: VoucherSeriesService, private repService: ReportService,
     private globals: GlobalsService, private dialog: MatDialog){    
     effect(() =>{      
+
       this.serService.getVoucherSeries(0, this.DocHeader()!.Series.VouType.VouTypeSno ).subscribe(data=>{
         this.SeriesList = JSON.parse(data.apiData);          
         
@@ -84,11 +87,11 @@ export class DocheaderComponent implements AfterViewInit {
     })
   }
   
-  getReference($event: TypeTransaction){  
+  getReference($event: TypeTransaction){      
     this.DocHeader()!.Reference = $event;    
     this.GetRefDetails($event);
     this.actionEvent.emit({"Action": "RefTransaction","Trans": $event});
-  }
+  } 
 
   GetRefDetails(Ref: TypeTransaction): void{
     this.RefDetails = [];    
@@ -197,7 +200,16 @@ export class DocheaderComponent implements AfterViewInit {
                       
           });       
   }
-  
+ 
+  OpenRefItems(){
+    const dialogRef = this.dialog.open(RefitemsComponent, 
+      {
+        width: '90vw',
+        maxWidth: 'none',
+        data: this.DocHeader()!.Reference   ,        
+        panelClass: "dialogMat"
+      });            
+  }
 
 }
  

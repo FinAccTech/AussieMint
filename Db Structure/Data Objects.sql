@@ -2368,6 +2368,11 @@ CREATE PROCEDURE Sp_Transactions
     @TaxAmount          MONEY,
     @RevAmount          MONEY,
     @NettAmount         MONEY,
+
+    @SpotPrice         MONEY,
+    @BuyBackPrice         MONEY,
+    @NettPrice         MONEY,
+
     @Fixed_Price        MONEY,
     @Commision          DECIMAL(5,2),
     @Remarks            VARCHAR(100),
@@ -2401,7 +2406,7 @@ BEGIN
 			BEGIN
 			  UPDATE    Transactions
                   SET Trans_No=@Trans_No,Trans_Date=@Trans_Date,VouTypeSno=@VouTypeSno,SeriesSno=@SeriesSno,Payment_Type=@Payment_Type,ClientSno=@ClientSno,Due_Date=@Due_Date,RefSno=@RefSno,BarCodeRefSno=@BarCodeRefSno,
-                  TotAmount=@TotAmount,TaxPer=@TaxPer,TaxAmount=@TaxAmount,RevAmount=@RevAmount,NettAmount=@NettAmount,Fixed_Price=@Fixed_Price, Commision=@Commision,Remarks=@Remarks,Print_Remarks=@Print_Remarks,
+                  TotAmount=@TotAmount,TaxPer=@TaxPer,TaxAmount=@TaxAmount,RevAmount=@RevAmount,NettAmount=@NettAmount,SpotPrice=@SpotPrice, BuyBackPrice=@BuyBackPrice,NettPrice=@NettPrice,Fixed_Price=@Fixed_Price, Commision=@Commision,Remarks=@Remarks,Print_Remarks=@Print_Remarks,
                   Ref_Amount=@Ref_Amount, Doc_Balance_Amt=@Doc_Balance_Amt,
                   Locked=@Locked,CompSno=@CompSno,UserSno=@UserSno,VouSno=@VouSno
         WHERE     TransSno=@TransSno
@@ -2442,9 +2447,9 @@ BEGIN
               GOTO CloseNow
           END
 
-      	INSERT INTO Transactions  (Trans_No,Trans_Date,VouTypeSno,SeriesSno,Payment_Type,ClientSno,Due_Date,RefSno,BarCodeRefSno,TotAmount,TaxPer,TaxAmount,RevAmount,NettAmount,Fixed_Price,Commision,Remarks,
+      	INSERT INTO Transactions  (Trans_No,Trans_Date,VouTypeSno,SeriesSno,Payment_Type,ClientSno,Due_Date,RefSno,BarCodeRefSno,TotAmount,TaxPer,TaxAmount,RevAmount,NettAmount, SpotPrice, BuyBackPrice, NettPrice, Fixed_Price,Commision,Remarks,
                                     Ref_Amount,Doc_Balance_Amt, Print_Remarks,Locked,CompSno,UserSno,VouSno)
-        VALUES                    (@Trans_No,@Trans_Date,@VouTypeSno,@SeriesSno,@Payment_Type,@ClientSno,@Due_Date,@RefSno,@BarCodeRefSno,@TotAmount,@TaxPer,@TaxAmount,@RevAmount,@NettAmount,@Fixed_Price,@Commision,@Remarks,
+        VALUES                    (@Trans_No,@Trans_Date,@VouTypeSno,@SeriesSno,@Payment_Type,@ClientSno,@Due_Date,@RefSno,@BarCodeRefSno,@TotAmount,@TaxPer,@TaxAmount,@RevAmount,@NettAmount,@SpotPrice,@BuyBackPrice,@NettPrice, @Fixed_Price,@Commision,@Remarks,
                                     @Ref_Amount,@Doc_Balance_Amt,@Print_Remarks,@Locked,@CompSno,@UserSno,@VouSno)
 
 				IF @@ERROR <> 0 GOTO CloseNow								
@@ -2736,7 +2741,9 @@ AS
                 ISNULL(SUM(Det.NettWt  * (CASE WHEN Um.Base_Qty=0 THEN 1 ELSE Um.Base_Qty END)),0)  as TotNettWt,
                 ISNULL(SUM(Det.PureWt * (CASE WHEN Um.Base_Qty=0 THEN 1 ELSE Um.Base_Qty END)),0)  as TotPureWt,
 
-                Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount, Trans.Fixed_Price, Trans.Commision, Trans.Remarks, Trans.Print_Remarks,
+                Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount,
+                Trans.SpotPrice, Trans.BuyBackPrice, Trans.NettPrice,
+                Trans.Fixed_Price, Trans.Commision, Trans.Remarks, Trans.Print_Remarks,
                 Trans.Locked, Trans.CompSno,Trans.UserSno, Trans.VouSno,
                 Pending_Status = CASE WHEN EXISTS (SELECT TransSno FROM Transactions WHERE RefSno=Trans.TransSno) THEN 1 ELSE 0 END
 
@@ -2751,7 +2758,7 @@ AS
                 Trans.SeriesSno, Ser.Series_Name,
                 Trans.ClientSno, Clnt.Client_Name, Clnt.Client_Cat,
                 Trans.Due_Date, Trans.RefSno,                
-                Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount,Trans.Remarks, Trans.Fixed_Price, Trans.Commision, Trans.Print_Remarks, Trans.Locked, Trans.CompSno,Trans.Payment_Type, Trans.BarCodeRefSno,  
+                Trans.TotAmount, Trans.TaxPer, Trans.TaxAmount, Trans.RevAmount, Trans.NettAmount,Trans.SpotPrice, Trans.BuyBackPrice, Trans.NettPrice, Trans.Remarks, Trans.Fixed_Price, Trans.Commision, Trans.Print_Remarks, Trans.Locked, Trans.CompSno,Trans.Payment_Type, Trans.BarCodeRefSno,  
                 Trans.UserSno, Trans.VouSno,  Trans.Ref_Amount, Trans.Doc_Balance_Amt
 GO
 
@@ -2810,8 +2817,15 @@ RETURN
                   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
                   /* PRINT REFERENCE OBJECT( ONLY FOR PRINTING PURPOSE)----------------------------------------------------------------------------------------------------------------------------------------------------------*/
-                  ISNULL((SELECT TransSno Trans_No, Trans_Date, Fixed_Price, Commision, TotNettWt, NettAmount FROM VW_TRANSACTIONS WHERE TransSno = Trans.RefSno FOR JSON PATH),'') as PrintReference_Json
-                  ----------------------------------------------------------------------------------------------------------------------------------------------------------*/                  
+                  ISNULL((SELECT TransSno Trans_No, Trans_Date, Fixed_Price, Commision, TotNettWt, NettAmount FROM VW_TRANSACTIONS WHERE TransSno = Trans.RefSno FOR JSON PATH),'') as PrintReference_Json,
+                  ----------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+                  ISNULL((SELECT TOP 1 Trans_No FROM Transactions WHERE TransSno = Trans.RefSno),'') Ref_No ,
+				  
+				          ISNULL((SELECT	Top 1 Vt.VouType_Name 
+				          FROM		Transactions Tr
+							        INNER JOIN Voucher_Types Vt ON Vt.VoutypeSno = Tr.VouTypeSno					
+				          WHERE		TransSno = Trans.RefSno),'') Ref_VTyp
 
       FROM        VW_TRANSACTIONS Trans                  
 

@@ -75,7 +75,8 @@ export class ClientcardComponent {
     this.SelectedClient()!.UserSno = $event.UserSno;
     this.SelectedClient()!.CompSno = $event.CompSno;
     this.SelectedClient()!.Name = $event.Name;
-    this.SelectedClient()!.Details = $event.Details;    
+    this.SelectedClient()!.Details = $event.Details;   
+    this.SelectedClient()!.Commision = $event.Commision;       
     
     this.onChangedClient.emit(this.SelectedClient());
     

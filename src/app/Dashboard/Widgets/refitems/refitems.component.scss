@@ -1,0 +1,31 @@
+.gridTable{
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom: none;    
+    border-collapse: collapse;
+
+    td{                
+        padding: .2rem;
+    }
+
+    th{
+        padding: .6rem;
+        text-align: left;       
+        background-color: rgb(250, 244, 231);
+        color: var(--ColorPrimary);
+        font-weight: 500;        
+        border-bottom: 2px solid var(--ColorPrimary);
+        border-top: 1px solid var(--ColorPrimary);
+        border-left: 1px solid var(--ColorPrimary);
+    }
+
+    tr{
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+    }
+
+    tr:hover{
+        background-color: #FBFBFD;
+        cursor: pointer;
+    }
+}

@@ -50,8 +50,22 @@
     
     <div class="row">
         <div class="col70">
-            
-            
+            @if (VouTypeSno() == 12) {
+                <div style="display: flex; column-gap: 1rem;">
+                    <div class="formGroup" >
+                        <input type="number" class="formControl" required  NumberInput [(ngModel)]="DocFooter()!.SpotPrice"  (keyup)="SetNettPrice()"/>
+                        <label for="" class="formLabel">Spot Price </label>                                                            
+                    </div>
+                    <div class="formGroup" >
+                        <input type="number" class="formControl" required  NumberInput [(ngModel)]="DocFooter()!.BuyBackPrice"  (keyup)="SetNettPrice()" />
+                        <label for="" class="formLabel">BuyBack Price </label>                                                            
+                    </div>
+                    <div class="formGroup" >
+                        <input type="number" class="formControl" required  readonly [(ngModel)]="DocFooter()!.NettPrice"  />
+                        <label for="" class="formLabel">Nett Price </label>                                                            
+                    </div>
+                </div>
+            }
         </div>
 
         <div class="col30" style="margin: 0; padding: 0;">

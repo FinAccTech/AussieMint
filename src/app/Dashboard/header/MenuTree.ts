@@ -15,7 +15,9 @@ export const menuTree =[
         RouterLink: "",
         SubMenu: 
         [
-            {   Caption: "Advance Doc - Purchase", Iconn: "", RouterLink:"transactions/24" },
+            {   Caption: "Jobwork Inward", Iconn: "", RouterLink:"transactions/22"   },            
+            {   Caption: "Jobwork Delivery", Iconn: "", RouterLink:"transactions/23"   },            
+            {   Caption: "Purchase Order", Iconn: "", RouterLink:"transactions/24" },
             // {   Caption: "Purchase Order", Iconn: "", RouterLink:"transactions/10" },
             {   Caption: "GRN", Iconn: "", RouterLink:"transactions/28" },
             {   Caption: "Buying Contract", Iconn: "", RouterLink:"transactions/11" },
@@ -29,7 +31,7 @@ export const menuTree =[
         RouterLink: "",
         SubMenu: 
         [
-            {   Caption: "Advance Doc - Sales", Iconn: "", RouterLink:"transactions/25" },
+            {   Caption: "Sales Order", Iconn: "", RouterLink:"transactions/25" },
             // {   Caption: "Sales Order", Iconn: "", RouterLink:"transactions/13" },
             {   Caption: "Delivery Doc", Iconn: "", RouterLink:"transactions/14" },
             {   Caption: "Sales Invoice", Iconn: "", RouterLink:"transactions/15" },            
@@ -47,9 +49,7 @@ export const menuTree =[
             {   Caption: "Refining Issue", Iconn: "", RouterLink:"transactions/18"   },                 
             {   Caption: "Refining Receipt", Iconn: "", RouterLink:"transactions/19"},
             {   Caption: "Casting Issue", Iconn: "", RouterLink:"transactions/20"   },
-            {   Caption: "Casting Receipt", Iconn: "", RouterLink:"transactions/21"   },            
-            {   Caption: "Jobwork Inward", Iconn: "", RouterLink:"transactions/22"   },            
-            {   Caption: "Jobwork Delivery", Iconn: "", RouterLink:"transactions/23"   },            
+            {   Caption: "Casting Receipt", Iconn: "", RouterLink:"transactions/21"   },                        
             {   Caption: "Lab Testing Issue", Iconn: "", RouterLink:"transactions/26"   }, 
             {   Caption: "Lab Testing Receipt", Iconn: "", RouterLink:"transactions/27"   }, 
         ]

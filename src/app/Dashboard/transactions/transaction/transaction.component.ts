@@ -42,7 +42,6 @@ import { PrintbarcodeComponent } from '../../Widgets/printbarcode/printbarcode.c
 }) 
 
 @AutoUnsubscribe
-
 export class TransactionComponent {
   state = 'void';   
   VouTypeName: string = "";
@@ -91,7 +90,7 @@ export class TransactionComponent {
     this.ledService.getPaymentModes().subscribe(data=>{
       this.PaymentModeLedgers = JSON.parse(data.apiData);
     });    
-    this.LoadDocument();    
+    this.LoadDocument();        
   }
 
   handleActionFromChild($event: any){     
@@ -180,6 +179,8 @@ export class TransactionComponent {
     this.ChildTransaction.RefSno        = this.DocHeader.Reference.TransSno;
     this.ChildTransaction.BarCodeRefSno = this.DocHeader.BarReference.RecordSno;
     this.ChildTransaction.Ref_Amount    = this.DocHeader.Ref_Amount;
+    this.ChildTransaction.Commision    = this.DocHeader.Commision;
+    this.ChildTransaction.Fixed_Price    = this.DocHeader.Fixed_Price;
 
     if (this.DocHeader.PaymentModes.length == 0){
       this.DocHeader.PaymentModes.push ({ PmSno:0, TransSno:0, Ledger: this.PaymentModeLedgers[0], Amount : this.DocFooter.NettAmount, Remarks:"", Trans_Type:1 })
@@ -199,6 +200,10 @@ export class TransactionComponent {
     this.ChildTransaction.TaxAmount       = this.DocFooter.TaxAmount;
     this.ChildTransaction.RevAmount       = this.DocFooter.RevAmount;
     this.ChildTransaction.NettAmount      = this.DocFooter.NettAmount;
+
+    this.ChildTransaction.SpotPrice      = this.DocFooter.SpotPrice;
+    this.ChildTransaction.BuyBackPrice      = this.DocFooter.BuyBackPrice;
+    this.ChildTransaction.NettPrice      = this.DocFooter.NettPrice;
 
     this.ChildTransaction.Doc_Balance_Amt = this.DocFooter.NettAmount - this.DocHeader.AdvanceAmount;
 
@@ -229,6 +234,8 @@ export class TransactionComponent {
     this.DocHeader.Due_Date       = this.ChildTransaction.Due_Date;
     this.DocHeader.Payment_Type   = this.ChildTransaction.Payment_Type;
     this.DocHeader.Ref_Amount     = this.ChildTransaction.Ref_Amount;
+    this.DocHeader.Commision      = Number(this.ChildTransaction.Commision);
+    this.DocHeader.Fixed_Price    = Number(this.ChildTransaction.Fixed_Price);
 
     if ( (this.ChildTransaction.TransSno !== 0) && (this.ChildTransaction.RefSno !==0)){
       this.transService.getTransactions(this.ChildTransaction.RefSno,0,0,0,0).subscribe(data=>{
@@ -258,6 +265,10 @@ export class TransactionComponent {
     this.DocFooter.TaxAmount      = this.ChildTransaction.TaxAmount;
     this.DocFooter.RevAmount      = this.ChildTransaction.RevAmount;
     this.DocFooter.NettAmount     = this.ChildTransaction.NettAmount;    
+
+    this.DocFooter.SpotPrice     = this.ChildTransaction.SpotPrice;
+    this.DocFooter.BuyBackPrice     = this.ChildTransaction.BuyBackPrice;
+    this.DocFooter.NettPrice     = this.ChildTransaction.NettPrice;
 
     this.DocFooter.AdvanceAmount  = this.ChildTransaction.NettAmount - this.ChildTransaction.Doc_Balance_Amt;    
   }
@@ -294,6 +305,10 @@ export class TransactionComponent {
     this.DocFooter.TaxAmount      = this.ChildTransaction.TaxAmount = Trans.TaxAmount;
     this.DocFooter.RevAmount      = this.ChildTransaction.RevAmount = Trans.RevAmount;
     this.DocFooter.NettAmount     = this.ChildTransaction.NettAmount = Trans.NettAmount;
+
+    this.DocFooter.SpotPrice     = this.ChildTransaction.SpotPrice = Trans.SpotPrice;
+    this.DocFooter.BuyBackPrice     = this.ChildTransaction.BuyBackPrice = Trans.BuyBackPrice;
+    this.DocFooter.NettPrice     = this.ChildTransaction.NettPrice = Trans.NettPrice;
   }
 
   LoadStandardItems(VouTypeSno: number){
@@ -389,8 +404,8 @@ export class TransactionComponent {
   }
 
   NewClientChanged($event: TypeClient){    
-    this.DocHeader.Client = $event;
-    this.GetDocHeaderRefList(this.DocHeader.Client.ClientSno);
+    this.DocHeader.Client = {...$event} ;
+    this.GetDocHeaderRefList(this.DocHeader.Client);
   }
   
    ValidateInputs(): boolean{        
@@ -416,6 +431,16 @@ export class TransactionComponent {
         // this.repService.getPendingDocuments(this.globals.VTypAdvancePurchase).subscribe(data => {
         //   this.DocHeader.RefList = JSON.parse (data.apiData);
         // })
+      break;
+
+      case this.globals.VTypAdvancePurchase:
+        this.EnablePaymentCols= true;        
+        this.EnableAmountCols= true;        
+      break;
+
+      case this.globals.VTypAdvanceSales:
+        this.EnablePaymentCols= true;        
+        this.EnableAmountCols= true;        
       break;
 
       case this.globals.VTypGRN:        
@@ -562,10 +587,14 @@ export class TransactionComponent {
     }
    }
   
-   GetDocHeaderRefList(ClientSno: number){
+   GetDocHeaderRefList(Client: TypeClient){
+    const ClientSno = Client.ClientSno;            
+    this.DocHeader.Commision = Client.Commision;
+
     switch (this.ChildTransaction.Series.VouType.VouTypeSno) {
-      case this.globals.VTypGRN:
+      case this.globals.VTypGRN:        
         this.DocHeader.RefList = [];
+        
         this.repService.getPendingDocuments(this.globals.VTypAdvancePurchase, ClientSno).subscribe(data => {          
           this.DocHeader.RefList = JSON.parse (data.apiData);
         })

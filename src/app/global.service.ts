@@ -141,7 +141,7 @@ export class GlobalsService
     GetVouTypeName(VouTypeSno: number){      
       switch (VouTypeSno) {
         case 10:
-          return "Purchase Order"
+          return "Purchase Order Old"
           break;
         case 11:
           return "Buying Contract"
@@ -150,7 +150,7 @@ export class GlobalsService
           return "RCTI"
         break;
         case 13:
-          return "Sales Order"
+          return "Sales Order Old"
         break;
         case 14:
           return "Delivery Doc"
@@ -183,10 +183,10 @@ export class GlobalsService
           return "Jobwork Delivery"
         break;      
         case 24:
-          return "Advance Doc - Purchase"
+          return "Purchase Order"
         break;      
         case 25:
-          return "Advance Doc - Sales"
+          return "Sales Order"
         break;      
         case 26:
           return "Lab Testing - Issue"

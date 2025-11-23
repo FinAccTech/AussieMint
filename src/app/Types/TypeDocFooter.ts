@@ -7,4 +7,7 @@ export interface TypeDocFooter{
     RevAmount: number;
     NettAmount: number;
     AdvanceAmount: number;    
+    SpotPrice: number;
+    BuyBackPrice: number;
+    NettPrice: number;
 }
