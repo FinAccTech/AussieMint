@@ -9,6 +9,7 @@ import { TypeTransaction } from '../../Services/transaction.service';
 import { GlobalsService } from '../../../global.service';
 import { IntToDatePipe } from '../../../Pipes/int-to-date.pipe';
 import { TypeFieldInfo } from '../../../Types/TypeFieldInfo';
+import { ExcelExportService } from '../../Services/excel-export.service';
 
 interface PagedData{
   PageNumber: number;
@@ -65,7 +66,7 @@ export class TableviewComponent {
 
  @Output() actionEvent = new EventEmitter<any>();
 
- constructor(private globals: GlobalsService){
+ constructor(private globals: GlobalsService, private excelService: ExcelExportService){
   effect(() => {            
     this.DataList     = this.DataSource();   
     this.FilteredDataList = this.DataList;   
@@ -306,6 +307,23 @@ SortTable(ColName: string, index: number){
 //   });
 // });
  
+ExportToExcel(){
+    let SelectedColumns: string[] = [];
+    this.FieldNames().forEach(fld=>{
+      SelectedColumns.push(fld.Field_Name);
+    })
+    
+    let TotalColumns = [""];
+    SelectedColumns.indexOf("#") >= 0 ? SelectedColumns.splice(SelectedColumns.indexOf("#"),1) : null ;
+    SelectedColumns.indexOf("Actions") >= 0 ? SelectedColumns.splice(SelectedColumns.indexOf("Actions"),1) : null ;
+    
+    const ExportList = this.FilteredDataList.map((item: any) => SelectedColumns.map(col => item[col]));      
+    
+    this.excelService.exportAsExcelFile(ExportList,"FinAcc Report", SelectedColumns, TotalColumns);
+    this.globals.SnackBar("info","Report downloaded successfully",1000)
+}
+
+
 }
 
 

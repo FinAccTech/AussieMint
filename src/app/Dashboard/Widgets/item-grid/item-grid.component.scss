@@ -31,8 +31,19 @@
     .gridHeader{
         display: flex;        
         z-index: 1;
-        padding-left: .5rem;
+        padding: 0 .5rem 0 .5rem;
         column-gap: 2rem;
+        align-items: center;
+        justify-content: space-between;
+
+        .gridLeft{
+            display: flex;
+            gap: 2rem;
+        }
+        .gridRight{
+            display: flex;
+            gap: .5rem;
+        }
     }
 
     .itemsArea{

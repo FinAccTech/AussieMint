@@ -35,15 +35,8 @@ import { SessionStorageService } from '../../session-storage.service';
 export class TransactionsComponent {
 //"#", "Trans_No", "Trans_DateStr", "Client_Name", "TotNettWt", "NettAmount","Actions"
   TransList: TypeTransaction[]= [];
-  FieldNames: TypeFieldInfo[] = [
-      {Field_Name:"#", Data_Type:"string" }, 
-      {Field_Name:"Trans_No", Data_Type:"string" }, 
-      {Field_Name:"Trans_Date", Data_Type:"date" }, 
-      {Field_Name:"Client_Name", Data_Type:"string" }, 
-      {Field_Name:"TotNettWt", Data_Type:"number", Decimals:3 }, 
-      {Field_Name:"NettAmount", Data_Type:"number" }, 
-      {Field_Name:"Actions", Data_Type:"object" }, 
-    ]
+  FieldNames: TypeFieldInfo[] = [];
+
   TotalFields: string[] = ["TotNettWt", "NettAmount"]
   RemoveSignal: number = 0;
 
@@ -81,17 +74,32 @@ export class TransactionsComponent {
         this.FromDate =  this.globals.DateToInt (new Date((newDate.getMonth() == 0 ? newDate.getFullYear() -1 :newDate.getFullYear()).toString() +  '/' + (newDate.getMonth() == 0 ? 12 : newDate.getMonth()).toString() + "/" + newDate.getDate().toString()));          
         this.ToDate = this.globals.DateToInt (new Date());
         
-        if (this.VouTypeSno == this.globals.VTypSalesOrder || this.VouTypeSno == this.globals.VTypPurchaseOrder){
+        let AllowedDocs = [this.globals.VTypRCTI, this.globals.VTypBuyingContract, this.globals.VTypMeltingReceipt, this.globals.VTypRefiningReceipt, this.globals.VTypCastingReceipt, this.globals.VTypSalesInvoice];
+        
+        if (AllowedDocs.includes(this.VouTypeSno)) {    
           this.FieldNames = [
             {Field_Name:"#", Data_Type:"string" }, 
             {Field_Name:"Trans_No", Data_Type:"string" }, 
             {Field_Name:"Trans_Date", Data_Type:"date" }, 
             {Field_Name:"Client_Name", Data_Type:"string" }, 
             {Field_Name:"TotNettWt", Data_Type:"number", Decimals:3 }, 
-            {Field_Name:"NettAmount", Data_Type:"number" }, 
+            {Field_Name:"NettAmount", Data_Type:"number" },             
             {Field_Name:"Actions", Data_Type:"object" }, 
           ]
         }
+        else{
+          this.FieldNames = [
+          {Field_Name:"#", Data_Type:"string" }, 
+          {Field_Name:"Trans_No", Data_Type:"string" }, 
+          {Field_Name:"Trans_Date", Data_Type:"date" }, 
+          {Field_Name:"Client_Name", Data_Type:"string" }, 
+          {Field_Name:"TotNettWt", Data_Type:"number", Decimals:3 }, 
+          {Field_Name:"NettAmount", Data_Type:"number" }, 
+          {Field_Name:"Pending_Status", Data_Type:"boolean" }, 
+          {Field_Name:"Actions", Data_Type:"object" }, 
+        ]
+        }
+
         this.LoadTransactionList();        
       });  
   } 

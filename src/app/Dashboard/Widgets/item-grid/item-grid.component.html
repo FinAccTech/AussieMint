@@ -5,6 +5,7 @@
     </div>
 
     <div class="gridHeader">        
+        <div class="gridLeft">
         @if (StockSelection()) {
             <div class="actions" (click)="SelectfromInventory()">                                    
                 <i class='bx bx-store-alt stock'  ></i>       
@@ -25,7 +26,11 @@
                 <p>Add Item</p>  
             </div>
         }
-        
+        </div>
+        <div class="gridRight">
+            <input type="number" NumberInput class="formControlreadonly"  [(ngModel)]="UpdRate" >
+            <button class="btnOutlined" (click)="UpdateRates()" >Update Rates</button>
+        </div>
     </div> 
 
     @if (!DirectItemEntry) {

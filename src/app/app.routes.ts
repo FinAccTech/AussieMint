@@ -24,6 +24,7 @@ import { PrintsetupComponent } from './Dashboard/Settings/printsetup/printsetup.
 import { BarCodeStockreportComponent } from './Dashboard/Reports/barcodestockreport/barcodestockreport.component';
 import { WeeklyconsolidatedComponent } from './Dashboard/Reports/weeklyconsolidated/weeklyconsolidated.component';
 import { BarcodeitemshistoryComponent } from './Dashboard/Reports/barcodeitemshistory/barcodeitemshistory.component';
+import { CompaniesComponent } from './Dashboard/Settings/companies/companies.component';
 
 
 export const routes: Routes = [
@@ -31,6 +32,7 @@ export const routes: Routes = [
     { path:'dashboard', component: DashboardComponent,canActivate: [AuthGuard],
         children:[
             { path:'', component: IndexpageComponent},
+            { path:'companies', component: CompaniesComponent},
             { path:'itemgroups', component: ItemgroupsComponent},
             { path:'items', component: ItemsComponent},
             { path:'uoms', component: UomsComponent},

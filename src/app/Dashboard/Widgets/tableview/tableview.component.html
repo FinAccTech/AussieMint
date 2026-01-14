@@ -22,7 +22,7 @@
             @if (EnableCheckbox) {
                 <button class="btnDefault" (click)="AddMultiItems()" style="margin-right: 2rem; display: flex;align-items: center; " > <i class='bx bx-add-to-queue'></i> &nbsp; Add Items </button>
             }
-            <i class='bx bxs-download' style="color: purple;" ></i>
+            <i class='bx bxs-download' style="color: purple;" (click)="ExportToExcel()" ></i>
         </div>
     </div>
 

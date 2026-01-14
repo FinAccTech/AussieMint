@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, Optional } from '@angular/core';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe.decorator';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { GlobalsService } from '../../../global.service';
@@ -20,8 +20,8 @@ import { AppSetupService } from '../../Services/appsetup.service';
 
 @AutoUnsubscribe
 export class CompaniesComponent {
-  constructor( private dialog: MatDialog,public dialogRef: MatDialogRef<CompaniesComponent>, private globals: GlobalsService,              
-    @Inject(MAT_DIALOG_DATA) public data: any, private router: Router, private compService: CompanyService, 
+  constructor( private dialog: MatDialog, @Optional() public dialogRef: MatDialogRef<CompaniesComponent>, private globals: GlobalsService,              
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: any, private router: Router, private compService: CompanyService, 
     private sessionService: SessionStorageService, private appSetupService: AppSetupService) {}
 
   CompaniesList: TypeCompanies[]  = [];

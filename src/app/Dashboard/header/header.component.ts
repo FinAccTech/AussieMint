@@ -33,9 +33,11 @@ import { CompaniesComponent } from '../Settings/companies/companies.component';
 })
 
 export class HeaderComponent {
+  LoggedUser: string = "";
 
-  private subscriptionName: Subscription;
+  private subscriptionName: Subscription;  
   SelectedCompany!: TypeCompanies;
+
 
   constructor(@Inject(DOCUMENT) private document: any, private router: Router, private sessionService: SessionStorageService, private dialog: MatDialog) {
     this.subscriptionName= sessionService.getCompUpdate().subscribe
@@ -61,13 +63,14 @@ export class HeaderComponent {
           {
              this.Expanded[a] = false; 
           }  
-     }
+     } 
   }
 
   ngOnInit(){
     this.elem = document.documentElement;
     this.Active[0] = true;
     this.SelectedCompany = this.sessionService.GetCompany();
+    this.LoggedUser = this.sessionService.GetUser().UserName!;
   }
   
   OpenCompanies(){

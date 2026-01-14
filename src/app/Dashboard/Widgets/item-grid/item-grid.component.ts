@@ -14,11 +14,12 @@ import { StockselectionComponent } from '../stockselection/stockselection.compon
 import { GlobalsService } from '../../../global.service';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { ReportService } from '../../Services/reports.service';
+import { NumberInputDirective } from "../../Directives/NumberInput";
 
 @Component({
   selector: 'app-item-grid',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectionlistComponent],
+  imports: [CommonModule, FormsModule, SelectionlistComponent, NumberInputDirective],
   templateUrl: './item-grid.component.html',
   styleUrl: './item-grid.component.scss'
 })
@@ -47,6 +48,7 @@ export class ItemGridComponent {
   BarCodedList: TypeBarCode[] = [];
   BarCode: string = "";
 
+  UpdRate: number = 0;
   @ViewChild('itemDiv') myDivRef!: ElementRef;
 
   constructor(private itmService: ItemService, private umService: UomService, private dialog: MatDialog, private globals: GlobalsService, private repService: ReportService) {
@@ -256,4 +258,11 @@ EditItem( item: TypeGridItem, index: number){
     this.searchSubject.next(+input.value);    
   }
 
+  UpdateRates(){
+    this.GridItems()?.forEach(it=>{
+      it.Rate = this.UpdRate;
+      it.Amount = it.NettWt * it.Rate;
+    })
+    this.SetTotals();     
+  }
 }

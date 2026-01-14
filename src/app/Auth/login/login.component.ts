@@ -27,7 +27,9 @@ export class LoginComponent {
       return;     
     }
 
-    this.usrService.CheckUserandgetCompanies(this.UserName, this.Password).subscribe(data=>{          
+    this.usrService.CheckUserandgetCompanies(this.UserName, this.Password).subscribe(data=>{     
+      console.log(data.apiData);
+           
           
       if (data.queryStatus == 1){
         
@@ -37,13 +39,17 @@ export class LoginComponent {
         this.sessionService.SetUserLogged();
         this.sessionService.SetUser(data.apiData.UserInfo[0]);
        
-        if (data.apiData.CompInfo.length !== 0){
+        if (data.apiData.CompInfo.length < 2){
           this.sessionService.SetCompany(data.apiData.CompInfo[0]);
           this.sessionService.sendCompUpdate(data.apiData.CompInfo[0]);
           this.sessionService.SetAppSetup(data.apiData.AppSetup[0]);
+          this.router.navigate(['/dashboard']);
         }        
+        else{
+          this.router.navigate(['dashboard/companies']);
+        }
         
-        this.router.navigate(['/dashboard']);
+        
       }
       else{
         this.CheckState = 3;
