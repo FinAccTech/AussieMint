@@ -47,7 +47,7 @@ CREATE FUNCTION [dbo].[GenerateVoucherNo](@SeriesSno INT)
              SET @NewValue = RTrim(@Prefix) + Rtrim(@Newvalue) + RTrim(@Suffix)
               IF @Width <> 0
                  BEGIN
-                     SET @NewValue = RTrim(@Prefix) + Right('000000000000000000' + Cast(@NewValue AS VARCHAR),(@Width+2))
+                     SET @NewValue = Right('000000000000000000' + Cast(@NewValue AS VARCHAR),(@Width+2))
                      SET @NewValue=  Rtrim(@Newvalue) + RTrim(@Suffix)
                  END
               RETURN  @NewValue
@@ -2964,13 +2964,13 @@ WITH ENCRYPTION AS
 
   SELECT    Trans.TransSno, VTyp.VouType_Name, Trans.Trans_No, Trans.Trans_Date, Det.DetSno, Det.ItemSno, It.Item_Name, Det.Item_Desc, Bar.BarCodeSno, Bar.BarCode_No, Det.Karat, Det.Purity,
             Det.UomSno, Um.Uom_Name, Um.Base_Qty,
-            GrossWt       = CAST(Det.GrossWt / Det.Qty AS DECIMAL(8,3)),
-            StoneWt       = CAST(Det.StoneWt / Det.Qty AS DECIMAL(8,3)),
-            Wastage       = CAST(Det.Wastage / Det.Qty AS DECIMAL(8,3)),
-			      NettWt        = CAST(Det.NettWt / Det.Qty AS DECIMAL(8,3)),
-            PureWt        = CAST((Det.NettWt / Det.Qty) *(Det.Purity/100)AS DECIMAL(8,3)),
-            Det.Rate, Amount = CAST(Det.Amount / Det.Qty AS DECIMAL(10,2)),
-
+            GrossWt       = CAST(Det.GrossWt / Det.Qty AS DECIMAL(12,3)),
+            StoneWt       = CAST(Det.StoneWt / Det.Qty AS DECIMAL(12,3)),
+            Wastage       = CAST(Det.Wastage / Det.Qty AS DECIMAL(12,3)),
+			      NettWt        = CAST(Det.NettWt / Det.Qty AS DECIMAL(12,3)),
+            PureWt        = CAST((Det.NettWt / Det.Qty) *(Det.Purity/100)AS DECIMAL(12,3)),
+            Det.Rate, Amount = CAST(Det.Amount / Det.Qty AS DECIMAL(18,2)),
+            
             Issued_Wt     = ( SELECT    ISNULL(SUM(NettWt),0)
                               FROM      Transaction_Details Dt
                                         INNER JOIN Transactions Tr ON Tr.TransSno=Dt.TransSno
@@ -2996,6 +2996,7 @@ GO
 
 IF EXISTS(SELECT * FROM SYS.OBJECTS WHERE name='Udf_getBarCodeStock') BEGIN DROP FUNCTION Udf_getBarCodeStock END
 GO
+
 
 CREATE FUNCTION Udf_getBarCodeStock(@CompSno INT)
 RETURNS Table

@@ -100,7 +100,12 @@
                             <th>Amount</th>
                             <th>Weight</th>
                             <th>Rate</th>
-                            <th>Buy Back Price</th>
+                            @if (DocHeader()!.Series.VouType.VouTypeSno==10) {
+                                <th>BuyBack Price</th>
+                            } @else {
+                                <th>Premium Price</th>
+                            }
+                            
                         </thead>
                         @for (item of RefDetails; track $index) {
                             <tr>

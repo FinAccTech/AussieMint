@@ -36,6 +36,8 @@ export class StockselectionComponent {
 
   ngOnInit(){
     this.repService.getBarCodeStock().subscribe(data=>{
+      console.log(data);
+      
       this.BarCodedList = JSON.parse(data.apiData);
       this.BarCodedList = this.BarCodedList.filter(itm=>{
         return itm.Balance_Wt! > 0 
